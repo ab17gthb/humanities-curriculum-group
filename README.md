@@ -5,7 +5,7 @@ The full working tree for Humanities Curriculum Group (HCG), the US History curr
 ## What is here
 
 - `site/` — the live website: static pages, the year and unit planner (`site/public/planner-data.js`, `planner.js`), Firebase config, Cloud Functions (`site/functions/`), ops runbooks (`site/ops/`), and the Playwright test suites (`site/tests/`).
-- One folder per teaching unit (`colonial-america/` through `modern-america/`): HTML masters for every document (reading, guided notes, activity, notebook page, quick check, writing task, teacher notes), the review set, and the unit test, plus the source images each document uses. PDFs are rendered from the HTML masters with `templates/build_pdf.py`.
+- One folder per teaching unit (`colonial-america/` through `modern-america/`): HTML masters for every document (reading, guided notes, activity, notebook page, quick check, writing task, teacher notes), the review set, and the unit test, plus the source images each document uses. One caution on `progressive-era/`: 106 of its 157 PDFs sit in a `tpt/` subfolder, the Teachers Pay Teachers duplicates of the same documents. The unit's own files are the website masters; the `tpt/` copies are refreshed from them and are not a second version of the unit. PDFs are rendered from the HTML masters with `templates/build_pdf.py`.
 - `course-review/` — the three review variants (full course, early to 1877, modern from 1877): band packets, study guides, crosswords, and practice tests.
 - `templates/` — the print template standard (`TEMPLATE.md`) and the PDF build script.
 - `covers/` — cover and preview art. `assets/` — brand assets and logos.
