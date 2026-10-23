@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="560" viewBox="0 0 900 560" font-family="Arial, Helvetica, sans-serif">
+<rect x="1" y="1" width="898" height="558" fill="white" stroke="black" stroke-width="2"/>
+<text x="450" y="34" text-anchor="middle" font-size="21" font-weight="bold">One Sector of the Front, Seen From Above</text>
+<text x="450" y="58" text-anchor="middle" font-size="14">Teaching diagram. Simplified and not to scale.</text>
+
+<text x="60" y="100" font-size="16" font-weight="bold">German side</text>
+<polyline points="60,150 160,130 260,155 360,130 460,155 560,130 660,155 760,130 840,150" fill="none" stroke="black" stroke-width="4"/>
+<text x="450" y="122" text-anchor="middle" font-size="15">German front trench (zigzag, so a shell blast cannot run the length of the line)</text>
+<polyline points="60,205 160,188 260,208 360,188 460,208 560,188 660,208 760,188 840,205" fill="none" stroke="black" stroke-width="2"/>
+<text x="450" y="232" text-anchor="middle" font-size="14">German support trench, with dugouts, supplies, and reserves</text>
+
+<text x="70" y="285" font-size="14">Barbed wire</text>
+<path d="M60,262 q15,-14 30,0 q15,14 30,0 q15,-14 30,0 q15,14 30,0 q15,-14 30,0 q15,14 30,0 q15,-14 30,0 q15,14 30,0 q15,-14 30,0 q15,14 30,0 q15,-14 30,0 q15,14 30,0 q15,-14 30,0 q15,14 30,0 q15,-14 30,0 q15,14 30,0 q15,-14 30,0 q15,14 30,0 q15,-14 30,0 q15,14 30,0 q15,-14 30,0 q15,14 30,0 q15,-14 30,0 q15,14 30,0 q15,-14 30,0" fill="none" stroke="black" stroke-width="1.5"/>
+<circle cx="200" cy="330" r="20" fill="none" stroke="black"/><circle cx="330" cy="305" r="13" fill="none" stroke="black"/><circle cx="470" cy="338" r="22" fill="none" stroke="black"/><circle cx="610" cy="308" r="14" fill="none" stroke="black"/><circle cx="720" cy="335" r="18" fill="none" stroke="black"/>
+<text x="450" y="300" text-anchor="middle" font-size="17" font-weight="bold">NO MAN'S LAND</text>
+<text x="450" y="382" text-anchor="middle" font-size="14">Open ground between the lines, cut by shell craters (circles) and crossed at night by patrols</text>
+<path d="M60,398 q15,-14 30,0 q15,14 30,0 q15,-14 30,0 q15,14 30,0 q15,-14 30,0 q15,14 30,0 q15,-14 30,0 q15,14 30,0 q15,-14 30,0 q15,14 30,0 q15,-14 30,0 q15,14 30,0 q15,-14 30,0 q15,14 30,0 q15,-14 30,0 q15,14 30,0 q15,-14 30,0 q15,14 30,0 q15,-14 30,0 q15,14 30,0 q15,-14 30,0 q15,14 30,0 q15,-14 30,0 q15,14 30,0 q15,-14 30,0" fill="none" stroke="black" stroke-width="1.5"/>
+<text x="700" y="422" font-size="14">Barbed wire</text>
+
+<polyline points="60,455 160,435 260,458 360,435 460,458 560,435 660,458 760,435 840,455" fill="none" stroke="black" stroke-width="4"/>
+<text x="450" y="492" text-anchor="middle" font-size="15">Allied front trench: firing step, machine gun posts, dugouts below ground</text>
+<polyline points="60,520 160,505 260,522 360,505 460,522 560,505 660,522 760,505 840,520" fill="none" stroke="black" stroke-width="2"/>
+<text x="450" y="548" text-anchor="middle" font-size="14">Allied support trench, joined to the front trench by short communication trenches</text>
+<text x="60" y="425" font-size="16" font-weight="bold"></text>
+</svg>
