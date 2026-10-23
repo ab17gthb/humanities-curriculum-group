@@ -1,0 +1,88 @@
+{
+ "day": 5,
+ "title": "Power Abroad, Turmoil at Home",
+ "entries": [
+  "hcg-imperialism-wwi",
+  "hcg-twenties"
+ ],
+ "seedA": 5513,
+ "seedC": 5599,
+ "partA": [
+  "imperialism",
+  "yellow journalism",
+  "Platt Amendment",
+  "Open Door",
+  "Lusitania",
+  "conscription",
+  "Fourteen Points",
+  "navalism",
+  "Philippine-American War",
+  "Panama Canal",
+  "assembly line",
+  "mass media",
+  "suburb",
+  "Prohibition",
+  "National Origins Act",
+  "Great Migration",
+  "jazz",
+  "installment buying",
+  "Teapot Dome",
+  "organized crime"
+ ],
+ "partC": [
+  "frontier thesis",
+  "USS Maine",
+  "anti-imperialism",
+  "Roosevelt Corollary",
+  "unrestricted submarine warfare",
+  "Zimmermann Telegram",
+  "armistice",
+  "Espionage Act",
+  "League of Nations",
+  "Lodge reservations",
+  "mass production",
+  "talkie",
+  "celebrity",
+  "isolationism",
+  "speakeasy",
+  "Ku Klux Klan",
+  "fundamentalism",
+  "Harlem Renaissance",
+  "overproduction",
+  "buying on margin"
+ ],
+ "partB": [
+  [
+   "Turner's 1893 argument that the closing of the frontier ended the first period of American history, and that the frontier had made American democracy.",
+   "frontier thesis"
+  ],
+  [
+   "The intercepted 1917 German proposal that Mexico ally itself with Germany and recover Texas, New Mexico, and Arizona.",
+   "Zimmermann Telegram"
+  ],
+  [
+   "The consumer practice of taking goods home on a small down payment and paying the rest in scheduled portions, which spread the decade's goods on credit.",
+   "installment buying"
+  ],
+  [
+   "The 1904 claim that the United States might intervene in an American nation guilty of chronic wrongdoing, to keep European powers from intervening first.",
+   "Roosevelt Corollary"
+  ],
+  [
+   "The 1924 law that fixed immigration quotas by national origin, favoring northern and western Europe and effectively closing the door to Asia.",
+   "National Origins Act"
+  ],
+  [
+   "The cease-fire of November 11, 1918, that stopped the fighting on the Western Front.",
+   "armistice"
+  ],
+  [
+   "Purchasing stock with a small down payment and a broker's loan for the balance, so that gains and losses alike were magnified.",
+   "buying on margin"
+  ],
+  [
+   "The constitutional ban on the manufacture, sale, and transportation of intoxicating liquor, in force from 1920 to 1933.",
+   "Prohibition"
+  ]
+ ]
+}

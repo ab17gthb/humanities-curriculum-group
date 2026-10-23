@@ -1,0 +1,16 @@
+{"day": 7, "title": "Cold War Abroad, Rights at Home",
+ "entries": ["hcg-cold-war", "hcg-civil-rights"],
+ "seedA": 7717, "seedC": 7801,
+ "partA": ["containment", "Marshall Plan", "Korean War", "McCarthyism", "Cuban Missile Crisis", "domino theory", "détente", "Truman Doctrine", "brinkmanship", "Tet Offensive",
+           "Brown v. Board of Education", "Montgomery bus boycott", "Emmett Till", "Freedom Rides", "March on Washington", "Voting Rights Act of 1965", "Black Power", "NAACP", "sit-in", "Bloody Sunday"],
+ "partC": ["NATO", "limited war", "Second Red Scare", "House Un-American Activities Committee", "Sputnik", "deterrence", "Gulf of Tonkin Resolution", "glasnost", "Berlin Wall", "dissolution of the Soviet Union",
+           "Executive Order 9981", "massive resistance", "nonviolent direct action", "Little Rock Nine", "Birmingham campaign", "Letter from Birmingham Jail", "Civil Rights Act of 1964", "de facto segregation", "Fair Housing Act", "affirmative action"],
+ "partB": [
+  ["The 1947 program that poured American billions into Western Europe's recovery, to rebuild its markets and keep it out of communist hands.", "Marshall Plan"],
+  ["March 7, 1965, when Alabama state troopers beat voting-rights marchers on the Edmund Pettus Bridge in Selma, before the national television cameras.", "Bloody Sunday"],
+  ["The practice of public accusation without proof in the early 1950s, named for the senator whose charges collapsed during the televised Army hearings.", "McCarthyism"],
+  ["The tactic opened at Greensboro in 1960, in which students occupied segregated lunch counters and accepted arrest or assault without striking back.", "sit-in"],
+  ["The premise that if one nation fell to communism, its neighbors would fall in sequence, offered for thirty years as the reason Southeast Asia had to be held.", "domino theory"],
+  ["The southern states' coordinated refusal after Brown to desegregate, carried out through laws, closed schools, and official defiance.", "massive resistance"],
+  ["Gorbachev's policy of openness, which loosened censorship and let Soviet citizens say in public what the system had forbidden them to say.", "glasnost"],
+  ["Truman's 1948 executive order desegregating the armed forces of the United States.", "Executive Order 9981"]]}

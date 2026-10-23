@@ -1,0 +1,16 @@
+{"day": 6, "title": "Depression, Recovery, and Total War",
+ "entries": ["hcg-depression-new-deal", "hcg-world-war-ii"],
+ "seedA": 6619, "seedC": 6701,
+ "partA": ["Great Depression", "voluntarism", "bank holiday", "Tennessee Valley Authority", "Share Our Wealth", "Works Progress Administration", "sit-down strike", "Hooverville", "Bonus Army", "fireside chat",
+           "Neutrality Acts", "Germany first", "rationing", "Stalingrad", "island hopping", "Executive Order 9066", "Final Solution", "Lend-Lease", "War Production Board", "D-Day"],
+ "partC": ["Dust Bowl", "Reconstruction Finance Corporation", "Hawley-Smoot Tariff", "Civilian Conservation Corps", "Schechter v. United States", "Social Security Act", "National Labor Relations Act", "court packing", "New Deal coalition", "Fair Labor Standards Act",
+           "Atlantic Charter", "Selective Training and Service Act", "Rosie the Riveter", "VE Day", "Battle of Midway", "kamikaze", "internment", "Korematsu v. United States", "Manhattan Project", "GI Bill"],
+ "partB": [
+  ["Hoover's preferred method against the Depression: voluntary cooperation by business, charity, and local government, without federal compulsion or direct relief.", "voluntarism"],
+  ["The 1941 program by which the United States supplied Britain, and later the Soviet Union, with war materiel, abandoning neutrality in everything but name.", "Lend-Lease"],
+  ["The drought and wind erosion that stripped the southern Plains' topsoil through the 1930s and drove farm families west.", "Dust Bowl"],
+  ["Roosevelt's February 1942 order authorizing the military to remove Japanese Americans from the West Coast to internment camps.", "Executive Order 9066"],
+  ["Roosevelt's 1937 proposal to add a new justice for each sitting justice over seventy, aimed at a Court that had voided New Deal laws.", "court packing"],
+  ["The Pacific strategy of seizing selected islands as stepping stones and bypassing Japanese strongholds on the road to Japan.", "island hopping"],
+  ["The electoral alliance of labor unions, big cities, farmers, the white South, and Black voters in the North that kept the Democratic Party dominant for a generation.", "New Deal coalition"],
+  ["The emblem of the millions of women who took industrial war jobs between 1942 and 1945.", "Rosie the Riveter"]]}

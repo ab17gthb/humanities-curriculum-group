@@ -1,0 +1,16 @@
+{"day": 2, "title": "A Working Republic and Its Discontents",
+ "entries": ["hcg-early-republic", "hcg-jackson-reform"],
+ "seedA": 2203, "seedC": 2297,
+ "partA": ["Bank of the United States", "Sedition Act", "strict construction", "Marbury v. Madison", "impressment", "American System", "Monroe Doctrine", "Manifest Destiny", "Treaty of Guadalupe Hidalgo", "Farewell Address",
+           "Jacksonian democracy", "Indian Removal Act", "Tariff of Abominations", "Bank War", "market revolution", "Second Great Awakening", "immediatism", "Seneca Falls Convention", "spoils system", "Trail of Tears"],
+ "partC": ["Virginia and Kentucky Resolutions", "Revolution of 1800", "Louisiana Purchase", "Corps of Discovery", "Sacagawea", "embargo", "Treaty of Ghent", "McCulloch v. Maryland", "Missouri Compromise", "Wilmot Proviso",
+           "suffrage", "Worcester v. Georgia", "nullification", "Panic of 1837", "Whig Party", "Lowell system", "telegraph", "common schools", "gag rule", "Declaration of Sentiments"],
+ "partB": [
+  ["The peaceful transfer of power from the Federalists to Jefferson's Republicans after the election of 1800, the first between parties in the republic's history.", "Revolution of 1800"],
+  ["The 1823 declaration that the American continents were closed to new European colonization and that European interference in them would be viewed as a threat to the United States.", "Monroe Doctrine"],
+  ["Jackson's practice of filling federal offices with his party's supporters, defended as rotation in office and attacked as corruption.", "spoils system"],
+  ["The textile arrangement at Lowell, where young women lived in company boardinghouses, worked set hours, and were held to strict rules of conduct.", "Lowell system"],
+  ["Jefferson's 1807 ban on American exports, meant to pressure Britain and France to respect American rights without going to war.", "embargo"],
+  ["The document issued at Seneca Falls in 1848 that rewrote the Declaration of Independence to charge men with the subjection of women.", "Declaration of Sentiments"],
+  ["Washington's 1796 valedictory, warning against permanent foreign alliances and the spirit of party.", "Farewell Address"],
+  ["The House rule, renewed session after session from 1836, that tabled antislavery petitions automatically and without debate.", "gag rule"]]}

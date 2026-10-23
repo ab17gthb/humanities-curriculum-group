@@ -1,0 +1,16 @@
+{"day": 1, "title": "Colonies and the Founding",
+ "entries": ["hcg-colonial-america", "hcg-the-founding"],
+ "seedA": 1101, "seedC": 1187,
+ "partA": ["Columbian Exchange", "encomienda", "joint-stock company", "House of Burgesses", "Mayflower Compact", "mercantilism", "Middle Passage", "chattel slavery", "Great Awakening", "Proclamation of 1763",
+           "Stamp Act", "virtual representation", "Boston Tea Party", "Intolerable Acts", "Common Sense", "consent of the governed", "Battle of Saratoga", "Articles of Confederation", "Great Compromise", "Bill of Rights"],
+ "partC": ["Iroquois Confederacy", "fur trade", "headright system", "covenant", "Navigation Acts", "triangular trade", "slave codes", "salutary neglect", "Enlightenment", "French and Indian War",
+           "First Continental Congress", "natural rights", "Treaty of Alliance", "Dunmore's Proclamation", "gradual emancipation", "Northwest Ordinance", "Shays's Rebellion", "Three-Fifths Compromise", "federalism", "Federalist Papers"],
+ "partB": [
+  ["The Spanish grant that gave a colonist the labor of Native people in a district, supposedly in exchange for protection and Christian instruction.", "encomienda"],
+  ["The 1777 American victory that convinced France to sign a treaty of alliance with the United States.", "Battle of Saratoga"],
+  ["The convention bargain that counted each enslaved person as three fifths of a person for representation and direct taxes.", "Three-Fifths Compromise"],
+  ["The Atlantic trading pattern that linked Europe, Africa, and the Americas in manufactured goods, enslaved people, and plantation produce.", "triangular trade"],
+  ["The 1786 Massachusetts uprising of indebted farmers that convinced many leaders the Confederation could not keep order or pay its debts.", "Shays's Rebellion"],
+  ["Britain's long habit of leaving the colonies largely to govern themselves, ended by the revenue program after 1763.", "salutary neglect"],
+  ["The principle, stated in the Declaration of Independence, that a government's just powers come from the agreement of the people it governs.", "consent of the governed"],
+  ["The 1620 agreement by which Plymouth's settlers formed a government by consent and promised to obey its laws.", "Mayflower Compact"]]}

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<!-- Crossroads History Studio activity template.
+     Approved design: Lesson 1 Reformer's Notebook, Oct 20, 2026.
+     Spec: ~/workspace/curriculum-planner/TEMPLATE.md, "Activity design".
+     Fill the ALL-CAPS placeholders, duplicate the station block as needed,
+     then run: python3 templates/build_pdf.py <this-file> -->
+<html lang="en"><head><meta charset="utf-8">
+<title>TITLE</title>
+<style>
+@page { size: letter; margin: 0.55in 0.75in 0.7in; }
+* { box-sizing: border-box; }
+body { font-family: Arial, Helvetica, sans-serif; font-size: 11.5pt; color: #000; line-height: 1.35; margin: 0; }
+.nameline { display: flex; justify-content: space-between; gap: 1em; }
+h1 { font-size: 19pt; margin: 12pt 0 4pt; line-height: 1.2; }
+h2 { font-size: 14.5pt; margin: 16pt 0 6pt; }
+h3 { font-size: 12.5pt; margin: 14pt 0 4pt; break-after: avoid; }
+p { margin: 0 0 7pt; }
+.directions { margin-bottom: 4pt; }
+.source { margin-bottom: 4pt; }
+figure { margin: 6pt 0 8pt; text-align: center; break-inside: avoid; }
+figure img { max-width: 3.9in; max-height: 2.3in; }
+figcaption { font-size: 9pt; font-style: italic; margin-top: 3pt; }
+.q { margin: 8pt 0 0; }
+.space { height: 0.72in; break-inside: avoid; }
+.space-lg { height: 1.9in; break-inside: avoid; }
+.key { break-before: page; }
+.key h2:first-child { margin-top: 0; }
+ul { margin: 2pt 0 8pt 16pt; padding: 0; }
+li { margin-bottom: 3pt; }
+.rank p { margin: 0 0 5pt; }
+.brandmark { margin: 0 0 4pt; line-height: 0; } .brandmark img { width: 1.35in; }
+</style></head><body>
+
+
+<p class="brandmark"><img src="../assets/hcg-logo/hcg-wordmark.svg" alt="Humanities Curriculum Group"></p>
+<div class="nameline"><span>Name ______________________</span><span>Date ______________</span><span>Period __________</span></div>
+
+<h1>TITLE</h1>
+<p class="directions"><strong>Directions:</strong> DIRECTIONS TEXT.</p>
+
+<h2>Part 1: PART TITLE</h2>
+
+<!-- Duplicate this block per station. Images: local relative paths;
+     build_pdf.py inlines them. Omit the figure when a station has no image. -->
+<section class="station">
+<h3>Station 1: STATION TITLE</h3>
+<p class="source">Source: SOURCE CITATION.</p>
+<figure><img src="assets/IMAGE.jpg" alt=""><figcaption>CAPTION WITH CREDIT.</figcaption></figure>
+<p>SOURCE TEXT OR LABELED SUMMARY.</p>
+<p class="q">QUESTION 1</p><div class="space"></div>
+<p class="q">QUESTION 2</p><div class="space"></div>
+</section>
+
+<h2>Part 2: CLOSING TASK TITLE</h2>
+<p>CLOSING INSTRUCTIONS.</p>
+<div class="rank">
+<p>______ &nbsp;OPTION 1</p>
+<p>______ &nbsp;OPTION 2</p>
+</div>
+<p class="q">FINAL PROMPT</p>
+<div class="space-lg"></div>
+
+<div class="key">
+<h2>Teacher Answer Key</h2>
+
+<h3>Station 1: STATION TITLE</h3>
+<p><strong>QUESTION 1 RESTATED</strong> ANSWER.</p>
+<p><strong>QUESTION 2 RESTATED</strong> ANSWER.</p>
+
+<h3>Part 2: CLOSING TASK TITLE (Grading Rubric)</h3>
+<p>Full credit should be awarded if the student:</p>
+<ul>
+<li>RUBRIC POINT 1</li>
+<li>RUBRIC POINT 2</li>
+</ul>
+</div>
+
+</body></html>

@@ -1,0 +1,16 @@
+{"day": 4, "title": "Industry and Reform",
+ "entries": ["hcg-gilded-age", "hcg-progressive-era"],
+ "seedA": 4409, "seedC": 4493,
+ "partA": ["transcontinental railroad", "trust", "Knights of Labor", "nativism", "political machine", "Dawes Act", "Plessy v. Ferguson", "free silver", "corporation", "injunction",
+           "muckraker", "initiative", "Square Deal", "Hepburn Act (1906)", "Eugene V. Debs", "Federal Reserve Act (1913)", "NAWSA", "Nineteenth Amendment (1920)", "Social Gospel", "Wisconsin Idea"],
+ "partC": ["vertical integration", "laissez-faire", "Social Darwinism", "American Federation of Labor", "Chinese Exclusion Act", "tenement", "settlement house", "homestead", "Wounded Knee", "Populist Party",
+           "The Jungle (1906)", "Meat Inspection Act (1906)", "direct primary", "Sherman Antitrust Act", "conservation", "triple wall of privilege", "Clayton Antitrust Act (1914)", "Silent Sentinels", "NAACP (1909)", "Eighteenth Amendment (1919)"],
+ "partB": [
+  ["The 1890 law against combinations in restraint of trade, little used against the trusts in its first decade and later the Square Deal's chief legal weapon.", "Sherman Antitrust Act"],
+  ["The 1890 killing of hundreds of Lakota by the Seventh Cavalry in South Dakota, which ended the Ghost Dance movement and armed resistance on the northern Plains.", "Wounded Knee"],
+  ["The device by which citizens propose a law themselves and put it directly to the voters, bypassing the legislature.", "initiative"],
+  ["The Populist and Bryan demand that silver be coined freely at sixteen to one, to expand the currency, raise prices, and ease the burden of debt.", "free silver"],
+  ["The National Woman's Party pickets who stood silently at the White House gates from 1917, holding banners that quoted the president's own words about democracy.", "Silent Sentinels"],
+  ["The 1887 law that broke reservation land into individual allotments and sold the surplus, dissolving much of the Native land base within two generations.", "Dawes Act"],
+  ["The name Theodore Roosevelt borrowed for the journalists whose exposés in mass-circulation magazines built public opinion for reform.", "muckraker"],
+  ["The urban organization that traded jobs, services, and favors for votes, and ran the Gilded Age city.", "political machine"]]}

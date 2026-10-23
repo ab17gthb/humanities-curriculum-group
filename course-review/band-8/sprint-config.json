@@ -1,0 +1,16 @@
+{"day": 8, "title": "Modern America and the Long Arc",
+ "entries": ["hcg-modern-america"],
+ "seedA": 8813, "seedC": 8897,
+ "partA": ["stagflation", "Proposition 13", "Moral Majority", "supply-side economics", "PATCO strike", "peace dividend", "globalization", "Rust Belt", "personal computer", "dot-com bubble",
+           "Immigration and Nationality Act of 1965", "Sun Belt", "September 11 attacks", "USA PATRIOT Act", "subprime mortgage", "Affordable Care Act", "political polarization", "Citizens United v. Federal Election Commission", "Obergefell v. Hodges", "COVID-19 pandemic"],
+ "partC": ["tax revolt", "New Right", "deregulation", "Iran-Contra affair", "War on Drugs", "Persian Gulf War", "North American Free Trade Agreement", "Internet", "cable news", "social media",
+           "Immigration Reform and Control Act of 1986", "deindustrialization", "white flight", "War on Terror", "Authorization for Use of Military Force", "weapons of mass destruction", "Great Recession", "Troubled Asset Relief Program", "Tea Party movement", "Bush v. Gore"],
+ "partB": [
+  ["California's 1978 ballot measure that capped property taxes and opened the national tax revolt against the postwar tax state.", "Proposition 13"],
+  ["The 1981 air traffic controllers' strike, broken when the president fired the strikers and decertified their union, signaling the era's posture toward organized labor.", "PATCO strike"],
+  ["The integration of national economies through trade, investment, and production chains, which accelerated after the Cold War ended.", "globalization"],
+  ["The 1965 law that abolished the national-origins quotas and, over the following half-century, remade the sources of American immigration.", "Immigration and Nationality Act of 1965"],
+  ["Congress's authorization of September 2001, under which the War on Terror's campaigns were waged across administrations and continents.", "Authorization for Use of Military Force"],
+  ["A home loan made to a borrower with weak credit at a higher interest rate, the raw material of the 2008 financial crisis.", "subprime mortgage"],
+  ["The 2010 Supreme Court decision holding that independent political spending by corporations and unions is protected speech.", "Citizens United v. Federal Election Commission"],
+  ["The expected savings in military spending after the Cold War's end, and the argument over what the country should buy with them.", "peace dividend"]]}
