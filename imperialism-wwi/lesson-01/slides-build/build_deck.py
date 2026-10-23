@@ -1,0 +1,292 @@
+#!/usr/bin/env python3
+"""Imperialism and World War I Lesson 1 deck, "The Turn Overseas," built to the
+approved system: image-led slides, fragments only on screen, comprehensive
+speaker notes, full lesson + vocabulary coverage.
+Fonts: Georgia titles, Lato body."""
+import os, sys
+HERE = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, os.path.join(HERE, '..', '..'))
+import deck_common as dc
+from deck_common import (slide, rect, text, notes, kicker, rule, frags, photo_right,
+                         divider_photo, content_photo, content_text, stat, divider_text,
+                         NAVY, CREAM, RUST, RUST_LT, POWDER, INK, MUTED, W, H)
+from pptx.enum.text import PP_ALIGN
+from pptx.util import Inches
+
+dc.IMG = os.path.join(HERE, 'img')
+OUT = os.path.join(HERE, '..', 'lesson-01-slides.pptx')
+
+def vocab(title, terms, note, kick='The vocabulary'):
+    s = slide(CREAM)
+    kicker(s, kick, color=RUST)
+    text(s, 0.9, 0.95, 11.5, 1.0, title, size=30, color=NAVY, font='Georgia')
+    yy = 2.1
+    for term, dfn in terms:
+        text(s, 0.9, yy, 4.1, 0.9, term, size=25, color=NAVY, font='Georgia')
+        text(s, 5.15, yy + 0.06, 7.3, 1.1, dfn, size=19, color=MUTED, leading=1.2)
+        yy += 1.52
+    notes(s, note)
+    return s
+
+# ---------------------------------------------------------------- 1 · TITLE
+s = slide(NAVY)
+s.shapes.add_picture(os.path.join(dc.IMG, 'title-169.jpg'), 0, 0, Inches(13.333), Inches(7.5))
+rect(s, 0, 5.05, W, 2.45, NAVY)
+rect(s, 0, 5.05, W, 0.045, RUST)
+text(s, 0.9, 5.32, 11.5, 0.4, 'IMPERIALISM AND WORLD WAR I · LESSON 1', size=14, color=RUST_LT, font='Arial', bold=True)
+text(s, 0.9, 5.68, 11.9, 1.1, 'The Turn Overseas', size=40, color=CREAM, font='Georgia')
+text(s, 0.9, 6.62, 11.5, 0.5, 'Why a continental republic began to reach across the oceans', size=17, color=POWDER)
+notes(s, "The photograph shows USS Indiana underway in the summer of 1898, one of the first three battleships authorized by the Naval Act of 1890. Open the unit with the ship, because the ship is the argument of this lesson made visible in steel. A battleship burned coal, carried only a limited supply, and needed harbors, repair yards, and friendly ports on every route it served. A country that built such ships had already begun to ask where they would stop, who would supply them, and what the flag would claim along the way. The working word of the lesson is imperialism: a policy of extending a nation's power by taking territory or control over other peoples and lands. Students should leave today able to name the motives that pushed the United States overseas in the 1890s, to trace how Hawaii turned those motives into a fact, and to state the critics' case in its strongest form.")
+
+# ------------------------------------------------- 2 · LESSON QUESTION
+s = slide(NAVY)
+kicker(s, 'The question for today')
+text(s, 0.9, 1.9, 11.5, 3.4, [[('Why did the United States look overseas for territory, markets, and influence in the 1890s?', {})]],
+     size=44, color=CREAM, font='Georgia', leading=1.25)
+rule(s, 0.92, 5.6)
+text(s, 0.92, 5.85, 11.5, 0.9, [[('Unit question: ', {'color': dc.RUST_LT, 'italic': True}),
+                                ('Why did the United States seek power overseas, and how did the First World War change the country that fought it?', {'italic': True})]],
+     size=17, color=dc.POWDER, font='Georgia', leading=1.2)
+notes(s, "Today's question is the narrower one on the slide, and the unit question runs beneath it as the frame for the whole unit. This lesson answers the first half of that unit question: why the United States sought power overseas at all. Later lessons take up the war that followed from the seeking, and the changes the First World War brought to the country that fought it. Keep the three nouns in the lesson question in front of students all hour: territory, markets, and influence. They are not synonyms. Territory means land taken and held. Markets means places to sell. Influence means power exercised without formal ownership, and several arguments today ask for influence alone. Students who can sort each motive under the right noun, and name the person who argued it, are ready for the exit ticket. Students who merge all three into a single appetite for expansion will miss the debate the lesson reconstructs.")
+
+# --------------------------------------------------- 3 · THE LESSON IN ONE SLIDE
+s = slide(NAVY)
+kicker(s, 'The lesson in one slide')
+text(s, 0.9, 1.28, 11.5, 1.0, 'Four motives, one case study, one rebuttal', size=42, color=CREAM, font='Georgia')
+rule(s, 0.92, 2.36)
+rows = [('A', 'A continent filled', 'The Census of 1890 and Turner on the closing frontier'),
+        ('B', 'Sea power and the new navy', 'Mahan joins production, shipping, and stations'),
+        ('C', 'More than the home market could buy', 'Surplus farms and factories, and the China market'),
+        ('D', 'A mission beyond the borders', 'Strong, the Anglo-Saxon claim, and a duty to govern'),
+        ('E', 'Hawaii', 'Sugar, Pearl Harbor, and the overthrow of a queen'),
+        ('F', 'Cuba', 'Reconcentration ninety miles from Florida'),
+        ('G', 'The critics', 'Schurz: trade without annexation')]
+yy = 2.66
+for n, t, d in rows:
+    text(s, 0.9, yy, 0.6, 0.6, n, size=21, color=RUST_LT, font='Georgia')
+    text(s, 1.6, yy + 0.02, 4.6, 0.6, t, size=18, color=CREAM, bold=True)
+    text(s, 6.35, yy + 0.04, 6.1, 0.6, d, size=15, color=POWDER)
+    yy += 0.62
+notes(s, "This is the map of the lesson, and it follows the guided notes section by section, so students can use the letters on screen to find their place in their notes all hour. We start with a report and an argument: the Census of 1890 declared the frontier line gone, and Turner explained what the frontier had done for the country. Sections B, C, and D then present three further motives in turn: Mahan's strategy of sea power, the search for markets for a surplus the home market could not buy, and the missionary claim of a duty to spread American institutions. Section E shows all the motives converging on one place, Hawaii, where they produced an overthrow and a stalled annexation. Section F supplies the emergency, Cuba, and section G gives the floor to the critics. Tell students the final table in their guided notes, The Motives at a Glance, asks them to rebuild exactly this map from memory.")
+
+# ------------------------------------------------- 4 · SECTION A DIVIDER
+divider_photo('chrisman-port.jpg', 'Section A', 'A Continent Filled',
+              ['For most of the century, expansion meant moving west.',
+               'By 1890, the Census said the line was gone.'],
+              "The photograph shows the four Chrisman sisters in front of their family's sod house in Custer County, Nebraska, photographed by Solomon D. Butcher. Two dates attach to this image, and students should hear both: the Library of Congress dates it to 1886, and the Wikimedia Commons file page dates it to 1887. The disagreement is printed in the student caption, and it is a useful early lesson in how archives describe the same object. The picture shows the world the Census Bureau was counting: isolated farmsteads scattered across a plains landscape that an earlier generation would have called frontier. Section A covers the moment that world was declared complete. The Superintendent of the Census reported in 1890 that settlement had broken into the unsettled area so thoroughly that a frontier line could hardly be said to exist. Turner then turned that dry report into the most famous historical argument of the decade.",
+              title_size=40)
+
+# ------------------------------------------------------ 5 · THE FRONTIER LINE FADES
+content_text('The frontier line fades',
+             ['Expansion west: settlers, soldiers, and railroads to the Pacific',
+              'Land taken from Native nations and from Mexico',
+              '1890: the Superintendent of the Census reports',
+              'Settlement so broken in, a frontier line could hardly be said to exist'],
+             "Set the baseline before the report lands. For most of the nineteenth century, American expansion meant moving west. Settlers, soldiers, and railroads carried the authority of the United States to the Pacific, taking land from Native nations and from Mexico as they went. Expansion was not new in the 1890s, and students should not treat it as a sudden invention. What changed was the supply of the thing being taken. By 1890 the Superintendent of the Census reported that settlement had so broken into the unsettled area that a frontier line could hardly be said to exist any longer. Read the phrasing carefully with students. The Census did not say the West was full, or that no unsettled land remained. It said the continuous line, the edge a mapmaker could draw between settled and unsettled country, had dissolved into isolated pockets. That narrower claim was enough to start an argument about what came next.",
+             kick='A · A continent filled')
+
+# ------------------------------------------------------ 6 · TURNER AND THE WIDER FIELD
+content_text('Turner and the wider field',
+             ['1893: Frederick Jackson Turner turns the report into an argument',
+              'Free land and a moving frontier explained American development',
+              'Frontier life produced energy, individualism, democratic habits',
+              'His warning: the first period of that history was over',
+              'His readers drew the conclusion: a wider field overseas'],
+             "In 1893 the historian Frederick Jackson Turner turned the Census report into an argument, and the guided notes name it directly. The frontier thesis is Frederick Jackson Turner's argument that free land and a moving frontier explained American development and shaped the national character. Unpack the character claim, because it carries the argument's force. Frontier life, Turner said, had produced the energy, individualism, and democratic habits Americans treated as their national traits. His closing sentence warned that the first period of that history was over. Then make the distinction the activity will test. Turner named no colony and proposed no annexation. Some listeners drew a conclusion he stated only in general terms: a people trained by movement would demand a wider field, and the wider field lay overseas. The overseas step belongs to his readers. Turner supplied the premise, and expansionists supplied the destination.",
+             kick='A · A continent filled', size=25)
+
+# ------------------------------------------------- 7 · SECTION B DIVIDER
+divider_photo('indiana-port.jpg', 'Section B', 'Sea Power and the New Navy',
+              ['Mahan gave the wider field a strategy.',
+               'Greatness, he argued, rested on the sea.'],
+              "The photograph shows the battleship USS Indiana underway in the summer of 1898, eight years after Congress authorized her. She was one of the first three American battleships, and she is the physical product of the argument this section presents. The policy behind the ship has its own vocabulary word. Navalism is the policy of making a powerful navy the foundation of national strength and overseas influence, and students will write that definition on the vocabulary slides. Captain Alfred Thayer Mahan supplied the policy's reasoning in The Influence of Sea Power Upon History, published in 1890, the same year as the Census report and the Naval Act. Hold the three 1890 dates together for students. In a single year, the frontier was declared closed, the strategy for overseas power was published, and the fleet that would carry it was authorized. Coincidence is not causation, and students should say so. The clustering is still the right place to begin.",
+              title_size=38)
+
+# ------------------------------------------------------ 8 · MAHAN'S THREE THINGS
+content_photo('mahan-port.jpg', "Mahan's three things",
+              ['Production at home',
+               'Shipping to carry products to distant markets',
+               'Colonies and naval stations to support the shipping',
+               'A country producing more than it consumed needed the sea',
+               'The sea, commanded by a battle fleet'],
+              "The portrait shows Alfred Thayer Mahan photographed about 1904 by J. E. Purdy of Boston, and its date needs saying plainly: it was made about fourteen years after his book appeared, so it is a portrait of the author, not an image of the 1890 debate. The argument itself joins three things together, and students should be able to list them in order. A nation needed production at home, shipping to carry its products to distant markets, and colonies and naval stations that supported the shipping. Remove any one leg and the structure falls: goods without ships sit in warehouses, ships without stations cannot stay on distant routes, and stations without trade behind them are expenses without a purpose. Mahan's summary claim was that a country that produced more than it consumed needed the sea, commanded by a battle fleet. That sentence quietly hands this section to section C, because surplus production is the market argument in uniform.",
+              kick='B · Sea power and the new navy', )
+
+# ------------------------------------------------------ 9 · COAL AND THE STEEL FLEET
+content_text('Coal and the steel fleet',
+             ['Steel warships burned coal, and carried only a limited supply',
+              'A coaling station: coal, water, and supplies on a long voyage',
+              'Stations along every route the fleet would travel',
+              'Naval Act of 1890: the first three American battleships',
+              'A steel fleet replacing the wooden navy'],
+             "This slide explains why a strategy book became a building program. Steel warships made stations necessary, because a steam fleet burned coal and carried only a limited supply. A coaling station is a port where steamships stop to load coal, water, and supplies on a long voyage, and the guided notes test that definition word for word. A fleet's range was set by the coal in its bunkers, so a navy without stations along a route could not stay on that route. Mahan therefore urged a modern navy and stations along the routes its ships would travel. Congress was already listening. The Naval Act of 1890 authorized the first three American battleships, and a steel fleet began to replace the wooden navy of an earlier era. Students should notice the direction of the logic: the ships came first in the argument, and the demand for overseas stations followed from the ships' fuel tanks.",
+             kick='B · Sea power and the new navy', size=25)
+
+# ------------------------------------------------- 10 · SECTION C DIVIDER
+divider_text('Section C', 'More Than the Home Market Could Buy',
+             'The economic argument began with surplus.',
+             "Pause here and name the shift in the lesson. Sections A and B were about space and strategy: a frontier closing and a fleet building. Section C is about goods. The economic argument began with surplus, the claim that American farms and factories had outgrown the American buyer. Whether the claim was fully accurate is a question students may raise, and it is a fair one: expansionists were advocates, not accountants, and their numbers served their conclusion. What is not in doubt is the argument's shape, because it appears in speeches, pamphlets, and party platforms across the decade. Production had risen. Prices had fallen. A severe depression began in 1893 and threw the problem into every household. The remedy the expansionists proposed was foreign demand, reached by sea, protected by warships, and supplied from stations along the route. Notice how each earlier section returns as a working part of this one.")
+
+# ------------------------------------------------------ 11 · THE SURPLUS PROBLEM
+content_text('The surplus problem',
+             ['Farms and factories outproduced the home buyer',
+              'More wheat, cotton, steel, and machinery than Americans could purchase',
+              'Depression from 1893: mills closed, prices fell',
+              'The expansionist remedy: sell abroad, or choke on what was made'],
+             "State the problem in the expansionists' own terms before judging it. Farms and factories now produced more wheat, cotton, steel, and machinery than American buyers could purchase. In the depression that began in 1893, mills closed and prices fell, and farmers, manufacturers, and merchants argued that the country had to sell abroad or choke on what it made. The vivid phrase belongs to the period's rhetoric, and students should hear it as rhetoric: a remedy presented as the only alternative to suffocation is an argument closing off debate, not conducting it. Still, the underlying condition was real. American productive capacity had grown enormously, farm prices had been falling for years, and the depression of the 1890s was the deepest the country had known. The question dividing Americans was not whether times were hard. It was whether foreign markets were the cure, and what the cure would cost in ships, stations, and eventually territory.",
+             kick='C · More than the home market could buy', size=25)
+
+# ------------------------------------------------------ 12 · CHINA AND BEVERIDGE
+content_text('China and Beveridge',
+             ['Asia drew the most attention',
+              'China: a market of hundreds of millions of customers',
+              'Even a small share of that trade: fortunes for American mills',
+              'The route required coaling stations and protecting warships',
+              'Beveridge, 1898: raising more than we can consume, making more than we can use'],
+             "Asia drew the most attention, and China drew the most within Asia. Americans spoke of China as a market of hundreds of millions of customers, an estimate of its population that made even a small share of its trade worth fortunes to American mills. Teach the arithmetic honestly: the figure measures people, not buyers, and converting population into customers was the expansionists' move, not a finding. Reaching that market required coaling stations on the route and warships to protect the trade, which is why an economic argument kept producing naval conclusions. Senator Albert Beveridge stated the case in 1898, and the guided notes ask students to complete his sentence. Americans, he said, were raising more than they could consume and making more than they could use, and therefore had to find new markets for their produce. The quick check quotes the sentence in full, including its closing call for new occupation for capital and new work for labor.",
+             kick='C · More than the home market could buy', size=24)
+
+# ------------------------------------------------- 13 · SECTION D DIVIDER
+divider_text('Section D', 'A Mission Beyond the Borders',
+             'Other Americans described expansion as a duty rather than a bargain.',
+             "The motives so far can be counted: miles of frontier, tons of coal, bushels and bales of surplus. Section D presents a motive that presented itself as above counting. Other Americans described expansion as a duty rather than a bargain. Protestant missionaries had sailed to Hawaii in 1820 and later to China and Japan, and missionary societies sent money and workers across the Pacific for decades before battleships followed. That chronology deserves emphasis. The missionary presence overseas was older than the steel navy, older than the surplus argument, and older than the closing of the frontier. The reading's closing claim for this section is the one students most need to examine: the missionary argument and the market argument pointed in the same direction, and each made the other easier to accept. A profitable expansion that was also a duty faced fewer questions than either a profitable expansion or a duty standing alone.")
+
+# ------------------------------------------------------ 14 · STRONG AND OUR COUNTRY
+content_text('Strong and Our Country',
+             ['Josiah Strong, minister, gave the argument its widest audience',
+              'Our Country, published in 1885',
+              'The Anglo-Saxon race represented two great ideas',
+              'Civil liberty, and a pure spiritual Christianity',
+              'God was training that race to spread its institutions over the earth'],
+             "The minister Josiah Strong gave the religious argument its widest audience. His book Our Country, published in 1885, taught that the Anglo-Saxon race represented two great ideas, civil liberty and a pure spiritual Christianity, and that God was training that race to spread its institutions over the earth. Present this material directly and without softening it, because students cannot evaluate an argument they are protected from hearing. Strong was writing for church readers, and his book began as a manual for the home missionary movement, the effort to send ministers and teachers into American towns. He extended the same duty overseas. Note the structure of the claim: a people is chosen, its institutions are identified with liberty and true religion, and expansion is reclassified as delivery. The activity's fourth station gives students Strong's own sentences, including his description of the remaining lands of the earth as unoccupied, and asks who that single word leaves out.",
+             kick='D · A mission beyond the borders', size=25)
+
+# ------------------------------------------------------ 15 · A DUTY TO GOVERN
+content_text('A duty to govern',
+             ['Writers ranked the peoples of the world',
+              'English speaking Protestants placed at the top',
+              'Stronger nations held a duty to govern peoples judged weaker',
+              'Expansion presented itself as service',
+              'Mission and market pointed in the same direction'],
+             "Strong expressed ideas about race that many white Americans shared, and this slide states them as the period held them. Writers ranked the peoples of the world, placed English speaking Protestants at the top, and concluded that stronger nations had a duty to govern peoples they judged weaker. The judging is the load bearing word. The peoples to be governed were not consulted, and their own institutions were discounted in advance by the ranking itself. Such ideas let expansion present itself as service. A taking that would otherwise need justification became, in this vocabulary, a gift delivered to its recipients. Close the section where the reading closes it. The missionary argument and the market argument pointed in the same direction, and each made the other easier to accept. Students should test that claim against Hawaii in the next section, where missionaries' descendants became the planters who profited from the treaties and led the overthrow.",
+             kick='D · A mission beyond the borders', size=25)
+
+# ------------------------------------------------- 16 · SECTION E DIVIDER
+divider_photo('honolulu-port.jpg', 'Section E', 'Hawaii',
+              ['The drive becomes a fact.',
+               'Sugar, a harbor, and a throne.'],
+              "The photograph shows American sailors and Marines from USS Philadelphia landing at Honolulu Harbor on August 12, 1898, for the ceremonies transferring Hawaii to the United States. Say the date and its position plainly, because the image is easy to misread: this is the outcome of the drive this section describes, not the drive itself. The landing came five years after the overthrow of the Hawaiian monarchy and weeks into a war with Spain that this lesson has not yet reached. The student caption states the distinction, and students should practice it. A photograph of a ceremony in 1898 cannot illustrate the motives of 1893, though it can prove where those motives ended. Section E slows the lesson down for one place, because Hawaii is where every motive in the lesson can be watched operating at once: missionaries and their planter descendants, a sugar treaty, a naval harbor, and a queen who tried to reverse the direction of events.",
+              title_size=54)
+
+# ------------------------------------------------------ 17 · SUGAR AND PEARL HARBOR
+content_text('Sugar and Pearl Harbor',
+             ['Missionaries arrived in 1820; their descendants became planters',
+              '1875: reciprocity treaty, Hawaiian sugar entered duty free',
+              '1887: renewal brought the exclusive right to Pearl Harbor',
+              'An American sugar field and coaling stop, still independent'],
+             "Hawaii showed where the arguments could lead, and its chronology rewards slow teaching. American missionaries had arrived in 1820; their descendants became sugar planters and advisers to the Hawaiian court. A reciprocity treaty in 1875 let Hawaiian sugar enter the United States duty free, tying the islands' economy to the American market. When the treaty was renewed in 1887, the United States gained the exclusive right to use Pearl Harbor as a naval station. The guided notes test both dates and both gains. The reading's summary sentence is the one to dwell on: the islands were becoming an American sugar field and coaling stop while remaining independent. Every element of the overseas program existed in Hawaii before annexation was achieved: trade preference, a harbor held by treaty, and an American community in place. What the annexationists still lacked was sovereignty, and the next slide shows how they reached for it in 1893.",
+             kick='E · Hawaii')
+
+# ------------------------------------------------------ 18 · THE OVERTHROW
+content_photo('liliuokalani-port.jpg', 'The overthrow of a queen',
+              ['Liliuokalani came to the throne in 1891',
+               'She moved to restore the authority of the monarchy',
+               'January 1893: a committee of businessmen overthrew her government',
+               'Backed by the American minister and troops from an American warship',
+               'Cleveland called the overthrow wrongful and withdrew the treaty'],
+              "The portrait shows Liliuokalani, the last sovereign of the Hawaiian Kingdom, photographed about 1891 by James J. Williams of Honolulu. Two disclosures belong with this image. The sheet carries her inscription to Josephus Daniels, signed in 1916, long after her overthrow, and the Commons file is a modern digital restoration of the Library of Congress print; both facts are stated in the student caption. The events themselves are stark. The queen came to the throne in 1891 and moved to restore the authority of the monarchy. In January 1893 a committee of American and European businessmen, backed by the American minister and by troops landed from an American warship, overthrew her government. The provisional government asked Washington for annexation, the formal act by which a country adds territory to itself. President Grover Cleveland investigated, concluded that the overthrow had been wrongful, and withdrew the annexation treaty. The planters declared a republic and waited. Hawaii therefore ends this lesson unresolved, which is the honest place to leave it.",
+              kick='E · Hawaii')
+
+# ------------------------------------------------- 19 · SECTION F DIVIDER
+divider_text('Section F', 'Cuba',
+             'Ninety miles from Florida, Cuba supplied the emergency.',
+             "Every motive in this lesson could have remained talk. Arguments about frontiers, fleets, markets, and missions filled magazines and sermons for a decade without adding an acre to the United States, and Hawaii's annexation had stalled in Washington since 1893. Section F presents the place that changed the tempo. Cuba lay close, was valuable, and was in revolt against a European empire whose response Americans could read about in their morning papers. The reading gives Cuba one short section, and its brevity is itself instructive: Cuba did not create the motives, and students should resist treating it as their cause. It supplied the emergency that let a decade of talk become a war, and war in 1898 would put territory in American hands. When students reach the next lesson, they will examine the war itself. Today, Cuba's role is narrower and more precise: it is the crisis that turned talk into action.")
+
+# ------------------------------------------------------ 20 · NINETY MILES STAT
+stat('90', 'miles from Florida to Cuba',
+     'An island in revolt, with American sugar investments on it, within sight of the American coast.',
+     "Dwell on the number, because proximity did argumentative work that no pamphlet could match. Cuba lay ninety miles from Florida. Students can hold that distance against their own geography: it is a short morning's sail, closer to the United States than many American cities are to each other. The island held sugar plantations in which Americans had invested heavily, so the revolt touched American property as well as American sympathy. It had also rebelled against Spanish rule before, which let American readers cast the new rising as a familiar story of a colony seeking independence from Europe. Proximity turned a foreign rebellion into a neighborhood emergency. What happened ninety miles away could be reported quickly, pictured vividly, and framed as unfinished American business. Keep the number attached to its evidence: distance, investment, and a prior history of revolt. Together they explain why Cuba, and not some more distant crisis, fixed American attention in 1895.",
+     kick='F · Cuba')
+
+# ------------------------------------------------------ 21 · RECONCENTRATION
+content_text('Reconcentration and the road to war',
+             ['1895: Cubans rose again against Spanish rule',
+              'Spain answered with reconcentration',
+              'Rural Cubans forced into guarded towns',
+              'Disease and hunger killed civilians in very large numbers',
+              'Newspapers printed shocking accounts; readers sympathized'],
+             "In 1895 Cubans rose again. Spain answered with a policy of reconcentration, forcing rural Cubans into guarded towns where disease and hunger killed civilians in very large numbers. American newspapers printed shocking accounts of the policy, and many readers sympathized with a rebellion against a European empire. The vocabulary word for the mood those accounts fed is jingoism: boastful and aggressive patriotism that urges war or expansion against other nations. Use the term carefully. Sympathy for reconcentration's victims was genuine, and the suffering was real. Jingoism names the further step, the conversion of sympathy into a demand for war as proof of national vigor. The guided notes end this section on the causal claim students must be able to make: Cuba turned a decade of talk toward war, and war in 1898 would put territory in American hands. The war itself, and the argument over the territory, belong to the next two lessons.",
+             kick='F · Cuba', size=25)
+
+# ------------------------------------------------- 22 · SECTION G DIVIDER
+divider_photo('schurz-port.jpg', 'Section G', 'The Critics',
+              ['Expansion was an argument Americans made to each other.',
+               'In the 1890s, the argument was still open.'],
+              "The portrait shows Carl Schurz in an illustration published in Harper's Weekly on April 4, 1891, two years before the essay this section presents. Schurz was the critics' most prominent voice in 1893: a former senator, a former secretary of the interior, and a German immigrant who had fled a failed revolution in Europe, which gave his warnings about republics and empires a biographical edge students may find worth a sentence. The reading closes with the opposition, and the deck follows it, because an answer to the lesson question that lists only the expansionists' motives tells half the story. None of this went unopposed. Opponents did not agree with each other, and their reasons ranged from constitutional principle to wage protection to racial exclusion, a mixture students should describe accurately rather than admire or condemn as a bloc. Section G sorts the objections into their distinct claims.",
+              title_size=44)
+
+# ------------------------------------------------------ 23 · THE CASE AGAINST ANNEXATION
+content_text('The case against annexation',
+             ['Schurz, 1893: trade with the tropics without annexing anything',
+              'Colonies would burden the republic with large armaments',
+              'Taking tropical peoples in would damage its institutions',
+              'Labor: colonial goods and labor would undercut American wages',
+              'Rule without consent contradicted the Declaration of Independence'],
+             "Carl Schurz warned in 1893 that Americans could trade with the tropics without annexing anything. Taking tropical peoples into the Union, he argued, would burden the republic with large armaments and damage its institutions. The activity's fifth station gives students his own list of what trade already provided: plantations, business houses, railroads, and mines, all held without sovereignty. Labor leaders made a different objection. They feared that colonial goods and labor would undercut American wages. Other opponents objected that governing people without their consent contradicted the Declaration of Independence. A further objection must be recorded plainly, because the reading records it: some opposed annexation because they did not want island peoples admitted to citizenship. Students should also learn the middle category the vocabulary list defines. A protectorate, a territory controlled and protected by a stronger nation, offered control without annexation, and later lessons will show the United States choosing exactly that form for Cuba.",
+             kick='G · The critics', size=24)
+
+# ------------------------------------------------------ 24 · THE MOTIVES AT A GLANCE
+s = slide(NAVY)
+kicker(s, 'The motives at a glance')
+text(s, 0.9, 1.28, 11.5, 1.0, 'Four motives and the rebuttal', size=42, color=CREAM, font='Georgia')
+rule(s, 0.92, 2.36)
+rows = [('The wider field', 'The frontier formed the national character, and its closing called for a new field', 'Turner, from the Census of 1890'),
+        ('Sea power', 'Production, shipping, and stations joined by a battle fleet', 'Mahan; the Naval Act of 1890'),
+        ('Markets', 'A surplus the home market could not buy', 'Beveridge, 1898; the China trade'),
+        ('Mission', 'Liberty and Christianity carried to peoples judged weaker', 'Strong, Our Country, 1885'),
+        ('The critics', 'Trade without annexation; no rule without consent', 'Schurz, 1893; labor; the Declaration')]
+yy = 2.70
+for t, d, why in rows:
+    text(s, 0.9, yy, 2.9, 0.7, t, size=21, color=CREAM, font='Georgia')
+    text(s, 3.95, yy + 0.04, 4.9, 0.9, d, size=15, color=POWDER, leading=1.2)
+    text(s, 9.0, yy + 0.04, 3.45, 0.9, why, size=15, color=POWDER, leading=1.2)
+    yy += 0.88
+notes(s, "This slide mirrors the final table in the guided notes, The Motives at a Glance, and students should complete that table now, from memory where they can and from the lesson where they must. The four motive rows are the lesson's claims. The wider field: the frontier made the American character, and its closing called for a new field overseas. Sea power: production, shipping, and stations joined by a battle fleet, calling for a steel navy and coaling stations on world routes. Markets: a surplus the home market could not buy, calling for foreign markets, above all in China. Mission: Anglo-Saxons represented liberty and Christianity and were trained to spread their institutions, which called for governing peoples judged weaker. The fifth row is the rebuttal, and it belongs in the table by design: trade did not require annexation, rule required consent, and colonies meant large armaments. Grade the table generously on wording and strictly on pairing: each claim must sit beside the person or group who actually argued it.")
+
+# ------------------------------------------------------ 25 · VOCAB A
+vocab('Words for power and the fleet',
+      [('imperialism', "a policy of extending a nation's power by taking territory or control over other peoples and lands"),
+       ('navalism', 'the policy of making a powerful navy the foundation of national strength and overseas influence'),
+       ('coaling station', 'a port where steamships stop to load coal, water, and supplies on a long voyage'),
+       ('annexation', 'the formal act by which a country adds territory to itself')],
+      "These definitions match the guided notes word for word, and students should copy them exactly, because the unit test draws on them. Imperialism: a policy of extending a nation's power by taking territory or control over other peoples and lands. Note the reach of the definition: control counts, with or without a flag transfer. Navalism: the policy of making a powerful navy the foundation of national strength and overseas influence. Foundation is the load bearing word; Mahan made the fleet the base on which the rest of the program stood. A coaling station: a port where steamships stop to load coal, water, and supplies on a long voyage. The definition is logistical, and deliberately so. Annexation: the formal act by which a country adds territory to itself. Formal is the precision here; an overthrow is not an annexation until a government completes the act.")
+
+# ------------------------------------------------------ 26 · VOCAB B
+vocab('Words for the argument and its forms',
+      [('jingoism', 'boastful and aggressive patriotism that urges war or expansion against other nations'),
+       ('frontier thesis', "Frederick Jackson Turner's argument that free land and a moving frontier explained American development and shaped the national character"),
+       ('protectorate', 'a territory controlled and protected by a stronger nation')],
+      "Three more terms, again matching the guided notes exactly. Jingoism: boastful and aggressive patriotism that urges war or expansion against other nations. The definition names a tone as much as a position; a student can favor expansion without jingoism, and the word exists to mark the difference. The frontier thesis: Frederick Jackson Turner's argument that free land and a moving frontier explained American development and shaped the national character. Students should attach the thesis to its evidence, the Census report of 1890, and remember that Turner himself proposed no colony. A protectorate: a territory controlled and protected by a stronger nation. Set this definition beside annexation from the previous slide. Annexation adds territory to the stronger nation itself. A protectorate leaves the territory formally separate while the stronger nation controls and protects it, a distinction the rest of this unit will use repeatedly.")
+
+# ------------------------------------------------------ 27 · CLOSING
+s = slide(NAVY)
+kicker(s, 'Now your turn')
+text(s, 0.9, 1.35, 11.5, 1.1, 'Answer the question', size=44, color=CREAM, font='Georgia')
+rule(s, 0.92, 2.62)
+text(s, 0.9, 2.95, 11.3, 1.4,
+     ['Why did the United States look overseas for territory, markets, and influence in the 1890s? Build the answer from motives, and answer the critics.'],
+     size=23, color=POWDER, leading=1.3)
+rows = [('Activity', 'Motive Stations: five sources, four motives ranked, one rebuttal answered'),
+        ('Notebook', 'Notebook page: rebuild the motives at a glance in your own words'),
+        ('Quick check', 'The Queen and the Argument: Liliuokalani and the annexation debate'),
+        ('Writing', 'Why the Turn Overseas: the lesson question as an essay')]
+yy = 4.15
+for t, d in rows:
+    text(s, 0.9, yy, 2.2, 0.6, t, size=19, color=RUST_LT, bold=True)
+    text(s, 3.2, yy, 8.9, 0.6, d, size=18, color=CREAM)
+    yy += 0.62
+text(s, 0.9, 6.85, 11.5, 0.5, 'Exit ticket: why the Census report of 1890 counted, two motives with their advocates, and the lesson question in two or three sentences.',
+     size=15, color=POWDER)
+notes(s, "Close by returning to the lesson question and handing the lesson to the work. The activity, Motive Stations, runs five sources: Mahan on sea power, Turner on the wider field, the Pacific stations the United States already held by treaty, Strong on the mission, and Schurz against the whole program. Students rank the four expansion motives by the strength of the evidence at the stations, then answer Schurz directly, which is the ranking task's real test. The notebook page asks them to rebuild the motives at a glance themselves. The quick check, The Queen and the Argument, tests Hawaii and the annexation debate through Liliuokalani. The writing task, Why the Turn Overseas, turns the lesson question into an essay. The strongest essays will combine at least three motives with accurate facts and name the strongest objection in its own terms. The exit ticket has three parts: why the Census report of 1890 counted, two motives correctly paired with the person or group who argued each, and the lesson question answered in two or three sentences with one objection named. Next lesson takes up the war that Cuba set off.")
+
+dc.save(OUT)
