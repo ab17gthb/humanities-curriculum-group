@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<title>Unit Test: World War II</title>
+<style>
+@page { size: letter; margin: 0.55in 0.75in 0.7in; }
+* { box-sizing: border-box; }
+body { font-family: Arial, Helvetica, sans-serif; font-size: 11.5pt; color: #000; line-height: 1.35; margin: 0; }
+.nameline { display: flex; justify-content: space-between; gap: 1em; }
+h1 { font-size: 19pt; margin: 12pt 0 4pt; line-height: 1.2; }
+h2 { font-size: 14.5pt; margin: 16pt 0 6pt; }
+h3 { font-size: 12.5pt; margin: 14pt 0 4pt; break-after: avoid; }
+p { margin: 0 0 7pt; }
+.directions { margin-bottom: 4pt; }
+.q { margin: 10pt 0 0; }
+.qa { break-inside: avoid; }
+.sp-a { height: 0.8in; }
+.sp-b { height: 1.3in; }
+.opts { margin: 2pt 0 0 16pt; }
+.opts span { display: block; }
+table.match { border-collapse: collapse; width: 100%; margin: 4pt 0 10pt; }
+table.match td { padding: 3.5pt 6pt; font-size: 11.5pt; vertical-align: top; }
+table.match td.n { width: 4%; }
+table.match td.t { width: 30%; }
+.source { border: 1.5px solid #000; padding: 8pt 11pt; margin: 8pt 0; break-inside: avoid; }
+.source .srclabel { font-weight: bold; margin-bottom: 4pt; }
+.source img { display: block; max-width: 3.4in; max-height: 3.2in; margin: 2pt auto 4pt; }
+.caption { font-size: 9pt; font-style: italic; text-align: center; margin: 0 0 2pt; }
+.key { break-before: page; }
+.key h2:first-child { margin-top: 0; }
+.brandmark { margin: 0 0 4pt; line-height: 0; } .brandmark img { width: 1.35in; }
+</style></head><body>
+<p class="brandmark"><img src="../../assets/hcg-logo/hcg-wordmark.svg" alt="Humanities Curriculum Group"></p>
+<div class="nameline"><span>Name ______________________</span><span>Date ______________</span><span>Period __________</span></div>
+<h1>Unit Test: World War II</h1>
+<p class="directions"><strong>Total: 50 points.</strong> Part 1 is worth 15 points, Part 2 is worth 20 points, Part 3 is worth 15 points. Write answers on this test. For Part 3, answer in complete sentences and cite the sources by letter.</p>
+<h2>Part 1: Matching (15 points)</h2>
+<p>Match each term to its description. Each description is used once.</p>
+<table class="match">
+<tr><td class="n">___</td><td class="t">1. Neutrality Acts</td><td>A. the Allied strategy of concentrating the main effort on defeating Germany before Japan, agreed by the American and British staffs and kept through the war</td></tr>
+<tr><td class="n">___</td><td class="t">2. Atlantic Charter</td><td>B. President Roosevelt's order of February 19, 1942 authorizing the military to exclude people from areas of the West Coast, the order under which Japanese Americans were removed from their homes</td></tr>
+<tr><td class="n">___</td><td class="t">3. Pearl Harbor</td><td>C. the laws passed by Congress in the 1930s that barred arms sales and loans to nations at war, written to keep the United States out of another world war</td></tr>
+<tr><td class="n">___</td><td class="t">4. Germany first</td><td>D. June 6, 1944, the day Allied forces landed in Normandy, France, in the largest seaborne invasion in history</td></tr>
+<tr><td class="n">___</td><td class="t">5. mobilization</td><td>E. the secret American program that built the first atomic bombs, employing more than 100,000 people at sites across the country</td></tr>
+<tr><td class="n">___</td><td class="t">6. rationing</td><td>F. a system limiting how much of a scarce good each person may buy, enforced with coupons or ration stamps</td></tr>
+<tr><td class="n">___</td><td class="t">7. strategic bombing</td><td>G. the bombing of cities with incendiary weapons designed to start mass fires</td></tr>
+<tr><td class="n">___</td><td class="t">8. D-Day</td><td>H. the joint statement of aims issued by Roosevelt and Churchill in August 1941, pledging self-determination for peoples, freer trade, and freedom of the seas</td></tr>
+<tr><td class="n">___</td><td class="t">9. Battle of Midway</td><td>I. the Nazi program to murder every Jew in Europe, carried out by shooting units, deportations, and killing centers from 1941 to 1945</td></tr>
+<tr><td class="n">___</td><td class="t">10. firebombing</td><td>J. the use of heavy bombers against an enemy's industry, transportation, and cities, aiming to break its capacity and will to make war</td></tr>
+<tr><td class="n">___</td><td class="t">11. Double V campaign</td><td>K. the United States naval base in Hawaii attacked by Japanese carrier aircraft on December 7, 1941, the attack that brought the United States into the Second World War</td></tr>
+<tr><td class="n">___</td><td class="t">12. Executive Order 9066</td><td>L. the campaign led by Black newspapers from 1942 for victory over fascism abroad and victory over racism at home</td></tr>
+<tr><td class="n">___</td><td class="t">13. Final Solution</td><td>M. the process of preparing a nation's armed forces, industry, and economy for war</td></tr>
+<tr><td class="n">___</td><td class="t">14. war crimes</td><td>N. violations of the laws of war, such as the murder of prisoners and civilians, for which individuals were tried after the war</td></tr>
+<tr><td class="n">___</td><td class="t">15. Manhattan Project</td><td>O. the naval battle of June 1942 in which American carrier aircraft sank four Japanese carriers and ended Japan's ability to take the offensive in the Pacific</td></tr>
+</table>
+<h2>Part 2: Multiple Choice (20 points)</h2>
+<p>Choose the best answer for each question.</p>
+<div class="qa"><p class="q"><strong>1.</strong> The Neutrality Acts of 1935 to 1937 were written chiefly to</p><p class="opts">
+<span>A. prepare American industry for war production</span>
+<span>B. keep the United States out of another world war by barring arms sales and loans to nations at war</span>
+<span>C. punish Japan for its invasion of China</span>
+<span>D. fund the British and French war efforts</span>
+</p></div>
+<div class="qa"><p class="q"><strong>2.</strong> The Lend-Lease law of March 1941 changed American policy by</p><p class="opts">
+<span>A. declaring war on Germany</span>
+<span>B. letting the president lend or lease arms to any country whose defense he judged vital to the United States</span>
+<span>C. repealing the peacetime draft</span>
+<span>D. placing American convoys under British command</span>
+</p></div>
+<div class="qa"><p class="q"><strong>3.</strong> The Japanese attack of December 7, 1941 fell on</p><p class="opts">
+<span>A. San Francisco and the Panama Canal</span>
+<span>B. the Pacific Fleet at Pearl Harbor and American positions across the Pacific</span>
+<span>C. the Philippines only</span>
+<span>D. British Malaya only</span>
+</p></div>
+<div class="qa"><p class="q"><strong>4.</strong> The Germany first strategy meant that the Allies would</p><p class="opts">
+<span>A. fight Japan only after the Soviet Union joined the Pacific war</span>
+<span>B. concentrate the main effort on defeating Germany while holding against Japan</span>
+<span>C. invade France in the spring of 1942</span>
+<span>D. leave the Pacific entirely to the Navy</span>
+</p></div>
+<div class="qa"><p class="q"><strong>5.</strong> The Selective Training and Service Act of 1940 was significant because it</p><p class="opts">
+<span>A. ended the Depression by itself</span>
+<span>B. created the first peacetime draft in American history</span>
+<span>C. integrated the armed forces</span>
+<span>D. gave the president power to set prices</span>
+</p></div>
+<div class="qa"><p class="q"><strong>6.</strong> The Office of Price Administration ran which pair of home front systems?</p><p class="opts">
+<span>A. the draft and war bond sales</span>
+<span>B. price ceilings and rationing</span>
+<span>C. censorship and propaganda</span>
+<span>D. war housing and shipbuilding</span>
+</p></div>
+<div class="qa"><p class="q"><strong>7.</strong> Operation Torch, the first major American ground campaign of the European war, landed American and British forces in</p><p class="opts">
+<span>A. Normandy</span>
+<span>B. Sicily</span>
+<span>C. North Africa</span>
+<span>D. Norway</span>
+</p></div>
+<div class="qa"><p class="q"><strong>8.</strong> The Battle of the Bulge in December 1944 was</p><p class="opts">
+<span>A. the first Allied landing in France</span>
+<span>B. Germany's last major offensive in the west, beaten back by February 1945</span>
+<span>C. the Soviet capture of Berlin</span>
+<span>D. the heaviest bombing raid of the war</span>
+</p></div>
+<div class="qa"><p class="q"><strong>9.</strong> The Battle of Midway turned the Pacific war chiefly because</p><p class="opts">
+<span>A. American submarines cut Japan's oil supply</span>
+<span>B. American carrier aircraft sank four Japanese carriers, ending Japan's ability to take the offensive</span>
+<span>C. Marines captured the first Japanese airfield</span>
+<span>D. the Soviet Union entered the war against Japan</span>
+</p></div>
+<div class="qa"><p class="q"><strong>10.</strong> Iwo Jima and Okinawa mattered to the summer of 1945 chiefly because</p><p class="opts">
+<span>A. they ended the submarine blockade</span>
+<span>B. their cost in American and civilian dead was read as a preview of invading Japan itself</span>
+<span>C. they brought the Soviet Union into the Pacific war</span>
+<span>D. they captured Japan's remaining aircraft carriers</span>
+</p></div>
+<div class="qa"><p class="q"><strong>11.</strong> Executive Order 8802, issued in June 1941, barred</p><p class="opts">
+<span>A. Japanese Americans from the West Coast</span>
+<span>B. racial discrimination in defense industries and federal employment</span>
+<span>C. women from factory work</span>
+<span>D. strikes in war plants</span>
+</p></div>
+<div class="qa"><p class="q"><strong>12.</strong> In Korematsu v. United States (1944), the Supreme Court</p><p class="opts">
+<span>A. ordered the camps closed at once</span>
+<span>B. struck down Executive Order 9066</span>
+<span>C. upheld the exclusion of Japanese Americans from the West Coast as a military necessity</span>
+<span>D. ruled that citizens could never be detained</span>
+</p></div>
+<div class="qa"><p class="q"><strong>13.</strong> The Nuremberg Laws of 1935</p><p class="opts">
+<span>A. created the ghettos of occupied Poland</span>
+<span>B. stripped Jews of German citizenship and forbade marriage between Jews and non-Jewish Germans</span>
+<span>C. ordered the building of the death camps</span>
+<span>D. set the quotas for Jewish refugees to the United States</span>
+</p></div>
+<div class="qa"><p class="q"><strong>14.</strong> Eisenhower's order after visiting the Ohrdruf camp in April 1945 required that the camp be</p><p class="opts">
+<span>A. kept secret until after the trials</span>
+<span>B. documented and witnessed by soldiers, journalists, and officials</span>
+<span>C. burned to prevent disease</span>
+<span>D. handed to the Soviet army</span>
+</p></div>
+<div class="qa"><p class="q"><strong>15.</strong> The Potsdam Declaration of July 26, 1945 demanded</p><p class="opts">
+<span>A. a negotiated peace preserving the Japanese government unchanged</span>
+<span>B. Japan's unconditional surrender, warning of prompt and utter destruction if Japan refused</span>
+<span>C. the division of Japan between the United States and the Soviet Union</span>
+<span>D. an immediate Allied invasion of the home islands</span>
+</p></div>
+<div class="qa"><p class="q"><strong>16.</strong> The isolationist case against aiding Britain, made by the America First Committee, argued that</p><p class="opts">
+<span>A. Britain had already lost and aid was wasted</span>
+<span>B. the United States should build its own defenses at home and stay out of Europe's war</span>
+<span>C. Germany posed no threat to any country</span>
+<span>D. the president had no power over foreign trade</span>
+</p></div>
+<div class="qa"><p class="q"><strong>17.</strong> Which figure best states the scale of American mobilization by 1945?</p><p class="opts">
+<span>A. about 2 million in uniform and unemployment near 10 percent</span>
+<span>B. more than 12 million in uniform and unemployment near one percent</span>
+<span>C. about 6 million in uniform and aircraft production of 30,000 across the war</span>
+<span>D. more than 12 million in uniform and no rationing of any good</span>
+</p></div>
+<div class="qa"><p class="q"><strong>18.</strong> Island hopping, the Allied Pacific strategy, worked by</p><p class="opts">
+<span>A. capturing every Japanese-held island in order</span>
+<span>B. seizing selected islands for airfields while bypassing strong garrisons and cutting them off from supply</span>
+<span>C. landing directly on Japan from Hawaii</span>
+<span>D. relying on submarines alone to starve Japan</span>
+</p></div>
+<div class="qa"><p class="q"><strong>19.</strong> The Double V campaign of the Black press demanded victory over</p><p class="opts">
+<span>A. Germany and Japan</span>
+<span>B. fascism abroad and racism at home</span>
+<span>C. the draft and rationing</span>
+<span>D. the Soviet Union and Germany</span>
+</p></div>
+<div class="qa"><p class="q"><strong>20.</strong> The clearest measure of the war's worldwide cost is that</p><p class="opts">
+<span>A. American deaths were the largest of any nation</span>
+<span>B. worldwide deaths are estimated between 60 and 85 million, with the Soviet Union's share the largest</span>
+<span>C. no European city survived undamaged</span>
+<span>D. Japan and Germany lost equal numbers</span>
+</p></div>
+<h2>Part 3: Sources (15 points)</h2>
+<p>Answer each question in complete sentences, citing the sources by letter.</p>
+<div class="source"><p class="srclabel">Source A</p>
+<p>President Franklin D. Roosevelt, address to Congress asking for a declaration of war against Japan, December 8, 1941. From the transcript held by the Franklin D. Roosevelt Presidential Library and Museum. Cuts are marked with ellipses.</p>
+<p>&ldquo;The United States was at peace with that Nation and, at the solicitation of Japan, was still in conversation with its Government and its Emperor looking toward the maintenance of peace in the Pacific. . . . It will be recorded that the distance of Hawaii from Japan makes it obvious that the attack was deliberately planned many days or even weeks ago. During the intervening time, the Japanese Government has deliberately sought to deceive the United States by false statements and expressions of hope for continued peace. . . . I ask that the Congress declare that since the unprovoked and dastardly attack by Japan on Sunday, December 7, 1941, a state of war has existed between the United States and the Japanese Empire.&rdquo;</p></div>
+<div class="qa"><p class="q"><strong>A1. (2 points)</strong> According to Roosevelt, what two facts show that the attack was planned in advance and that the peace talks were used as cover?</p><div class="sp-a"></div></div>
+<div class="qa"><p class="q"><strong>A2. (3 points)</strong> Roosevelt delivered this address one day after the attack. Using the source and the lesson, explain what the address and the vote that followed settled, and name one question about the war they did not settle.</p><div class="sp-b"></div></div>
+<div class="source"><p class="srclabel">Source B</p>
+<p>Executive Order 9066, February 19, 1942. From the Federal Register, volume 7, page 1407. A cut is marked with an ellipsis.</p>
+<p>&ldquo;I hereby authorize and direct the Secretary of War, and the Military Commanders whom he may from time to time designate, whenever he or any designated Military Commander deems such action necessary or desirable, to prescribe military areas in such places and of such extent as he or the appropriate Military Commander may determine, from which any or all persons may be excluded, and with respect to which, the right of any person to enter, remain in, or leave shall be subject to whatever restrictions the Secretary of War or the appropriate Military Commander may impose in his discretion.&rdquo;</p></div>
+<div class="qa"><p class="q"><strong>B1. (2 points)</strong> State in your own words what power this order gives to military commanders, and over whom it can be used.</p><div class="sp-a"></div></div>
+<div class="qa"><p class="q"><strong>B2. (3 points)</strong> The order names no ethnic or national group. Explain how it nonetheless became the legal basis for removing one group from the West Coast, and state two facts about the people removed that the order itself does not mention.</p><div class="sp-b"></div></div>
+<div class="source"><p class="srclabel">Source C</p>
+<img src="into-the-jaws-of-death-1944.jpg" alt="Into the Jaws of Death photograph">
+<p class="caption">Robert F. Sargent, United States Coast Guard, photograph of troops of the First Division disembarking from a Coast Guard landing craft at Utah Beach, Normandy, the morning of June 6, 1944. National Archives.</p>
+<p>Sargent, a chief photographer's mate, took this picture from the landing craft as the troops went down the ramp into the water. The Coast Guard and the Army Signal Corps photographed the invasion throughout the day, and newspapers printed their pictures across the country within days.</p></div>
+<div class="qa"><p class="q"><strong>C1. (2 points)</strong> What is happening in the photograph, and where and when was it taken? Answer from the caption and the image.</p><div class="sp-a"></div></div>
+<div class="qa"><p class="q"><strong>C2. (3 points)</strong> This photograph was made by a serviceman on duty and printed in newspapers within days. What does its existence show about how the government documented and presented the war to the home front, and what does the photograph not show about June 6, 1944?</p><div class="sp-b"></div></div>
+<div class="key"><h2>Teacher Answer Key</h2>
+<h3>Part 1: Matching</h3>
+<p><strong>1. Neutrality Acts: C</strong> (Blueprint 1)</p>
+<p><strong>2. Atlantic Charter: H</strong> (Blueprint 2)</p>
+<p><strong>3. Pearl Harbor: K</strong> (Blueprint 3)</p>
+<p><strong>4. Germany first: A</strong> (Blueprint 4)</p>
+<p><strong>5. mobilization: M</strong> (Blueprint 5)</p>
+<p><strong>6. rationing: F</strong> (Blueprint 6)</p>
+<p><strong>7. strategic bombing: J</strong> (Blueprint 7)</p>
+<p><strong>8. D-Day: D</strong> (Blueprint 8)</p>
+<p><strong>9. Battle of Midway: O</strong> (Blueprint 9)</p>
+<p><strong>10. firebombing: G</strong> (Blueprint 10)</p>
+<p><strong>11. Double V campaign: L</strong> (Blueprint 11)</p>
+<p><strong>12. Executive Order 9066: B</strong> (Blueprint 12)</p>
+<p><strong>13. Final Solution: I</strong> (Blueprint 13)</p>
+<p><strong>14. war crimes: N</strong> (Blueprint 14)</p>
+<p><strong>15. Manhattan Project: E</strong> (Blueprint 15)</p>
+<h3>Part 2: Multiple Choice</h3>
+<p><strong>1. B</strong> (Blueprint 1)</p>
+<p><strong>2. B</strong> (Blueprint 2)</p>
+<p><strong>3. B</strong> (Blueprint 3)</p>
+<p><strong>4. B</strong> (Blueprint 4)</p>
+<p><strong>5. B</strong> (Blueprint 5)</p>
+<p><strong>6. B</strong> (Blueprint 6)</p>
+<p><strong>7. C</strong> (Blueprint 7)</p>
+<p><strong>8. B</strong> (Blueprint 8)</p>
+<p><strong>9. B</strong> (Blueprint 9)</p>
+<p><strong>10. B</strong> (Blueprint 10)</p>
+<p><strong>11. B</strong> (Blueprint 11)</p>
+<p><strong>12. C</strong> (Blueprint 12)</p>
+<p><strong>13. B</strong> (Blueprint 13)</p>
+<p><strong>14. B</strong> (Blueprint 14)</p>
+<p><strong>15. B</strong> (Blueprint 15)</p>
+<p><strong>16. B</strong> (Blueprint 1)</p>
+<p><strong>17. B</strong> (Blueprint 5)</p>
+<p><strong>18. B</strong> (Blueprint 9)</p>
+<p><strong>19. B</strong> (Blueprint 11)</p>
+<p><strong>20. B</strong> (Blueprint 15)</p>
+<h3>Part 3: Sources</h3>
+<p><strong>A1.</strong> The distance of Hawaii from Japan makes it obvious the attack was planned many days or weeks in advance, since the carriers had to sail that distance in secret. During the same period the Japanese government continued peace conversations and delivered expressions of hope for peace, which Roosevelt names as deliberate deception. Either fact earns a point; both together earn full credit. (Blueprint 3)</p>
+<p><strong>A2.</strong> The address and the nearly unanimous votes (one dissent in the House) settled that the United States was at war and ended the neutrality debate of 1935 to 1941 in a day; the country entered the war formally and united, unlike 1917. Not settled, any one of: how to fight a two-ocean war against three enemies, whether Germany or Japan came first (settled by agreement and by Germany's own declaration on December 11), or how the arsenal would be built. Answers must tie the settlement to the source's request for a declaration. (Blueprint 3)</p>
+<p><strong>B1.</strong> The order lets the Secretary of War and designated military commanders create military areas of any size they choose and exclude any or all persons from them, controlling who may enter, remain in, or leave, at the commander's discretion. The power runs over any persons, citizens included; the order sets no limit by citizenship or by charge. (Blueprint 12)</p>
+<p><strong>B2.</strong> The Western Defense Command used the order to issue exclusion orders directed in practice at all persons of Japanese ancestry on the West Coast, so a facially general power was applied to one ancestry group. Facts the order does not mention, any two: about 120,000 people were removed; two thirds of them were American citizens; they were sent to guarded camps in the interior for much of the war; families lost homes, businesses, and property sold in haste; no individual hearings or charges were held. (Blueprint 12)</p>
+<p><strong>C1.</strong> American troops of the First Division are disembarking from a Coast Guard landing craft, down its ramp into the sea, at Utah Beach, Normandy, on the morning of June 6, 1944, D-Day. The caption supplies the place and date; the image shows the ramp, the water, and the troops in full kit moving toward the beach. (Blueprint 7)</p>
+<p><strong>C2.</strong> The government put its own photographers in the first waves and released their pictures to newspapers within days, so documenting the invasion was official business and the home front saw the war largely through government images. The photograph does not show the cost or the scale of the day: the casualties on the beaches, the four other landing beaches, the airborne drops inland, or the thousands of ships behind the one craft in the frame. Full credit requires one point of each kind. (Blueprint 7)</p>
+</div></body></html>
