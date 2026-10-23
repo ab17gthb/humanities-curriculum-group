@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<title>Unit Test: Jackson and Reform</title>
+<style>
+@page { size: letter; margin: 0.55in 0.75in 0.7in; }
+* { box-sizing: border-box; }
+body { font-family: Arial, Helvetica, sans-serif; font-size: 11.5pt; color: #000; line-height: 1.35; margin: 0; }
+.nameline { display: flex; justify-content: space-between; gap: 1em; }
+h1 { font-size: 19pt; margin: 12pt 0 4pt; line-height: 1.2; }
+h2 { font-size: 14.5pt; margin: 16pt 0 6pt; }
+h3 { font-size: 12.5pt; margin: 14pt 0 4pt; break-after: avoid; }
+p { margin: 0 0 7pt; }
+.directions { margin-bottom: 4pt; }
+.q { margin: 10pt 0 0; }
+.qa { break-inside: avoid; }
+.sp-a { height: 0.8in; }
+.sp-b { height: 1.3in; }
+.sp-c { height: 7.3in; }
+.essay { break-before: page; }
+.essay h2:first-child { margin-top: 0; }
+.opts { margin: 2pt 0 0 16pt; }
+.opts span { display: block; }
+table.match { border-collapse: collapse; width: 100%; margin: 4pt 0 10pt; }
+table.match td { padding: 3.5pt 6pt; font-size: 11.5pt; vertical-align: top; }
+table.match td.n { width: 4%; }
+table.match td.t { width: 30%; }
+.source { border: 1.5px solid #000; padding: 8pt 11pt; margin: 8pt 0; break-inside: avoid; }
+.source .srclabel { font-weight: bold; margin-bottom: 4pt; }
+.source img { display: block; max-width: 3.4in; max-height: 3.2in; margin: 2pt auto 4pt; }
+.caption { font-size: 9pt; font-style: italic; text-align: center; margin: 0 0 2pt; }
+.key { break-before: page; }
+.key h2:first-child { margin-top: 0; }
+.brandmark { margin: 0 0 4pt; line-height: 0; } .brandmark img { width: 1.35in; }
+</style></head><body>
+<p class="brandmark"><img src="../../assets/hcg-logo/hcg-wordmark.svg" alt="Humanities Curriculum Group"></p>
+<div class="nameline"><span>Name ______________________</span><span>Date ______________</span><span>Period __________</span></div>
+<h1>Unit Test: Jackson and Reform</h1>
+<p class="directions"><strong>Total: 50 points.</strong> Part A is worth 15 points, Part B is worth 20 points, Part C is worth 10 points, Part D is worth 5 points. Write answers on this test. For Part C, answer in complete sentences and cite the sources by letter. For Part D, choose one prompt and write a complete essay.</p>
+<h2>Part A: Matching (15 points)</h2>
+<p>Match each term to its description. Each description is used once.</p>
+<table class="match">
+<tr><td class="n">___</td><td class="t">1. Jacksonian democracy</td><td>A. the evangelical revival that swept the United States from the turn of the century into the 1840s, carried by camp meetings and itinerant preachers, which taught that every person could choose salvation and sent millions of converts toward the work of reforming society as well as themselves</td></tr>
+<tr><td class="n">___</td><td class="t">2. suffrage</td><td>B. the forced removal of the Cherokee in 1838 and 1839, when some sixteen thousand people were rounded up, held in camps, and marched west in detachments through the winter, roughly a quarter of them dying on the road, and the name memory has extended to all the southeastern removals</td></tr>
+<tr><td class="n">___</td><td class="t">3. Indian Removal Act</td><td>C. the rule by which the House of Representatives from 1836 to 1844 tabled every antislavery petition without printing, reading, or debate, which former president John Quincy Adams, serving in the House, fought year after year as a violation of the right of petition until its repeal</td></tr>
+<tr><td class="n">___</td><td class="t">4. Trail of Tears</td><td>D. the political movement of the 1820s and 1830s that celebrated the common white man, widened the vote, attacked privileged institutions such as the national bank, and held that the president, chosen by the majority, should govern energetically in the people's name</td></tr>
+<tr><td class="n">___</td><td class="t">5. nullification</td><td>E. the financial collapse of May 1837, when banks across the country suspended payment in specie, cotton prices and land values fell, and a depression followed that lasted into the 1840s and broke the presidency of Martin Van Buren</td></tr>
+<tr><td class="n">___</td><td class="t">6. Ordinance of Nullification</td><td>F. the ordinance adopted by a South Carolina convention on November 24, 1832, declaring the tariffs of 1828 and 1832 void within the state, forbidding collection of their duties after February 1, 1833, and threatening secession if the federal government collected them by force</td></tr>
+<tr><td class="n">___</td><td class="t">7. Bank War</td><td>G. the abolitionist doctrine of the 1830s that slavery, being a sin against God and man, must end at once, without gradual stages, compensation, or the removal of the freed people, the doctrine that split the antislavery movement from its colonizationist past</td></tr>
+<tr><td class="n">___</td><td class="t">8. Panic of 1837</td><td>H. the right to vote, which state after state extended in the 1820s until nearly every white man could vote regardless of property, while women, Native Americans, and most free Black men remained excluded</td></tr>
+<tr><td class="n">___</td><td class="t">9. market revolution</td><td>I. the labor system of the mills at Lowell, Massachusetts, where the Boston Associates built factories, boardinghouses, and churches together and recruited young women from New England farms to work the looms under rules meant to guard their morals and their hours</td></tr>
+<tr><td class="n">___</td><td class="t">10. Lowell system</td><td>J. the law of May 1830 that authorized the president to offer Native nations land west of the Mississippi in exchange for their lands inside the states, the legal instrument under which the southeastern nations were driven out in the 1830s</td></tr>
+<tr><td class="n">___</td><td class="t">11. Second Great Awakening</td><td>K. the tax supported public schools open to all children of a district, which reformers of Mann's generation spread across the northern states in the 1830s and 1840s as the republic's instrument for making citizens out of a diverse and mobile people</td></tr>
+<tr><td class="n">___</td><td class="t">12. common schools</td><td>L. the claim, drawn from the Kentucky Resolutions, that a state may declare a federal law void and of no force inside its borders, a doctrine later generations carried much further than its 1798 authors did in print</td></tr>
+<tr><td class="n">___</td><td class="t">13. immediatism</td><td>M. the transformation of the American economy between about 1815 and 1848, when canals, steamboats, railroads, and the telegraph cut the cost and time of moving goods and news, and households that had made most of what they used began producing for distant markets and buying from them</td></tr>
+<tr><td class="n">___</td><td class="t">14. gag rule</td><td>N. the declaration adopted at Seneca Falls in 1848, modeled sentence by sentence on the Declaration of Independence, which held that all men and women are created equal and charged man with a history of repeated injuries and usurpations toward woman as its bill of grievances</td></tr>
+<tr><td class="n">___</td><td class="t">15. Declaration of Sentiments</td><td>O. the political struggle of 1832 to 1836 in which Jackson vetoed the Second Bank's recharter, removed the federal deposits to state banks, and destroyed the institution, which Clay and Biddle had forced to a vote four years early meaning to make it the election's deciding question</td></tr>
+</table>
+<h2>Part B: Multiple Choice (20 points)</h2>
+<p>Choose the best answer for each question.</p>
+<div class="qa"><p class="q"><strong>1.</strong> The election of 1828 differed from the elections before it chiefly because</p><p class="opts">
+<span>A. nearly every white man could vote in it, and committees, newspapers, and a party organized for a mass electorate carried the campaign</span>
+<span>B. it was the first election decided by the House of Representatives</span>
+<span>C. women voted in every state for the first time</span>
+<span>D. the candidates refused to campaign and left the choice to the state legislatures</span>
+</p></div>
+<div class="qa"><p class="q"><strong>2.</strong> In the same years that the states widened the vote for white men, Pennsylvania in 1838</p><p class="opts">
+<span>A. extended the vote to women property holders</span>
+<span>B. stripped free Black men of a vote some had previously cast</span>
+<span>C. admitted free Black men to the vote for the first time</span>
+<span>D. removed all property tests for officeholding in the state</span>
+</p></div>
+<div class="qa"><p class="q"><strong>3.</strong> The Indian Removal Act of May 1830 authorized the president to</p><p class="opts">
+<span>A. declare war on the five southeastern nations at once</span>
+<span>B. extend Georgia's laws over Cherokee country</span>
+<span>C. offer Native nations land west of the Mississippi in exchange for their lands inside the states</span>
+<span>D. pay the Cherokee Nation for its newspaper and its printing press</span>
+</p></div>
+<div class="qa"><p class="q"><strong>4.</strong> In Worcester v. Georgia in 1832, Chief Justice Marshall held that</p><p class="opts">
+<span>A. Georgia's laws had full force within Cherokee country</span>
+<span>B. the Cherokee Nation was a foreign state free of all American law</span>
+<span>C. the Treaty of New Echota had settled every question between Georgia and the Cherokee</span>
+<span>D. Georgia's laws had no force within Cherokee country</span>
+</p></div>
+<div class="qa"><p class="q"><strong>5.</strong> The doctrine of nullification, as Calhoun wrote it in the Exposition and Protest, claimed that a state could</p><p class="opts">
+<span>A. declare a federal law void and of no force inside its borders until the Constitution itself was amended</span>
+<span>B. secede from the Union by a simple vote of its legislature</span>
+<span>C. refuse to send representatives to Congress for one session</span>
+<span>D. tax federal property within the state at double the usual rate</span>
+</p></div>
+<div class="qa"><p class="q"><strong>6.</strong> South Carolina's Ordinance of Nullification of November 24, 1832 declared the tariffs of 1828 and 1832</p><p class="opts">
+<span>A. wise and necessary for the state's economy</span>
+<span>B. binding on the state until Congress adjourned</span>
+<span>C. void within the state, forbidding collection of their duties after February 1, 1833, and threatening secession if the duties were collected by force</span>
+<span>D. a question for the Supreme Court to decide in its next term</span>
+</p></div>
+<div class="qa"><p class="q"><strong>7.</strong> Jackson vetoed the Second Bank's recharter in July 1832 after Clay and Biddle had</p><p class="opts">
+<span>A. moved the Bank's headquarters from Philadelphia to Washington</span>
+<span>B. closed every branch of the Bank in the southern states</span>
+<span>C. offered Jackson a seat on the Bank's board of directors</span>
+<span>D. forced the recharter to a vote four years early, meaning to make the Bank the deciding question of the election</span>
+</p></div>
+<div class="qa"><p class="q"><strong>8.</strong> The Panic of 1837 began in May of that year when</p><p class="opts">
+<span>A. Congress chartered a third national bank</span>
+<span>B. Britain declared war on the United States over the Canadian border</span>
+<span>C. banks across the country suspended payment in specie, and cotton prices and land values fell</span>
+<span>D. Van Buren resigned the presidency in favor of William Henry Harrison</span>
+</p></div>
+<div class="qa"><p class="q"><strong>9.</strong> The market revolution of about 1815 to 1848 rested on changes that</p><p class="opts">
+<span>A. cut the cost and time of moving goods and news by canals, steamboats, railroads, and the telegraph</span>
+<span>B. ended the use of money in the countryside and restored household self sufficiency</span>
+<span>C. closed American ports to foreign trade for a generation</span>
+<span>D. moved most American farming to plantations worked for export alone</span>
+</p></div>
+<div class="qa"><p class="q"><strong>10.</strong> The young women who worked the looms at Lowell, Massachusetts, were recruited chiefly from</p><p class="opts">
+<span>A. the cotton plantations of the South Carolina lowcountry</span>
+<span>B. the port cities of Ireland and Germany</span>
+<span>C. New England farms, and were housed in boardinghouses under rules meant to guard their morals and their hours</span>
+<span>D. the Cherokee Nation and the other southeastern nations</span>
+</p></div>
+<div class="qa"><p class="q"><strong>11.</strong> Charles Grandison Finney's preaching at Rochester in 1830 and 1831 taught that conversion was</p><p class="opts">
+<span>A. fixed in advance by God and beyond human choice</span>
+<span>B. an act of the sinner's own will, which a preacher could organize for and a sinner could decide</span>
+<span>C. reserved to the educated clergy of the established churches</span>
+<span>D. a private experience that should never lead to public reform work</span>
+</p></div>
+<div class="qa"><p class="q"><strong>12.</strong> Horace Mann called the common schools the balance wheel of the social machinery because he held that tax supported schools open to all children of a district would</p><p class="opts">
+<span>A. train soldiers for the army more cheaply than private academies</span>
+<span>B. replace churches as the only teachers of morality in the towns</span>
+<span>C. make citizens out of a diverse and mobile people for the republic</span>
+<span>D. teach farming methods to the children of the western settlements</span>
+</p></div>
+<div class="qa"><p class="q"><strong>13.</strong> Immediatism, the abolitionist doctrine of the 1830s, held that slavery must end</p><p class="opts">
+<span>A. gradually, over two generations, with compensation to the enslaver</span>
+<span>B. by the removal of the freed people to colonies in Africa</span>
+<span>C. only in the territories, leaving the states untouched</span>
+<span>D. at once, without gradual stages, compensation, or the removal of the freed people</span>
+</p></div>
+<div class="qa"><p class="q"><strong>14.</strong> The gag rule in the House of Representatives, in force from 1836 to 1844, provided that antislavery petitions would be</p><p class="opts">
+<span>A. tabled without printing, reading, or debate</span>
+<span>B. sent to a special committee chaired by John Quincy Adams</span>
+<span>C. printed at public expense and distributed to every district</span>
+<span>D. read aloud in full before any other business</span>
+</p></div>
+<div class="qa"><p class="q"><strong>15.</strong> The Declaration of Sentiments, adopted at Seneca Falls in 1848, was modeled sentence by sentence on</p><p class="opts">
+<span>A. the Constitution of the United States</span>
+<span>B. the Declaration of Independence</span>
+<span>C. the Seneca nation's council speeches</span>
+<span>D. the Married Women's Property Act of New York</span>
+</p></div>
+<div class="qa"><p class="q"><strong>16.</strong> The charge of a corrupt bargain in the election of 1824 was the claim that</p><p class="opts">
+<span>A. Jackson had bought electoral votes with bank stock</span>
+<span>B. Adams had stolen the election returns from three states</span>
+<span>C. the Supreme Court had chosen Adams over Jackson in a closed session</span>
+<span>D. Henry Clay threw the House vote to John Quincy Adams in return for appointment as secretary of state</span>
+</p></div>
+<div class="qa"><p class="q"><strong>17.</strong> John Ross led the Cherokee resistance to removal for a decade chiefly through</p><p class="opts">
+<span>A. petitions, delegations to Washington, and litigation in the nation's own courts</span>
+<span>B. war against the Georgia militia on the nation's borders</span>
+<span>C. an alliance with Britain against the United States</span>
+<span>D. the purchase of Cherokee land by individual citizens of Georgia</span>
+</p></div>
+<div class="qa"><p class="q"><strong>18.</strong> After Jackson removed the federal deposits in 1833, the state banks that received them</p><p class="opts">
+<span>A. stopped lending altogether until the Bank's charter expired</span>
+<span>B. lent easily on thin reserves and fed the land speculation of the middle 1830s</span>
+<span>C. were required by the Treasury to hold only gold in their vaults</span>
+<span>D. were abolished by the Whig Congress of 1834</span>
+</p></div>
+<div class="qa"><p class="q"><strong>19.</strong> Samuel Morse's telegraph, opened between Washington and Baltimore in 1844, changed American life first by</p><p class="opts">
+<span>A. teaching factory workers to read and write in code</span>
+<span>B. carrying freight more cheaply than the canals could carry it</span>
+<span>C. replacing newspapers with printed bulletins in every town</span>
+<span>D. separating the speed of news from the speed of travel for the first time</span>
+</p></div>
+<div class="qa"><p class="q"><strong>20.</strong> Frederick Douglass's Narrative of 1845 answered the slaveholders' claim about the enslaved by</p><p class="opts">
+<span>A. printing the confessions of Nat Turner as its final chapter</span>
+<span>B. being a first person account whose literacy and argument showed an enslaved man speaking for himself</span>
+<span>C. arguing that the enslaved should be sent to Liberia</span>
+<span>D. repeating the arguments of the gag rule's defenders in Congress</span>
+</p></div>
+<h2>Part C: Sources (10 points)</h2>
+<p>Answer each question in complete sentences, citing the sources by letter.</p>
+<div class="source"><p class="srclabel">Source A</p>
+<p>President Andrew Jackson, the Bank Veto Message of July 10, 1832, vetoing the recharter of the Second Bank of the United States. From Andrew Jackson, 'Bank Veto Message,' July 10, 1832 (Yale Avalon Project; from Richardson's Messages and Papers of the Presidents, 1897; punctuation modernized). Cuts are marked with ellipses in brackets.</p>
+<p>&ldquo;[...] It is to be regretted that the rich and powerful too often bend the acts of government to their selfish purposes. [...] Distinctions in society will always exist under every just government. Equality of talents, of education, or of wealth can not be produced by human institutions. [...] There are no necessary evils in government. Its evils exist only in its abuses. [...] If it would confine itself to equal protection, and, as Heaven does its rains, shower its favors alike on the high and the low, the rich and the poor, it would be an unqualified blessing. [...]&rdquo;</p></div>
+<div class="qa"><p class="q"><strong>A1. (1 point)</strong> Jackson writes that equality in three things can not be produced by human institutions. Name one of the three.</p><div class="sp-a"></div></div>
+<div class="qa"><p class="q"><strong>A2. (2 points)</strong> State what government would be, in the passage's phrase, if it confined itself to equal protection, and state how it would shower its favors.</p><div class="sp-b"></div></div>
+<div class="source"><p class="srclabel">Source B</p>
+<p>The South Carolina Convention, the Ordinance of Nullification, adopted November 24, 1832. From South Carolina Convention, 'Ordinance of Nullification,' 1832 (Paul Leicester Ford, ed., The Federalist, 1898; via the Yale Avalon Project; capitalization modernized). Cuts are marked with ellipses in brackets.</p>
+<p>&ldquo;[...] We, therefore, the people of the State of South Carolina, in Convention assembled, do declare and ordain [...] that the several acts and parts of acts of the Congress of the United States, purporting to be laws for the imposing of duties and imposts on the importation of foreign commodities, and now having actual operation and effect within the United States, and, more especially, an act entitled "An act in alteration of the several acts imposing duties on imports," approved on the nineteenth day of May, one thousand eight hundred and twenty-eight and also an act entitled "An act to alter and amend the several acts imposing duties on imports," approved on the fourteenth day of July, one thousand eight hundred and thirty-two, are unauthorized by the Constitution of the United States, and violate the true meaning and intent thereof and are null, void, and no law, nor binding upon this State, its officers or citizens. [...] And it shall be the duty of the Legislature to adopt such measures and pass such acts as may be necessary to give full effect to this Ordinance, and to prevent the enforcement and arrest the operation of the said acts and parts of acts of the Congress of the United States within the limits of this State. [...]&rdquo;</p></div>
+<div class="qa"><p class="q"><strong>B1. (2 points)</strong> State the two tariff acts the ordinance names by their approval dates, and state what the ordinance declares those acts to be.</p><div class="sp-b"></div></div>
+<div class="qa"><p class="q"><strong>B2. (2 points)</strong> State the duty the ordinance lays on the state legislature, in the passage's own words for its two purposes.</p><div class="sp-b"></div></div>
+<div class="source"><p class="srclabel">Source C</p>
+<p>Elizabeth Cady Stanton and the Seneca Falls Convention, the Declaration of Sentiments, adopted July 19 and 20, 1848. From Elizabeth Cady Stanton and the Seneca Falls Convention, 'Declaration of Sentiments,' July 19, 1848 (National Park Service; punctuation normalized). Cuts are marked with ellipses in brackets.</p>
+<p>&ldquo;We hold these truths to be self-evident; that all men and women are created equal; that they are endowed by their Creator with certain inalienable rights; that among these are life, liberty, and the pursuit of happiness; that to secure these rights governments are instituted, deriving their just powers from the consent of the governed. [...] The history of mankind is a history of repeated injuries and usurpations on the part of man toward woman, having in direct object the establishment of an absolute tyranny over her. To prove this, let facts be submitted to a candid world. [...] He has never permitted her to exercise her inalienable right to the elective franchise. [...] He has compelled her to submit to laws, in the formation of which she had no voice. [...] He has made her, if married, in the eye of the law, civilly dead. [...] He has taken from her all right in property, even to the wages she earns. [...] He has monopolized nearly all the profitable employments, and from those she is permitted to follow, she receives but a scanty remuneration. [...]&rdquo;</p></div>
+<div class="qa"><p class="q"><strong>C1. (1 point)</strong> The declaration says man has never permitted woman to exercise her inalienable right to what?</p><div class="sp-a"></div></div>
+<div class="qa"><p class="q"><strong>C2. (2 points)</strong> State two things the passage says man has done to a married woman, in the passage's own phrases about her standing in the eye of the law and her property.</p><div class="sp-b"></div></div>
+<div class="essay"><h2>Part D: Essay (5 points)</h2>
+<p>Choose <strong>one</strong> prompt and write a complete essay in the space below. Use specific evidence from the unit, and state the strongest point on the other side before you answer it.</p>
+<p class="q"><strong>Prompt 1.</strong> Judge whether the removal of the Cherokee was settled by law or carried out by force wearing the forms of law. Build your answer on the Indian Removal Act of 1830, the holding in Worcester v. Georgia and its fate, the Treaty of New Echota signed by a minority and ratified by one vote, and the march of 1838 and 1839.</p>
+<p class="q"><strong>Prompt 2.</strong> Judge whether Seneca Falls widened American democracy or only recorded how narrow it still was. Build your answer on the Declaration of Sentiments and its grievances against coverture, the demand for the elective franchise adopted by a narrow margin, the Grimké sisters' earlier public work, and the Married Women's Property Act passed in New York three months before the convention.</p>
+<div class="sp-c"></div></div>
+<div class="key"><h2>Teacher Answer Key</h2>
+<h3>Part A: Matching</h3>
+<p><strong>1. Jacksonian democracy: D</strong> (Blueprint 1)</p>
+<p><strong>2. suffrage: H</strong> (Blueprint 2)</p>
+<p><strong>3. Indian Removal Act: J</strong> (Blueprint 3)</p>
+<p><strong>4. Trail of Tears: B</strong> (Blueprint 4)</p>
+<p><strong>5. nullification: L</strong> (Blueprint 5)</p>
+<p><strong>6. Ordinance of Nullification: F</strong> (Blueprint 6)</p>
+<p><strong>7. Bank War: O</strong> (Blueprint 7)</p>
+<p><strong>8. Panic of 1837: E</strong> (Blueprint 8)</p>
+<p><strong>9. market revolution: M</strong> (Blueprint 9)</p>
+<p><strong>10. Lowell system: I</strong> (Blueprint 10)</p>
+<p><strong>11. Second Great Awakening: A</strong> (Blueprint 11)</p>
+<p><strong>12. common schools: K</strong> (Blueprint 12)</p>
+<p><strong>13. immediatism: G</strong> (Blueprint 13)</p>
+<p><strong>14. gag rule: C</strong> (Blueprint 14)</p>
+<p><strong>15. Declaration of Sentiments: N</strong> (Blueprint 15)</p>
+<h3>Part B: Multiple Choice</h3>
+<p><strong>1. A</strong> (Blueprint 1)</p>
+<p><strong>2. B</strong> (Blueprint 2)</p>
+<p><strong>3. C</strong> (Blueprint 3)</p>
+<p><strong>4. D</strong> (Blueprint 4)</p>
+<p><strong>5. A</strong> (Blueprint 5)</p>
+<p><strong>6. C</strong> (Blueprint 6)</p>
+<p><strong>7. D</strong> (Blueprint 7)</p>
+<p><strong>8. C</strong> (Blueprint 8)</p>
+<p><strong>9. A</strong> (Blueprint 9)</p>
+<p><strong>10. C</strong> (Blueprint 10)</p>
+<p><strong>11. B</strong> (Blueprint 11)</p>
+<p><strong>12. C</strong> (Blueprint 12)</p>
+<p><strong>13. D</strong> (Blueprint 13)</p>
+<p><strong>14. A</strong> (Blueprint 14)</p>
+<p><strong>15. B</strong> (Blueprint 15)</p>
+<p><strong>16. D</strong> (Blueprint 1)</p>
+<p><strong>17. A</strong> (Blueprint 3)</p>
+<p><strong>18. B</strong> (Blueprint 7)</p>
+<p><strong>19. D</strong> (Blueprint 10)</p>
+<p><strong>20. B</strong> (Blueprint 14)</p>
+<h3>Part C: Sources</h3>
+<p><strong>A1.</strong> Any one of the three earns the point: equality of talents, of education, or of wealth can not be produced by human institutions. (Blueprint 7)</p>
+<p><strong>A2.</strong> If government would confine itself to equal protection, it would be an unqualified blessing. It would, as Heaven does its rains, shower its favors alike on the high and the low, the rich and the poor. One point for the unqualified blessing and one point for the favors showered alike on high and low, rich and poor. (Blueprint 7)</p>
+<p><strong>B1.</strong> The ordinance names the act approved on the nineteenth day of May, one thousand eight hundred and twenty eight, and the act approved on the fourteenth day of July, one thousand eight hundred and thirty two. It declares those acts unauthorized by the Constitution of the United States, violating its true meaning and intent, and null, void, and no law, nor binding upon the state, its officers, or its citizens. One point for the two acts identified by date and one point for the declaration stated. (Blueprint 6)</p>
+<p><strong>B2.</strong> It shall be the duty of the Legislature to adopt such measures and pass such acts as may be necessary to give full effect to this Ordinance, and to prevent the enforcement and arrest the operation of the said acts of Congress within the limits of this State. One point for giving full effect to the ordinance and one point for preventing the enforcement of the acts of Congress in the state. (Blueprint 6)</p>
+<p><strong>C1.</strong> Man has never permitted woman to exercise her inalienable right to the elective franchise. One point for the elective franchise named. (Blueprint 15)</p>
+<p><strong>C2.</strong> The passage says he has made her, if married, in the eye of the law, civilly dead, and he has taken from her all right in property, even to the wages she earns. One point for civilly dead in the eye of the law and one point for all right in property taken, even the wages she earns. (Blueprint 15)</p>
+<h3>Part D: Essay</h3>
+<p>The essay is scored on the six part holistic scale below, whichever prompt the student chose.</p>
+<p><strong>Score 5.</strong> A clear judgment is stated and held through the essay. At least three pieces of specific evidence from the unit are used accurately, the strongest point on the other side is stated fairly and answered, and the writing is organized in paragraphs with a conclusion that follows from the evidence.</p>
+<p><strong>Score 4.</strong> A clear judgment is stated and mostly held. Two or three pieces of specific evidence are used accurately, the other side is stated and answered, and the organization holds, with minor lapses in precision or development.</p>
+<p><strong>Score 3.</strong> A judgment is stated but drifts, or the evidence is specific in places and general in others. The other side is mentioned but answered thinly, or the answer to it is asserted rather than argued.</p>
+<p><strong>Score 2.</strong> The essay retells the removal story or the Seneca Falls story without a judgment that the evidence is made to serve, or the judgment is stated but supported by only one accurate piece of evidence. The other side does not appear.</p>
+<p><strong>Score 1.</strong> The response is a fragment, a single point restated, or evidence is used inaccurately in ways that change its meaning. Little of the prompt is answered.</p>
+<p><strong>Score 0.</strong> The response is blank, off the prompt, or copies the prompt without answering it.</p>
+<p>For Prompt 1, strong evidence includes the Removal Act passed by five votes in the House and framed as an exchange of lands; Jackson's message defending removal as benevolence; the Cherokee constitution, newspaper, petitions, and delegations under John Ross; Marshall's holding in Worcester that Georgia law had no force in Cherokee country, defied by Georgia and unenforced by the president; the Treaty of New Echota signed by a minority without their government's authority, protested by nearly the whole nation, and ratified by one vote; and the roundup and winter march of 1838 and 1839, in which roughly a quarter of some sixteen thousand people died. Evidence on the other side includes the legal forms observed at every step, act, ratified treaty, and appropriation, and the negotiated removals of nations such as the Chickasaw, while the Seminole war shows where consent was refused outright. (Blueprint 4)</p>
+<p>For Prompt 2, strong evidence includes the declaration modeled on the founding text, holding all men and women created equal and charging a history of repeated injuries and usurpations; the grievances against coverture, the married woman civilly dead, her property and wages taken, colleges and profitable employments closed; the franchise resolution carried by a narrow margin with Douglass arguing for it, the only resolution not adopted unanimously; the Grimké sisters' lectures and letters of the 1830s, which had made the argument in public a decade earlier; and the New York Married Women's Property Act of April 1848, proof that a legislature could already be moved. Evidence on the other side includes the narrow margin itself, the seventy two years the franchise demand would wait, and the fact that a declaration changes no statute by itself. Either prompt can earn full credit argued from either side of its question, provided the judgment is earned from the evidence and the other side is answered. (Blueprint 15)</p>
+</div></body></html>
