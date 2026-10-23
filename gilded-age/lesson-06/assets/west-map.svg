@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 600" font-family="Arial, Helvetica, sans-serif">
+<rect x="5" y="5" width="990" height="590" fill="white" stroke="black" stroke-width="2"/>
+<!-- mountains west -->
+<path d="M20,470 L90,300 L140,390 L200,240 L255,360 L310,250 L360,470 Z" fill="none" stroke="black" stroke-width="2"/>
+<text x="60" y="510" font-size="22">Mountains</text>
+<!-- mining camp -->
+<circle cx="150" cy="330" r="7" fill="black"/>
+<text x="168" y="322" font-size="21" font-weight="bold">Mining camp</text>
+<text x="168" y="346" font-size="17">(gold and silver)</text>
+<!-- reservation dashed polygon north -->
+<path d="M430,60 L760,60 L760,170 L560,170 L560,120 L430,120 Z" fill="none" stroke="black" stroke-width="2" stroke-dasharray="10 7"/>
+<text x="585" y="95" font-size="21" font-weight="bold">Reservation</text>
+<text x="585" y="120" font-size="17">boundary (dashed line)</text>
+<!-- river -->
+<path d="M380,595 C430,480 400,420 470,340 C540,260 520,200 610,175" fill="none" stroke="black" stroke-width="2"/>
+<text x="415" y="430" font-size="18" font-style="italic">River</text>
+<!-- railroad line -->
+<line x1="20" y1="285" x2="980" y2="285" stroke="black" stroke-width="4"/>
+<line x1="20" y1="277" x2="980" y2="277" stroke="black" stroke-width="1"/>
+<line x1="20" y1="293" x2="980" y2="293" stroke="black" stroke-width="1"/>
+<text x="640" y="262" font-size="21" font-weight="bold">Railroad to eastern markets</text>
+<!-- checkerboard grant squares along line -->
+<g fill="white" stroke="black" stroke-width="1.5">
+<rect x="400" y="235" width="50" height="50"/><rect x="450" y="235" width="50" height="50"/><rect x="500" y="235" width="50" height="50"/><rect x="550" y="235" width="50" height="50"/>
+<rect x="400" y="285" width="50" height="50"/><rect x="450" y="285" width="50" height="50"/><rect x="500" y="285" width="50" height="50"/><rect x="550" y="285" width="50" height="50"/>
+</g>
+<text x="418" y="268" font-size="19">R</text><text x="468" y="268" font-size="19">G</text><text x="518" y="268" font-size="19">R</text><text x="568" y="268" font-size="19">G</text>
+<text x="468" y="318" font-size="19">R</text><text x="518" y="318" font-size="19">G</text><text x="418" y="318" font-size="19">G</text><text x="568" y="318" font-size="19">R</text>
+<text x="330" y="215" font-size="18">Railroad land grant checkerboard:</text>
+<text x="330" y="195" font-size="18">R = railroad sections, G = government sections</text>
+<!-- railhead town -->
+<circle cx="700" cy="285" r="8" fill="black"/>
+<text x="660" y="330" font-size="21" font-weight="bold">Railhead town</text>
+<!-- cattle trail dashed from south -->
+<path d="M700,590 C690,500 730,430 705,360 C695,330 698,310 700,295" fill="none" stroke="black" stroke-width="3" stroke-dasharray="12 8"/>
+<text x="735" y="470" font-size="21" font-weight="bold">Cattle trail</text>
+<text x="735" y="495" font-size="17">from Texas ranches (south)</text>
+<!-- homestead claim -->
+<g fill="white" stroke="black" stroke-width="2">
+<rect x="120" y="380" width="180" height="120"/>
+<line x1="210" y1="380" x2="210" y2="500" stroke="black" stroke-width="1.5"/>
+<line x1="120" y1="440" x2="300" y2="440" stroke="black" stroke-width="1.5"/>
+</g>
+<circle cx="165" cy="410" r="5" fill="black"/>
+<text x="105" y="535" font-size="21" font-weight="bold">Homestead claim, 160 acres</text>
+<text x="105" y="560" font-size="17">(sod house marked with a dot)</text>
+<!-- open range label -->
+<text x="800" y="420" font-size="21">Open range</text>
+<text x="800" y="445" font-size="17">(later fenced with</text>
+<text x="800" y="468" font-size="17">barbed wire)</text>
+<text x="28" y="38" font-size="20" font-weight="bold">One Western District</text>
+<text x="28" y="62" font-size="16">Teaching diagram, simplified and not to scale</text>
+</svg>
