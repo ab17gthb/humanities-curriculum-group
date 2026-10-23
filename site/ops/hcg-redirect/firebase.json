@@ -1,0 +1,13 @@
+{
+  "hosting": {
+    "site": "hcg",
+    "public": "public",
+    "redirects": [
+      {
+        "regex": "^/(.*)$",
+        "destination": "https://humanitiescurriculumgroup.web.app/:1",
+        "type": 301
+      }
+    ]
+  }
+}

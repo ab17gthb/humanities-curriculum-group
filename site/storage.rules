@@ -1,0 +1,26 @@
+rules_version = '2';
+
+// Humanities Curriculum Group paid content.
+// Files under /hcg/** are readable only by a signed-in user whose Firestore
+// document hcgUsers/{uid} carries an active All-Access entitlement (written
+// only by the stripeWebhook function), or by one of the owner's admin
+// accounts listed in admin() below. Clients can never write; uploads are
+// done with admin credentials. Everything else is denied.
+service firebase.storage {
+  match /b/{bucket}/o {
+    function entitled() {
+      let e = firestore.get(/databases/(default)/documents/hcgUsers/$(request.auth.uid)).data.entitlement;
+      return e.allAccess == true && e.status in ['active', 'trialing'];
+    }
+    function admin() {
+      return request.auth.token.email in ['alexbrouhard1@gmail.com', 'alexbrouhardedu@gmail.com', 'knowethcg@gmail.com'];
+    }
+    match /hcg/{allPaths=**} {
+      allow read: if request.auth != null && (entitled() || admin());
+      allow write: if false;
+    }
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

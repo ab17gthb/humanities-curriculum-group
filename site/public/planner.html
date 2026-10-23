@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Unit Planner | Plan a US History Unit Day by Day | Humanities Curriculum Group</title>
+<meta name="description" content="Plan a US history unit day by day: pick lessons from the plate, add your own and Primary Source Project resources, and check coverage against the test.">
+<link rel="canonical" href="https://humanitiescurriculumgroup.web.app/planner">
+<meta property="og:title" content="Unit Planner | Plan a US History Unit Day by Day | Humanities Curriculum Group">
+<meta property="og:description" content="Plan a US history unit day by day: pick lessons from the plate, add your own and Primary Source Project resources, and check coverage against the test.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://humanitiescurriculumgroup.web.app/planner">
+<link rel="stylesheet" href="styles.css">
+<link rel="icon" type="image/svg+xml" href="assets/store-wordmark-color.svg">
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap">
+    <a href="index.html"><img class="wordmark" src="assets/store-wordmark-cream.svg" alt="Humanities Curriculum Group"></a>
+    <nav class="main">
+      <a href="index.html">Home</a>
+      <a href="us-history.html">US History</a>
+      <a href="progressive-era.html">Sample Unit</a>
+      <a href="planner-year.html">Year Planner</a>
+      <a href="planner.html" class="here">Unit Planner</a>
+      <a href="about.html">About</a>
+    </nav>
+    <div class="hcg-account" id="hcg-account"></div>
+  </div>
+</header>
+
+<section class="block">
+  <div class="wrap">
+    <h1>The Planner</h1>
+    <p class="sub">Set the first day of the unit and your test date, and the planner proposes pacing from the test blueprint. Pick assignments from the plate and it lays them on your school days, lands the test at the end, and checks your picks against all fifteen blueprint entries. If a day gets eaten by an assembly or a field trip, mark it in the schedule and that day's work bumps forward on its own. Days off from your <a href="planner-year.html">year plan</a> are honored here automatically. Your picks and dates save as you go.</p>
+    <p class="small" id="save-note" style="margin:6px 0 0;"></p>
+
+    <div class="panel" id="shared-note" style="display:none;border-color:#b4552d;">
+      <p style="margin:0;"><strong>A shared plan was loaded from the link you opened.</strong> It is saved in this browser now, sections, dates, pins, and picks included. <button type="button" class="mini" onclick="this.parentElement.parentElement.style.display='none'">Dismiss</button></p>
+    </div>
+
+    <div class="panel">
+      <div class="ptoolbar" id="unit-switch" style="margin-bottom:8px;"></div>
+      <h2 id="unit-name" style="margin:0 0 2px;">The Progressive Era</h2>
+      <p class="small" id="unit-eq" style="margin:0;">Essential question: How did Americans respond to the problems created by industrialization, urbanization, and political corruption?</p>
+      <p class="small" id="unit-rycal" style="margin:6px 0 0;"></p>
+      <p class="small" style="margin:6px 0 0;">Each unit keeps its own plan: picks, dates, sections, pins, and additions are saved separately per unit, and switching units never moves the other unit's plan.</p>
+    </div>
+
+    <div class="planner-grid">
+      <div>
+        <div class="panel">
+          <h3>Your sections</h3>
+          <p class="small">Teach the unit to more than one class? Each section keeps its own calendar: start date, test date, marked days, pins, rotation, and period length. Your picks, order, and splits are shared across sections.</p>
+          <div class="ptoolbar" id="sections"></div>
+        </div>
+
+        <div class="panel">
+          <h3>1 · Your dates</h3>
+          <label class="f" for="start">First day of the unit</label>
+          <input type="date" id="start">
+          <label class="f" for="test">Unit test date</label>
+          <input type="date" id="test">
+          <label class="f" for="rotation">This section meets</label>
+          <select id="rotation" style="width:100%;padding:7px;border:1px solid #d8cfb8;border-radius:4px;">
+            <option value="daily">Every school day</option>
+            <option value="ab">Every other day (A/B rotation)</option>
+          </select>
+          <label class="f" for="period">Class period length</label>
+          <select id="period" style="width:100%;padding:7px;border:1px solid #d8cfb8;border-radius:4px;">
+            <option value="45">About 45 minutes (standard period)</option>
+            <option value="90">About 90 minutes (block)</option>
+          </select>
+          <p class="small" style="margin-top:6px;">Content is paced in lesson-days, one lesson-day per period of about 45 minutes. A block of about 90 minutes fits about two lessons per meeting, so entries pair up on one date and the unit takes about half as many meetings. Period length is set per section.</p>
+          <p class="small" id="daycount" style="margin-top:12px;"></p>
+          <h3 style="margin-top:20px;">Proposed pacing</h3>
+          <p class="small">Instructional days divided across the lessons in proportion to how much of the test blueprint each lesson carries, with the last day held for review.</p>
+          <table class="pacing" id="pacing"></table>
+        </div>
+
+        <div class="panel">
+          <h3>2 · Pick from the plate</h3>
+          <p class="small">Core items start checked. Guided notes run the same day as their reading and take no extra time. Half-day items pair up on one day.</p>
+          <button type="button" id="covstrip"></button>
+          <div id="picker"></div>
+          <p class="small" id="own-teaser" style="margin:10px 0 0;">Teaching something of your own instead? <a href="#" id="own-teaser-link">Add it below and tag what it covers</a>, and it counts toward coverage like any other pick.</p>
+          <div id="additions"></div>
+          <div class="ptoolbar" style="margin-top:12px;">
+            <button type="button" class="mini" id="btn-add-own">Add your own resource</button>
+            <button type="button" class="mini" id="btn-add-tpsp">Add a TPSP resource</button>
+          </div>
+          <div id="own-form" class="addform" style="display:none;">
+            <p style="margin:6px 0 0;"><strong id="own-form-title">Add your own resource</strong></p>
+            <label class="f" for="own-name">Name</label>
+            <input type="text" id="own-name" placeholder="My gallery walk, a video, textbook pages…">
+            <label class="f" for="own-days">Days it takes</label>
+            <select id="own-days">
+              <option value="0">No extra time (runs with the day it lands on)</option>
+              <option value="0.5">Half day</option>
+              <option value="1" selected>1 day</option>
+              <option value="2">2 days</option>
+            </select>
+            <label class="f" for="own-link">Link (optional)</label>
+            <input type="text" id="own-link" placeholder="https://…">
+            <label class="f" for="own-note">Note (optional)</label>
+            <input type="text" id="own-note" placeholder="Shown on the sub plan and calendar export">
+            <label class="f">Counts toward coverage</label>
+            <p class="small" style="margin:0 0 4px;">Tag the blueprint entries this item teaches or assesses. Coverage an item earns this way is marked as yours in the coverage check.</p>
+            <div id="own-bp"></div>
+            <p class="small warn" id="own-err" style="margin:8px 0 0;"></p>
+            <div class="ptoolbar" style="margin-top:10px;">
+              <button type="button" class="mini" id="own-save">Add to my plan</button>
+              <button type="button" class="mini" id="own-cancel">Cancel</button>
+            </div>
+          </div>
+          <div id="tpsp-picker" class="addform" style="display:none;">
+            <p style="margin:6px 0 0;"><strong>Add a TPSP resource</strong></p>
+            <p class="small" id="tpsp-intro" style="margin:2px 0 8px;">From The Primary Source Project's Progressive Era library. Click a source to add it to your plan; a few arrive pre-tagged to the blueprint where the match is clear, and you can retag any of them with Edit.</p>
+            <input type="search" id="tpsp-q" placeholder="Search the sources…" style="font-size:15px;padding:7px 9px;border:1px solid #c9c0aa;border-radius:3px;width:100%;font-family:Arial,sans-serif;">
+            <p class="small ok" id="tpsp-added" style="margin:6px 0 0;"></p>
+            <div id="tpsp-list" style="max-height:340px;overflow:auto;margin-top:6px;"></div>
+            <div class="ptoolbar" style="margin-top:10px;">
+              <button type="button" class="mini" id="tpsp-close">Close</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h3>3 · Your schedule</h3>
+          <p class="small">Drag any item to another day and everything after it reflows. Pin an item (📍) to lock it to its date; pinned items hold their date while the rest of the plan moves around them. Split in the picker divides a one-day lesson into two half days. Use the menu on any day to mark it assembly, substitute, field trip, testing, or no class; marked days hold no lessons and the work bumps forward. If you will be out but your class still meets, use Mark sub day on that day instead: the date and the test day hold, the day teaches nothing from the plan, its work moves later, and you can leave the substitute a note right on the day.</p>
+          <div class="ptoolbar">
+            <button type="button" class="mini viewbtn" data-view="list">List view</button>
+            <button type="button" class="mini viewbtn" data-view="week">Week view</button>
+            <span class="tsep"></span>
+            <button type="button" class="mini" id="print-week">Print plan</button>
+            <button type="button" class="mini" id="print-sub">Sub plan</button>
+            <span class="tsep"></span>
+            <button type="button" class="mini" id="export-ics">Add to calendar (.ics)</button>
+            <button type="button" class="mini" id="share-plan">Share link</button>
+            <span class="tsep"></span>
+            <button type="button" class="mini" id="export-plan">Export plan</button>
+            <label class="mini filebtn">Import plan<input type="file" id="import-plan" accept="application/json" style="display:none;"></label>
+          </div>
+          <p class="small" style="margin:2px 0 4px;">To reuse a plan next year: export it, import it here, then set the new first day and test date. Everything reflows onto the new calendar, pins included.</p>
+          <p class="small" id="share-note" style="margin:0 0 10px;"></p>
+          <table class="sched" id="schedule"></table>
+          <div id="weekview"></div>
+          <p class="small" id="overflow" style="margin-top:10px;"></p>
+        </div>
+      </div>
+
+      <div class="sticky">
+        <div class="panel" id="covpanel">
+          <h3>Coverage check</h3>
+          <p class="small" style="margin:0;">Share of the fifteen blueprint entries your picks teach or assess.</p>
+          <div class="meter"><div id="meterfill"></div></div>
+          <p style="margin:4px 0;"><strong id="covtext"></strong></p>
+          <p style="margin:2px 0;"><strong id="covplaced"></strong></p>
+          <p class="small" id="dayuse"></p>
+          <div id="gaps"></div>
+        </div>
+        <div class="panel">
+          <h3>Topic coverage</h3>
+          <div id="standards"></div>
+        </div>
+        <div class="panel">
+          <h3>The test</h3>
+          <p class="small">The 50-point unit test lands on your test date automatically. Every item on it is tagged to the blueprint in the answer key.</p>
+          <p style="margin-bottom:0;" id="test-action"><a href="files/unit-test.pdf">Download the unit test (PDF)</a></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="site">
+  <div class="wrap">
+    <img src="assets/store-wordmark-cream.svg" alt="Humanities Curriculum Group">
+    <div>
+      <p>Humanities Curriculum Group is a Knoweth product, built by a working social studies teacher. Sister projects: <a href="https://rycal.web.app">Rycal</a>, spaced-repetition study tools for AP courses, and <a href="https://tpsp.web.app">The Primary Source Project</a>, a primary source library and DBQ builder.</p>
+      <p>Materials print on standard US Letter paper with ordinary school copiers in mind.</p>
+    </div>
+  </div>
+</footer>
+
+<div id="printArea"></div>
+<script src="planner-data.js"></script>
+<script src="planner.js"></script>
+<script src="firebase-config.js"></script>
+<script src="auth.js"></script>
+<script>
+  // Once sign-in resolves, let the planner re-render so entitled accounts
+  // see the Gilded Age download controls.
+  if (window.HCGAuth && window.HCGPlannerRefresh) window.HCGAuth.onChange(window.HCGPlannerRefresh);
+</script>
+</body>
+</html>

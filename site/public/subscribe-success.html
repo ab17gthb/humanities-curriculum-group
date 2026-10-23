@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Checkout Complete | Humanities Curriculum Group</title>
+<meta name="description" content="Your Humanities Curriculum Group checkout is complete. Stripe is in test mode, so no real charge was made. Signed-in subscriptions switch on automatically.">
+<link rel="canonical" href="https://humanitiescurriculumgroup.web.app/subscribe-success">
+<meta property="og:title" content="Checkout Complete | Humanities Curriculum Group">
+<meta property="og:description" content="Your Humanities Curriculum Group checkout is complete. Stripe is in test mode, so no real charge was made. Signed-in subscriptions switch on automatically.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://humanitiescurriculumgroup.web.app/subscribe-success">
+<link rel="stylesheet" href="styles.css">
+<link rel="icon" type="image/svg+xml" href="assets/store-wordmark-color.svg">
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap">
+    <a href="index.html"><img class="wordmark" src="assets/store-wordmark-cream.svg" alt="Humanities Curriculum Group"></a>
+    <nav class="main">
+      <a href="index.html">Home</a>
+      <a href="us-history.html">US History</a>
+      <a href="progressive-era.html">Sample Unit</a>
+      <a href="planner-year.html">Year Planner</a>
+      <a href="planner.html">Unit Planner</a>
+      <a href="about.html">About</a>
+    </nav>
+    <div class="hcg-account" id="hcg-account"></div>
+  </div>
+</header>
+
+<section class="block">
+  <div class="wrap">
+    <h1>Checkout finished</h1>
+    <p class="sub">Thanks for trying it. Here is where your access stands:</p>
+
+    <div class="note">
+      <p style="margin-top:0;" id="access-status"><strong>Checking your account…</strong></p>
+      <p><strong>Checkout is currently running in Stripe test mode.</strong> No real charge was made. A checkout completed while signed in switches All-Access on for that account automatically, usually within a few seconds.</p>
+      <p style="margin-bottom:0;">Everything that is free stays free either way: the full Progressive Era sample unit and both planners work without an account, and signing in saves your plans to your account on any device.</p>
+    </div>
+
+    <p>
+      <a class="btn" href="gilded-era.html">Open the Gilded Age unit</a>
+      <a class="btn" href="home.html" style="background:var(--navy);">Go to My Home</a>
+      <a class="btn" href="progressive-era.html" style="background:var(--navy);">Open the free sample unit</a>
+    </p>
+  </div>
+</section>
+
+<footer class="site">
+  <div class="wrap">
+    <img src="assets/store-wordmark-cream.svg" alt="Humanities Curriculum Group">
+    <div>
+      <p>Humanities Curriculum Group is a Knoweth product, built by a working social studies teacher. Sister projects: <a href="https://rycal.web.app">Rycal</a>, spaced-repetition study tools for AP courses, and <a href="https://tpsp.web.app">The Primary Source Project</a>, a primary source library and DBQ builder.</p>
+      <p>Materials print on standard US Letter paper with ordinary school copiers in mind.</p>
+    </div>
+  </div>
+</footer>
+
+<script src="firebase-config.js"></script>
+<script src="auth.js"></script>
+<script>
+  // Poll the account entitlement for up to ~30 seconds and report honestly.
+  (function () {
+    var el = document.getElementById("access-status");
+    if (!el || !window.HCGAuth) return;
+    var tries = 0, started = false;
+    function poll() {
+      window.HCGEntitlement.refresh().then(function (ent) {
+        if (ent.paid) {
+          el.innerHTML = "<strong>All-Access is active on your account.</strong> Paid unit pages now show their download buttons while you are signed in.";
+          return;
+        }
+        tries++;
+        if (tries < 10) {
+          el.innerHTML = "<strong>Waiting for Stripe to confirm your subscription…</strong> This usually takes a few seconds.";
+          setTimeout(poll, 3000);
+        } else {
+          el.innerHTML = "<strong>Your subscription is not confirmed on this account yet.</strong> If you checked out while signed in, it should land within a minute; refresh this page to check again. If you checked out as a guest, that checkout cannot be attached to an account.";
+        }
+      });
+    }
+    window.HCGAuth.onChange(function (user) {
+      if (started) return;
+      if (user) { started = true; poll(); }
+      else if (window.HCGAuth.isResolved()) {
+        el.innerHTML = "<strong>You are not signed in on this browser.</strong> Sign in with the same account you used at checkout, and this page will check your access.";
+      }
+    });
+  })();
+</script>
+</body>
+</html>

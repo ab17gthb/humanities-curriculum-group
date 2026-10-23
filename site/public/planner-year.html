@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>US History Year Planner | Pacing Calendar for Teachers | Humanities Curriculum Group</title>
+<meta name="description" content="Build a US history pacing calendar around your first and last days, grading periods, breaks, PD days, exam date, unit lengths, and daily or block schedules.">
+<link rel="canonical" href="https://humanitiescurriculumgroup.web.app/planner-year">
+<meta property="og:title" content="US History Year Planner | Pacing Calendar for Teachers | Humanities Curriculum Group">
+<meta property="og:description" content="Build a US history pacing calendar around your first and last days, grading periods, breaks, PD days, exam date, unit lengths, and daily or block schedules.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://humanitiescurriculumgroup.web.app/planner-year">
+<link rel="stylesheet" href="styles.css">
+<link rel="icon" type="image/svg+xml" href="assets/store-wordmark-color.svg">
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap">
+    <a href="index.html"><img class="wordmark" src="assets/store-wordmark-cream.svg" alt="Humanities Curriculum Group"></a>
+    <nav class="main">
+      <a href="index.html">Home</a>
+      <a href="us-history.html">US History</a>
+      <a href="progressive-era.html">Sample Unit</a>
+      <a href="planner-year.html" class="here">Year Planner</a>
+      <a href="planner.html">Unit Planner</a>
+      <a href="about.html">About</a>
+    </nav>
+    <div class="hcg-account" id="hcg-account"></div>
+  </div>
+</header>
+
+<section class="block">
+  <div class="wrap">
+    <h1>The Year Planner</h1>
+    <p class="sub">Set up your school year once: the first and last day, when each grading period ends, and every day school is out or you are in PD. The calendar lays the US History units across your real instructional days, in course order, and keeps a running count of days committed and buffer left. Change anything and the whole year reflows. Your plan saves automatically as you work.</p>
+
+    <div class="panel" id="starter-note" style="display:none;border-color:#b4552d;">
+      <p style="margin:0;"><strong>This is a starter year.</strong> The dates, breaks, and course shape below are a typical starting point, not your school's calendar. Set your first and last day above and delete any days off that are not yours; everything reflows, and this note goes away once the dates are yours. The starter runs Part 1 (to 1877) because the full survey at full unit lengths asks for more days than a typical year holds. Switch the course to the full survey when you are ready, and use Fit to year in the totals panel to trim units to your calendar. <button type="button" class="mini" id="starter-dismiss">Dismiss</button></p>
+    </div>
+
+    <div class="panel" id="shared-note" style="display:none;border-color:#b4552d;">
+      <p style="margin:0;"><strong>A shared year plan was loaded from the link you opened.</strong> It is saved in this browser as its own plan; your other plans are untouched in the plan menu below. <button type="button" class="mini" onclick="this.parentElement.parentElement.style.display='none'">Dismiss</button></p>
+    </div>
+
+    <div class="panel">
+      <h3>Your plans</h3>
+      <p class="small">Teaching more than one prep, or planning a semester version alongside the full year? Keep each as its own plan and switch here. The unit planner reads the days off from whichever plan is active.</p>
+      <div class="ptoolbar">
+        <select id="plan-select" style="padding:6px;border:1px solid #d8cfb8;border-radius:4px;"></select>
+        <button type="button" class="mini" id="plan-new">New plan</button>
+        <button type="button" class="mini" id="plan-rename">Rename</button>
+        <button type="button" class="mini" id="plan-del">Delete plan</button>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3>Your year</h3>
+      <div class="formrow">
+        <div>
+          <label class="f" for="y-course">Course</label>
+          <select id="y-course" style="width:100%;padding:7px;border:1px solid #d8cfb8;border-radius:4px;">
+            <option value="full">Full survey · founding to modern day</option>
+            <option value="early">Part 1 · early America, to 1877</option>
+            <option value="modern">Part 2 · modern America, 1877 to today</option>
+          </select>
+        </div>
+        <div>
+          <label class="f" for="y-schedule">Class schedule</label>
+          <select id="y-schedule" style="width:100%;padding:7px;border:1px solid #d8cfb8;border-radius:4px;">
+            <option value="45-daily">Daily periods, about 45 minutes</option>
+            <option value="90-daily">Block, about 90 minutes, meets daily</option>
+            <option value="90-ab">Block, about 90 minutes, A/B rotation</option>
+          </select>
+        </div>
+        <div>
+          <label class="f" for="y-start">First day of school</label>
+          <input type="date" id="y-start">
+        </div>
+        <div>
+          <label class="f" for="y-end">Last day of school</label>
+          <input type="date" id="y-end">
+        </div>
+        <div>
+          <label class="f" for="y-exam">State test or AP exam (optional)</label>
+          <input type="date" id="y-exam">
+        </div>
+        <div>
+          <label class="f" for="y-review">Review days before the exam</label>
+          <input type="number" id="y-review" min="0" max="20" step="1">
+        </div>
+      </div>
+      <p class="small" style="margin-bottom:2px;">How the counts work: unit lengths are lesson-days, where one lesson-day is one lesson in a period of about 45 minutes. A block of about 90 minutes fits about two lessons per meeting, so a unit of 18 lesson-days takes about 9 block meetings. On an A/B rotation this course meets every other school day, and units land on meeting days only.</p>
+      <p class="small" style="margin-bottom:2px;">US History is taught three ways: the full survey in one year, or two parts split at 1877, the end of Reconstruction. Pick the shape you teach and the unit list, calendar, totals, and exports follow it. Your day counts for units carry across shapes, so you can switch back without losing work.</p>
+      <p class="small" id="saved-note" style="margin-bottom:0;"></p>
+    </div>
+
+    <div class="planner-grid">
+      <div>
+        <div class="panel">
+          <h3>Grading periods</h3>
+          <p class="small">A period is a named deadline. The planner marks the end date on the calendar and counts the instructional days in each period.</p>
+          <div id="periods"></div>
+          <div class="formrow" style="margin-top:10px;">
+            <div><label class="f" for="p-name">Period name</label><input type="text" id="p-name" placeholder="Quarter 1"></div>
+            <div><label class="f" for="p-end">Ends on</label><input type="date" id="p-end"></div>
+            <div style="align-self:end;"><button class="btn secondary" id="p-add" type="button">Add period</button></div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h3>Days off and PD days</h3>
+          <p class="small">Holidays, breaks, PD days, and testing windows. None of these count as instructional days, and every unit reflows around them. The examples below are editable; delete any that do not match your school.</p>
+          <div id="daysoff"></div>
+          <div class="formrow" style="margin-top:10px;">
+            <div><label class="f" for="o-from">From</label><input type="date" id="o-from"></div>
+            <div><label class="f" for="o-to">To</label><input type="date" id="o-to"></div>
+            <div><label class="f" for="o-label">Label</label><input type="text" id="o-label" placeholder="Thanksgiving break"></div>
+            <div><label class="f" for="o-kind">Kind</label>
+              <select id="o-kind">
+                <option value="holiday">Holiday</option>
+                <option value="pd">PD day</option>
+                <option value="break">Break</option>
+                <option value="testing">Testing window</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+            <div style="align-self:end;"><button class="btn secondary" id="o-add" type="button">Add</button></div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h3>Units, in course order</h3>
+          <p class="small">Day counts include each unit's test day. The Progressive Era and Gilded Age counts come from your picks in the <a href="planner.html">unit planner</a> when you have made them. The other counts are starting estimates, labeled as such; change any of them and the year reflows.</p>
+          <table class="pacing" id="units"></table>
+        </div>
+      </div>
+
+      <div class="sticky">
+        <div class="panel">
+          <h3>Year totals</h3>
+          <p id="demand-line" style="margin:0 0 8px;"></p>
+          <table class="pacing" id="totals"></table>
+          <p class="small" id="exam-note"></p>
+          <h3 style="margin-top:18px;">By grading period</h3>
+          <table class="pacing" id="period-summary"></table>
+          <p style="margin-top:16px; display:flex; flex-wrap:wrap; gap:8px; align-items:stretch;">
+            <button class="btn ghost" id="export" type="button">Export plan (JSON)</button>
+            <label class="btn ghost" style="cursor:pointer;">Import plan<input type="file" id="import" accept="application/json" style="display:none;"></label>
+            <button class="btn ghost" id="copyfwd" type="button">Copy plan forward a year</button>
+            <button class="btn ghost" id="share-year" type="button">Share link</button>
+            <button class="btn ghost" id="ics-year" type="button">Calendar (.ics)</button>
+            <button class="btn ghost" id="fit-year" type="button">Fit to year</button>
+          </p>
+          <div id="fit-preview" style="display:none;"></div>
+          <p class="small" id="ics-note" style="margin:0 0 6px;"></p>
+          <p class="small" id="share-year-note" style="margin:0 0 6px;"></p>
+          <p class="small" id="import-note" style="margin:0 0 6px;"></p>
+          <p class="small">Export saves your year setup and unit day counts as a file you can keep or move to another computer. Copy forward shifts every date ahead one year so last year's plan becomes next year's starting point.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3>The year at a glance</h3>
+      <p class="small">Each unit is a color. The last day of a unit band is its test day. Days off are hatched and labeled in the list above; grading period ends carry a dark top border; the exam date is ringed in rust. Drag a unit's band onto a new date to pin that unit's start there; the units before it keep their lengths and any gap stays open as buffer. Unpin from the unit list.</p>
+      <div id="calendar"></div>
+      <div id="legend" class="legend"></div>
+    </div>
+  </div>
+</section>
+
+<footer class="site">
+  <div class="wrap">
+    <img src="assets/store-wordmark-cream.svg" alt="Humanities Curriculum Group">
+    <div>
+      <p>Humanities Curriculum Group is a Knoweth product, built by a working social studies teacher. Sister projects: <a href="https://rycal.web.app">Rycal</a>, spaced-repetition study tools for AP courses, and <a href="https://tpsp.web.app">The Primary Source Project</a>, a primary source library and DBQ builder.</p>
+      <p>Materials print on standard US Letter paper with ordinary school copiers in mind.</p>
+    </div>
+  </div>
+</footer>
+
+<script src="planner-data.js"></script>
+<script src="year-planner.js"></script>
+<script src="firebase-config.js"></script>
+<script src="auth.js"></script>
+<script>
+  if (window.HCGAuth && window.HCGYearRefresh) window.HCGAuth.onChange(window.HCGYearRefresh);
+</script>
+</body>
+</html>

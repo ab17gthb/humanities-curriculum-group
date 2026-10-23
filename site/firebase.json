@@ -1,0 +1,56 @@
+{
+  "hosting": {
+    "headers": [
+      {
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "public, max-age=300"
+          }
+        ],
+        "source": "/files/**"
+      },
+      {
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "public, max-age=300"
+          }
+        ],
+        "source": "**/*.js"
+      },
+      {
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "public, max-age=300"
+          }
+        ],
+        "source": "**/*.html"
+      }
+    ],
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "public": "public",
+    "site": "humanitiescurriculumgroup",
+    "cleanUrls": true
+  },
+  "functions": [
+    {
+      "source": "functions",
+      "codebase": "hcg",
+      "runtime": "nodejs22",
+      "ignore": [
+        "node_modules",
+        ".git",
+        "*.log"
+      ]
+    }
+  ],
+  "storage": {
+    "rules": "storage.rules"
+  }
+}
