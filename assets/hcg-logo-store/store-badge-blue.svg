@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="600" viewBox="0 0 600 600">
+  <circle cx="300" cy="300" r="292" fill="#a8bfd4"/>
+  <circle cx="300" cy="300" r="266" fill="none" stroke="#1f3350" stroke-width="3"/>
+  <circle cx="300" cy="300" r="256" fill="none" stroke="#1f3350" stroke-width="1.5"/>
+  <text x="300" y="238" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="27" letter-spacing="9" fill="#1f3350">HUMANITIES</text>
+  <text x="300" y="345" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="104" letter-spacing="4" fill="#1f3350">HCG</text>
+  <line x1="185" y1="385" x2="415" y2="385" stroke="#b4552d" stroke-width="3"/>
+  <text x="300" y="432" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="23" letter-spacing="6.5" fill="#1f3350">CURRICULUM GROUP</text>
+</svg>

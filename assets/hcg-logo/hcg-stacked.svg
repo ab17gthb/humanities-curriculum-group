@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="420" height="240" viewBox="0 0 420 240">
+  <line x1="40" y1="28" x2="380" y2="28" stroke="#111111" stroke-width="1.5"/>
+  <line x1="40" y1="36" x2="380" y2="36" stroke="#111111" stroke-width="0.75"/>
+  <text x="210" y="92" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="37" letter-spacing="4" fill="#111111">HUMANITIES</text>
+  <text x="210" y="140" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="37" letter-spacing="4" fill="#111111">CURRICULUM</text>
+  <text x="210" y="188" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="37" letter-spacing="14" fill="#111111">GROUP</text>
+  <line x1="40" y1="212" x2="380" y2="212" stroke="#111111" stroke-width="0.75"/>
+  <line x1="40" y1="220" x2="380" y2="220" stroke="#111111" stroke-width="1.5"/>
+</svg>
