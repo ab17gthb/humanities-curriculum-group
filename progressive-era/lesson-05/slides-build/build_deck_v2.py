@@ -1,0 +1,259 @@
+#!/usr/bin/env python3
+"""Lesson 5 deck, built to the approved Lesson 1 system (2026-10-21):
+image-led slides, fragments only on screen, comprehensive speaker notes,
+full lesson + vocabulary coverage. Fonts: Georgia titles, Lato body."""
+import os, sys
+HERE = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, os.path.join(HERE, '..', '..'))
+import deck_common
+from deck_common import (slide, rect, text, notes, kicker, rule, frags,
+                         photo_right, divider_photo, content_photo,
+                         content_text, stat, divider_text,
+                         NAVY, CREAM, RUST, RUST_LT, POWDER, INK, MUTED, W)
+deck_common.IMG = os.path.join(HERE, 'img')
+OUT = os.path.join(HERE, '..', 'lesson-05-slides.pptx')
+from pptx.util import Inches
+from pptx.enum.text import PP_ALIGN
+
+def content_photo_s(img, title, items, note, kick=None, size=21):
+    s = slide(CREAM)
+    photo_right(s, img)
+    if kick: kicker(s, kick, color=RUST)
+    text(s, 0.9, 0.95 if kick else 0.8, 6.9, 1.2, title, size=31, color=NAVY, font='Georgia', leading=1.05)
+    frags(s, items, y=2.15 if kick else 2.0, w=6.9, size=size)
+    notes(s, note)
+    return s
+
+# ---------------------------------------------------------------- 1 · TITLE
+s = slide(NAVY)
+s.shapes.add_picture(os.path.join(deck_common.IMG, 'title-169.jpg'), 0, 0,
+                     deck_common.prs.slide_width, deck_common.prs.slide_height)
+rect(s, 0, 5.05, W, 2.45, NAVY)
+rect(s, 0, 5.05, W, 0.045, RUST)
+text(s, 0.9, 5.32, 11.5, 0.4, 'PROGRESSIVE ERA · LESSON 5', size=14, color=RUST_LT, font='Arial', bold=True)
+text(s, 0.9, 5.66, 11.9, 1.1, 'Taft, the Split, and the Election of 1912', size=36, color=CREAM, font='Georgia')
+text(s, 0.9, 6.68, 11.5, 0.5, 'How a chosen successor, a broken friendship, and a divided party changed who governed America', size=16, color=POWDER)
+notes(s, "This lesson is the hinge of the unit. In Lesson 4, Roosevelt left office at the height of his popularity and handed the presidency to the man he had chosen. Four years later the two men were enemies, their party was split in two, and a Democrat was about to take the White House. The puzzle for students is how fast it happened, and how little of it was about the record. Taft's administration, judged by results, prosecuted the trusts more aggressively than Roosevelt's had. What failed was the politics around the record. The photograph shows the 1912 Republican National Convention in session at the Chicago Coliseum, the room where the split became official. Unit question, as printed on the guided notes beneath today's lesson question: How did Americans respond to the problems created by industrialization, urbanization, and political corruption? Today the response runs through a political party tearing itself apart.")
+
+# ------------------------------------------------- 2 · ESSENTIAL QUESTION
+s = slide(NAVY)
+kicker(s, 'The question for today')
+text(s, 0.9, 1.9, 11.5, 3.4, [[('Why did the Republican Party split in 1912, and what did the split decide?', {})]],
+     size=44, color=CREAM, font='Georgia', leading=1.25)
+rule(s, 0.92, 5.6)
+text(s, 0.92, 5.85, 11.5, 0.9, [[('Unit question: ', {'color': RUST_LT, 'italic': True}),
+                                ('How did Americans respond to the problems created by industrialization, urbanization, and political corruption?', {'italic': True})]],
+     size=17, color=POWDER, font='Georgia', leading=1.2)
+notes(s, "Keep today's lesson question in front of students, because this lesson answers the unit question in an unexpected place: inside a political party. The response to industrial problems in 1912 ran through nominations, conventions, and a general election, and the fight was not between reformers and the interests. It was between two kinds of reformer, both claiming the same inheritance. Have students glance at the key terms on their guided notes before the narrative starts; the five terms are the lesson in miniature: a tariff, an affair, a party, and two rival programs. A useful opener: ask which usually decides who governs, what a president does or what voters believe he did. Students will spend the hour collecting evidence for the second answer. By the exit ticket they should be able to rank the three breaks, explain why the primaries failed Roosevelt, and choose a candidate as a progressive voter, cost included.")
+
+# ------------------------------------------------------- 3 · THE LESSON MAP
+s = slide(NAVY)
+kicker(s, 'The lesson in one slide')
+text(s, 0.9, 1.35, 11.5, 1.0, 'A party tears itself in two', size=42, color=CREAM, font='Georgia')
+rule(s, 0.92, 2.5)
+rows = [('A', "Taft's real record", 'a stronger record than its reputation'),
+        ('B', 'The breaks', 'the tariff, the firing, and the lawsuit'),
+        ('C', 'The convention fight', 'primary voters against the party machinery'),
+        ('D', 'The four candidates', 'two reform programs, an incumbent, a socialist'),
+        ('E', 'The result', 'a divided party elects Wilson')]
+yy = 2.85
+for n, t, d in rows:
+    text(s, 0.9, yy, 0.7, 0.7, n, size=28, color=RUST_LT, font='Georgia')
+    text(s, 1.6, yy + 0.03, 3.9, 0.7, t, size=25, color=CREAM, bold=True)
+    text(s, 5.7, yy + 0.09, 6.9, 0.7, d, size=19, color=POWDER)
+    yy += 0.82
+notes(s, "This is the map of the lesson, and it follows the guided notes section by section, which is worth saying out loud so students know how to organize their pages. Section A examines Taft's real record and finds it stronger than its reputation. Section B walks through the three breaks that destroyed the Roosevelt and Taft alliance: the tariff, the firing of Gifford Pinchot, and the U.S. Steel lawsuit. Section C follows the convention fight of 1912, where primary voters and convention delegates chose different men. Section D lines up the four candidates and the two reform programs at the center of the election. Section E does the arithmetic of the result. Students who keep one question in mind will follow the whole hour: how does a party with a majority of the voters manage to lose? The answer is the split, and every section adds one piece of it.")
+
+# ------------------------------------------------------------ 4 · STAT: 90
+stat('ABOUT 90', 'antitrust suits filed by the Taft administration',
+     'Roughly twice Roosevelt\u2019s total. The record was real. The reputation was something else.',
+     "Open the evidence with the number, because it contradicts what most students expect. Taft's administration filed about ninety antitrust suits in four years, roughly twice Roosevelt's total in nearly eight. It also extended railroad regulation through the Mann-Elkins Act of 1910, which strengthened the Interstate Commerce Commission's power over railroad rates and brought telephone and telegraph companies under its reach. By the measures students used in Lesson 4, this was a trust-busting presidency. So the lesson's central question sharpens: why did progressives, including Roosevelt, conclude that Taft had betrayed the cause? The reading's answer key puts it in one line worth giving students directly: politics ran on signals, not only results. Taft sent the wrong signals, repeatedly, and the next section shows the three occasions that did the damage. Hold the question open until Section B is finished.",
+     kick="Section A · Taft's real record")
+
+# ------------------------------------------------- 5 · SECTION A DIVIDER
+divider_photo('taft-port.jpg', 'Section A', "Taft's Real Record",
+              ['The handpicked successor', 'Chosen by Roosevelt, and judged against Roosevelt ever after'],
+              "The photograph is Taft in 1908, the year he won the presidency with Roosevelt's active support. Roosevelt then sailed for Africa, expecting his program to continue under a loyal successor, and for a time it did. What students need before the record is the man. Taft was a judge by temperament: he had served on the federal bench, he proceeded case by case, and he believed a president should work inside the forms of the law. He disliked pressure politics, disliked the theater of the bully pulpit, and seemed to progressives to defend every institution he touched. None of that made him a reactionary. It made him a poor performer in a role Roosevelt had turned into a performance, and the comparison ran against him daily. Frame Section A as a fairness exercise: judge the record first, on its own evidence, before watching the reputation collapse in Section B.",
+              title_size=44)
+
+# ------------------------------------------------------ 6 · THE REAL RECORD
+content_text('A record stronger than its reputation',
+             ['Taft\u2019s administration filed about 90 antitrust suits, roughly twice Roosevelt\u2019s total.',
+              'The Mann-Elkins Act of 1910 extended railroad regulation.',
+              'Taft proceeded case by case, by the book, with no crusades.',
+              'He seemed to defend every institution he touched.'],
+             "Work through the record slowly, because Section B only makes sense against it. The antitrust total, about ninety suits, was roughly double Roosevelt's, and it included the Standard Oil and American Tobacco cases decided by the Supreme Court in 1911. The Mann-Elkins Act of 1910 extended railroad regulation, a Square Deal priority carried forward. Taft also supported the income tax amendment moving through Congress and signed measures of real substance on conservation and the tariff's machinery. His limits were presentational and temperamental. Where Roosevelt dramatized, Taft filed paperwork. Where Roosevelt threatened, Taft waited for a court. Progressives read the quiet as retreat, and in politics the appearance of retreat can do the damage of retreat itself; that sentence from the reading is the section in one line. Ask students to write down the strongest single fact in Taft's favor before moving on. They will need it at the exit ticket, when they judge how much of the split was his doing and how much was done to him.",
+             kick="Section A · Taft's real record")
+
+# ------------------------------------------------- 7 · SECTION B DIVIDER
+divider_text('Section B', 'The Breaks',
+             'Three events turned a policy dispute into a broken party: a tariff, a firing, and a lawsuit.',
+             "Three events broke the alliance, and students should learn them as a sequence, because each one raised the cost of reconciliation. The tariff fight of 1909 was about policy, and it disappointed progressives who had been promised lower rates. The firing of Gifford Pinchot in January 1910 was about loyalty, and it told Roosevelt's closest allies that the administration had changed sides. The U.S. Steel suit of 1911 was about honor, and it put Roosevelt's own integrity on trial in a federal complaint. Policy, loyalty, honor: by the third break, the quarrel was no longer something a meeting could repair. The guided notes take the three in order and the exit ticket asks students to rank them, so teach them as rivals for the title of decisive break. Strong classes usually argue for Pinchot or for the Steel suit; the tariff alone rarely wins, which is itself a finding about how politics actually breaks.")
+
+# ---------------------------------------------------------- 8 · THE TARIFF
+content_text('Break one: the tariff',
+             ['In a special session in 1909, Taft promised lower rates.',
+              'The Payne-Aldrich Tariff lowered some rates and raised others.',
+              'Taft praised the result as a good bill.',
+              'Progressives had expected a fight, and they heard surrender.'],
+             "The first break came over the tariff, and the first key term belongs here: Payne-Aldrich Tariff (1909), tariff law, promised as reform, that lowered some rates and raised others. The sequence matters. Taft called Congress into special session in 1909 promising lower rates, which raised progressive expectations. The bill that emerged lowered some rates and raised others, a compromise progressives read as the old guard winning again. Taft then praised the result in a speech as a good bill, trying to hold his party together. Progressives had expected a fight and heard surrender. Note the pattern students will see twice more: the substance was defensible, the signal was disastrous. A president determined to fight could have vetoed the bill or attacked it publicly. Taft defended it instead, and the defense, not the rate schedule, is what history remembered. Ask what Taft gained (party unity, briefly) and what he spent (progressive trust, permanently).",
+             kick='Section B · The breaks')
+
+# ----------------------------------------------------------- 9 · PINCHOT
+content_photo_s('pinchot-port.jpg', 'Break two: Ballinger and Pinchot',
+              ['Pinchot accused Ballinger over Alaska coal land.',
+               'Taft cleared Ballinger of wrongdoing.',
+               'Pinchot was fired for insubordination in January 1910.',
+               'Conservationists read the firing as changing sides.'],
+              "The second break was personal and symbolic, and it supplies the second key term: Ballinger-Pinchot affair, the 1910 fight in which Taft fired forester Gifford Pinchot after Pinchot accused the Interior secretary of favoring corporate land claims. The underlying dispute concerned Alaskan coal claims and whether Secretary of the Interior Richard Ballinger had favored corporate interests in handling them. Pinchot, Roosevelt's forester and a hero to conservationists since Lesson 4, made the accusation public and carried the fight to Congress and the press. Taft cleared Ballinger and, in January 1910, fired Pinchot for insubordination. Legally tidy, politically catastrophic. Pinchot carried the story straight to Roosevelt's circle, and to conservationists the firing proved the administration had changed sides. If students keep one distinction, make it this one: Taft decided the case in front of him; Roosevelt's movement heard a verdict about whose side the president was on.",
+              kick='Section B · The breaks')
+
+# -------------------------------------------------------- 10 · U.S. STEEL
+content_text('Break three: the insult',
+             ['In 1911, the Justice Department sued U.S. Steel.',
+              'The complaint named a 1907 deal Roosevelt had approved.',
+              'Roosevelt read the complaint as an attack on his honesty.',
+              'Whatever friendship remained ended there.'],
+             "The third break ended the friendship, and students often miss it because it looks like a routine lawsuit. In 1911 Taft's Justice Department sued United States Steel under the Sherman Act, and its complaint mentioned a 1907 deal in which Roosevelt himself had approved the company's purchase of a competitor during a financial panic. Taft had authorized the suit without seeing the political charge inside it. Roosevelt read the complaint as a public accusation that he had been fooled or bought, an attack on his personal honesty delivered by his own successor's government. Whatever friendship remained ended there, and Roosevelt began listening to the progressives urging him to run in 1912. For the exit ticket ranking, this break has a strong claim: the tariff cost Taft progressive support and Pinchot cost him the conservationists, but the Steel complaint made the quarrel personal between the only two men who could have settled it, and personal quarrels do not get negotiated at conventions.",
+             kick='Section B · The breaks')
+
+# ------------------------------------------------- 11 · SECTION C DIVIDER
+divider_photo('convention-port.jpg', 'Section C', 'The Convention Fight',
+              ['Republican voters chose Roosevelt.', 'The convention chose Taft.'],
+              "The photograph shows delegates crowding the entrances of the Chicago Coliseum in June 1912, where the Republican convention met to choose between a sitting president and the most popular man in America. Set the stakes plainly. Roosevelt challenged Taft for the nomination, something almost unheard of against an incumbent of one's own party. He had a new weapon, the direct primary, one of the reforms from Lesson 3, and in the states that held primaries, Republican voters chose him overwhelmingly. But the nomination was not awarded by primary voters. It was awarded by delegates, and most delegates were still selected by state conventions and party organizations that Taft controlled. Section C is therefore a lesson inside the lesson: reforms change who can speak, but institutions decide whose speech counts. Students will write that argument in one sentence on the exit ticket, so make sure the machinery is clear before the walkout.",
+              title_size=40)
+
+# ------------------------------------------------------ 12 · THE MACHINERY
+content_text('Primaries against the machinery',
+             ['The new direct primaries came from Lesson 3.',
+              'In primary states, Republican voters chose Roosevelt overwhelmingly.',
+              'Most delegates still came from Taft-run state conventions.',
+              'The convention seated contested Taft delegations.'],
+             "Give students the machinery in plain order. First, the direct primaries: in the states holding them in 1912, Republican voters chose Roosevelt overwhelmingly, which legitimized his challenge and proved where the party's rank and file stood. Second, the delegate count: most delegates were still selected by state conventions controlled by Taft's organization, and many primary victories bound few or no delegates at all. Third, the convention itself: when contested delegations from the same states arrived claiming the same seats, the convention's machinery seated the Taft delegations over the Roosevelt ones. Taft took the nomination. The teacher key for the reading states the moral exactly: the nomination machinery outweighed the primary results. A good discussion question, if time allows: is a nomination legitimate when the voters' preference is clear and the rules produce the opposite result? The class will divide, and the division is the point. Roosevelt's supporters reached the same conclusion in 1912, and acted on it.",
+             kick='Section C · The convention fight')
+
+# --------------------------------------------------------- 13 · THE WALKOUT
+content_photo_s('bullmoose-port.jpg', 'The walkout',
+              ['Roosevelt\u2019s supporters walked out of the convention.',
+               'In August 1912, they formed a party of their own.',
+               'Roosevelt said he felt as strong as a bull moose.',
+               'The Bull Moose party was born.'],
+              "Roosevelt's supporters walked out of the convention, and in August, meeting again in Chicago, they formed a new party. The third key term: Progressive Party, the party Roosevelt's supporters formed in 1912, nicknamed Bull Moose. The nickname came from Roosevelt himself, who told reporters he felt as strong as a bull moose, and it stuck to the party for the rest of the campaign. The cover on screen is Harper's Weekly from July 20, 1912, showing Roosevelt as the baby Moses found among the bulrushes, or bull moose rushes, with the new party in the basket beside the river. Students enjoy decoding it once the reference is pointed out. Note what the walkout meant strategically: it guaranteed that two candidates would divide the Republican and progressive vote in November. Roosevelt knew the arithmetic and ran anyway, which tells students how completely the convention fight had burned the bridges. The new party also adopted one of the most reform-minded platforms of the era, and its candidate is the subject of Section D.",
+              kick='Section C · The convention fight')
+
+# ------------------------------------------------- 14 · SECTION D DIVIDER
+divider_photo('roosevelt-port.jpg', 'Section D', 'The Four Candidates',
+              ['The widest choice of the era:', 'two reformers, an incumbent, and a socialist'],
+              "The photograph is Roosevelt in his presidency, the Pach Brothers portrait of 1904, and by 1912 he was asking voters to return him to the office he had voluntarily left. Section D lines up the general election, which offered the widest choice of the era: four candidates who between them covered nearly the whole range of answers Americans were giving to the problems of Lesson 1. Taft defended the Republican record and the courts. Debs, the Socialist, proposed public ownership. And between them stood the real argument, between the two reformers, Roosevelt and Wilson, who agreed on the diagnosis and disagreed on the instrument. The guided notes ask students to compress each candidate into a line of five words or fewer on party and program. That compression is the skill of the section: a student who can state all four positions in a breath understands the election better than one who can recite the vote totals.",
+              title_size=44)
+
+# --------------------------------------------------- 15 · FOUR CANDIDATES
+s = slide(CREAM)
+kicker(s, 'Section D · The four candidates', color=RUST)
+text(s, 0.9, 0.95, 11.5, 1.0, 'Four candidates, four answers', size=31, color=NAVY, font='Georgia')
+cands = [('Roosevelt', 'Progressive (Bull Moose) · New Nationalism: regulate big business'),
+         ('Wilson', 'Democratic · New Freedom: break up monopoly, restore competition'),
+         ('Taft', 'Republican · defend the record and the courts'),
+         ('Debs', 'Socialist · public ownership of major industries')]
+yy = 2.15
+for name, line in cands:
+    text(s, 0.9, yy, 3.1, 0.7, name, size=24, color=INK, bold=True)
+    text(s, 4.15, yy + 0.06, 8.4, 0.9, line, size=19, color=MUTED, leading=1.15)
+    yy += 1.08
+notes(s, "Use this slide as the section's reference card; it matches the guided notes table exactly. Roosevelt, Progressive, New Nationalism: regulate big business. Wilson, Democratic, New Freedom: break up monopoly and restore competition. Taft, Republican: defend the record and the courts, the most conservative offer on the ballot and the only one without a new reform program attached. Debs, Socialist: public ownership of railroads and major industries, the answer the problems of Lesson 1 received from the left, and it won about 6 percent of the vote, his party's best national showing. Two teaching points. First, three of the four candidates were, in some real sense, reformers, which shows how completely the agenda of Lesson 1 had captured national politics by 1912. Second, the election's outcome was decided less by these programs than by the split covered in Section C. Keep both truths in view when students reach the result and start asking whether Wilson really won, or the Republicans simply lost.")
+
+# ------------------------------------------------- 16 · NEW NATIONALISM
+content_text('Roosevelt: the New Nationalism',
+             ['Large corporations are permanent.',
+              'A strong federal government regulates them.',
+              'Commissions hold power over prices and practices.',
+              'The program adds social welfare, including minimum wages and insurance against sickness and old age.'],
+             "Roosevelt's program first, and give the term exactly as the guided notes define it: New Nationalism, Roosevelt's 1912 program of regulating large corporations through a strong federal government. The argument underneath is a break with the older antitrust tradition. Roosevelt accepted large corporations as permanent features of a modern economy; size alone was not the offense. What size required was supervision, so the New Nationalism proposed commissions with power over prices and practices, a federal government strong enough to stand across the table from the largest firms in the country. It also reached beyond business regulation into social welfare: minimum wages, and insurance against sickness and old age. Students who completed Lesson 4 will recognize the Square Deal grown larger and more systematic. The contrast that matters arrives on the next slide: where Roosevelt trusts the state to manage bigness, Wilson distrusts bigness itself, and the two programs part company on that single judgment.",
+             kick='Section D · The four candidates', size=25)
+
+# ----------------------------------------------------- 17 · NEW FREEDOM
+content_photo_s('wilson-port.jpg', 'Wilson: the New Freedom',
+              ['Regulated monopoly is still monopoly.',
+               'Wilson would break up the trusts.',
+               'His program would restore competition.',
+               'Government acts as referee, not manager.'],
+              "Wilson's answer, with its definition as the guided notes give it: New Freedom, Wilson's 1912 program of breaking up monopoly and restoring competition. Wilson, a former professor and president of Princeton, made the argument as an intellectual case: regulated monopoly was still monopoly, and a government strong enough to supervise the trusts would end up captured by them, as the tariff and convention stories in this very lesson suggested. His remedy ran the other way: break up monopoly power, restore competition, and let government act as referee to keep markets open rather than as manager of the corporations. Same diagnosis, corporate power; opposite instruments, regulation versus restored competition. The reading's fifth question asks which program better predicts the federal government Americans actually got over the following century, and it is deliberately arguable: permanent regulatory commissions look like Roosevelt, while continuing antitrust enforcement looks like Wilson. Lesson 6 will complicate the question further, because Wilson in office borrowed from both.",
+              kick='Section D · The four candidates')
+
+# ---------------------------------------------------- 18 · DEBS AND TAFT
+content_photo_s('debs-port.jpg', 'Debs and Taft',
+              ['Debs, the Socialist, argued for public ownership of railroads and major industries.',
+               'Debs won about 6 percent, the Socialists\u2019 best national showing.',
+               'Taft, the Republican, defended the record and the courts.'],
+              "Do not let the two remaining candidates become footnotes; the guided notes give each a line, and both matter to the result. Eugene V. Debs, the Socialist candidate in his fourth run for the presidency, argued that public ownership of railroads and major industries was the only real answer to corporate power, and he won about 6 percent of the popular vote, the best national showing his party ever achieved. That figure measures how far left the argument of 1912 extended, well past anything Wilson or Roosevelt proposed. Taft, meanwhile, ran the loneliest campaign of the four: he defended the Republican record and the courts, expecting defeat, and by October was effectively a spectator to his own election. Students sometimes ask why he did not simply withdraw in Roosevelt's favor. Party regularity, personal pride, and genuine conviction about the courts all played a part, and his staying in the race is half of the arithmetic that elects Wilson on the next slides.",
+              kick='Section D · The four candidates')
+
+# ------------------------------------------------- 19 · SECTION E DIVIDER
+divider_text('Section E', 'The Result',
+             'Roosevelt and Taft together outpolled Wilson by more than a million votes. Divided, they elected him.',
+             "Everything since the tariff now lands on one page of arithmetic. On paper, the Republican family commanded a majority: combined, Roosevelt and Taft outpolled Wilson by more than a million votes. Divided between two candidates, they elected him. The reading's fourth question phrases the result as a riddle worth posing to the class: the Republicans won the argument and lost the presidency. Section E gives students the numbers to prove it, and one piece of drama, the attempt on Roosevelt's life in Milwaukee, which changed nothing. Keep the section tight; the lesson's remaining time belongs to the vocabulary check and the closing activities, and the numbers themselves are simple. What is not simple, and worth one question before moving on, is whether Wilson's victory should be read as a mandate for the New Freedom. He won the office with about 42 percent of the vote, which means most voters chose someone else, a fact Wilson himself understood and governed around.")
+
+# -------------------------------------------------------- 20 · MILWAUKEE
+content_text('October 14: the shot in Milwaukee',
+             ['A would-be assassin shot Roosevelt in the chest.',
+              'The bullet passed through his speech manuscript and glasses case.',
+              'Roosevelt delivered the speech anyway.',
+              'The shooting changed nothing about the math.'],
+             "The campaign's most famous moment came on October 14, 1912, in Milwaukee, where a would-be assassin shot Roosevelt in the chest as he left his hotel. The bullet passed through his folded speech manuscript and his steel glasses case, and both slowed it enough to save his life. Roosevelt, bleeding, insisted on going to the hall and delivered the speech anyway, telling the crowd it would take more than that to kill a bull moose. It is a magnificent story, and then the reading does something important with it: it changed nothing about the math. Use the moment to teach the difference between an event and a cause. The shooting is what students will remember in ten years; the delegate count from Section C is what actually decided the election. A teacher's job in this section is to hold both: the drama that makes the lesson stick, and the structure that makes it true.",
+             kick='Section E · The result')
+
+# ------------------------------------------------------ 21 · STAT: RESULT
+s = slide(NAVY)
+kicker(s, 'Section E · The result')
+text(s, 0.9, 1.55, 11.53, 2.6, '42 PERCENT', size=105, color=CREAM, font='Georgia',
+     align=PP_ALIGN.CENTER, space_after=0)
+text(s, 0.9, 4.35, 11.53, 0.9, 'of the popular vote won Wilson the presidency', size=30, color=CREAM, align=PP_ALIGN.CENTER, space_after=0)
+text(s, 1.9, 5.35, 9.53, 1.2, 'Wilson 435 electoral votes · Roosevelt 88, the best third-party showing ever · Taft two states and 8',
+     size=20, color=POWDER, align=PP_ALIGN.CENTER, leading=1.3)
+notes(s, "Put the whole result on one slide and read it aloud. Wilson won with about 42 percent of the popular vote and 435 of 531 electoral votes, a landslide in the Electoral College built on a minority of the ballots cast. Roosevelt ran second with about 27 percent and 88 electoral votes, the strongest third-party showing in American history, ahead of the sitting president he had put in office. Taft carried two states, Vermont and Utah, and 8 electoral votes, the worst result an incumbent president had ever recorded while seeking another term. And underneath the split sits the comparison that proves the riddle: Roosevelt and Taft together outpolled Wilson by more than a million votes. Students completing Section E of the guided notes can now fill every blank, including that final combined judgment. Lesson 6 takes up what Wilson did with the office the split handed him, including how much of Roosevelt's program he quietly adopted once the campaigning ended.")
+
+# ------------------------------------------------------------ 22 · VOCAB A
+def vocab(title, terms, note, kick='The vocabulary'):
+    s = slide(CREAM)
+    kicker(s, kick, color=RUST)
+    text(s, 0.9, 0.95, 11.5, 1.0, title, size=30, color=NAVY, font='Georgia')
+    yy = 2.1
+    for term, dfn in terms:
+        text(s, 0.9, yy, 4.1, 1.3, term, size=24, color=NAVY, font='Georgia', leading=1.1)
+        text(s, 5.15, yy + 0.06, 7.3, 1.3, dfn, size=19, color=MUTED, leading=1.2)
+        yy += 1.52
+    notes(s, note)
+    return s
+
+vocab('Words for the breaks',
+      [('Payne-Aldrich Tariff (1909)', 'tariff law, promised as reform, that lowered some rates and raised others'),
+       ('Ballinger-Pinchot affair', 'the 1910 fight in which Taft fired forester Gifford Pinchot after Pinchot accused the Interior secretary of favoring corporate land claims'),
+       ('Progressive Party', "the party Roosevelt's supporters formed in 1912, nicknamed Bull Moose")],
+      "These definitions match the guided notes word for word, so students can check their pages against the screen. Payne-Aldrich Tariff (1909), tariff law, promised as reform, that lowered some rates and raised others; students should attach it to Taft's decision to praise the bill rather than fight it. Ballinger-Pinchot affair, the 1910 fight in which Taft fired forester Gifford Pinchot after Pinchot accused the Interior secretary of favoring corporate land claims; attach it to conservation, and to the personal channel between Pinchot and Roosevelt that turned a personnel decision into a national story. Progressive Party, the party Roosevelt's supporters formed in 1912, nicknamed Bull Moose; attach it to the convention walkout and to Roosevelt's remark about his own health. Three terms, three of the lesson's turning points. A quick check for understanding: ask students to name the break each of the first two terms belongs to, and what a memorable nickname does for a new party that a platform cannot.")
+
+# ------------------------------------------------------------ 23 · VOCAB B
+vocab('Words for the two programs',
+      [('New Nationalism', "Roosevelt's 1912 program of regulating large corporations through a strong federal government"),
+       ('New Freedom', "Wilson's 1912 program of breaking up monopoly and restoring competition")],
+      "The last two terms are the lesson's intellectual core, and they are best taught as a pair. New Nationalism, Roosevelt's 1912 program of regulating large corporations through a strong federal government. New Freedom, Wilson's 1912 program of breaking up monopoly and restoring competition. Every word of difference between those two definitions carries weight: regulating against breaking up, a strong federal government against restored competition. A student who can explain why Roosevelt's definition never treats size itself as the problem, and why Wilson's never mentions commissions, has understood the election of 1912 at the level the unit test will ask about, since the reading's third question requires exactly this distinction stated in one sentence each. Have students say the pair aloud once (Roosevelt regulates, Wilson restores) before the closing slide. The distinction also sets up Lesson 6, where Wilson governs, and students can watch which of the two definitions his presidency ends up resembling.")
+
+# -------------------------------------------------------- 24 · TODAY'S WORK
+s = slide(NAVY)
+kicker(s, 'Now your turn')
+text(s, 0.9, 1.35, 11.5, 1.1, 'Put 1912 on paper', size=44, color=CREAM, font='Georgia')
+rule(s, 0.92, 2.62)
+text(s, 0.9, 2.95, 11.3, 1.6,
+     ['Two activities, both built from this lesson. Then the exit ticket before you leave.'],
+     size=23, color=POWDER, leading=1.3)
+rows = [('Activity 1', 'The 1912 comparison chart: four candidates, side by side'),
+        ('Activity 2', 'Campaign poster or speech: make the case for one of them')]
+yy = 4.15
+for t, d in rows:
+    text(s, 0.9, yy, 2.2, 0.6, t, size=19, color=RUST_LT, bold=True)
+    text(s, 3.2, yy, 8.6, 0.6, d, size=19, color=CREAM)
+    yy += 0.62
+text(s, 0.9, 6.8, 11.5, 0.5, 'Exit ticket: rank the three breaks, one sentence on the primaries, and your 1912 vote, defended.',
+     size=16, color=POWDER)
+notes(s, "Close by pointing students to the two activities that follow this lesson. The 1912 comparison chart puts the four candidates side by side and asks students to complete the comparison themselves, candidate, party, and program, which converts today's notes into an organized reference they keep. The campaign activity then makes them use it: each student produces a campaign poster or a short speech for one of the four candidates, arguing that candidate's answer to corporate power in the candidate's own terms. A Debs speech and a Taft speech should sound nothing alike, and that contrast is the real assessment. Collect the exit ticket before they leave. It asks for three things: a ranking of the three breaks with a defense of the top choice; one sentence explaining why the direct primaries failed to give Roosevelt the nomination; and a progressive voter's choice for 1912, with the cost of that choice named. Next lesson, Wilson takes office, and the New Freedom meets Congress.")
+
+deck_common.save(OUT)
