@@ -23,6 +23,6 @@ Status key: DONE = guide built, deck rebuilt, notes applied, QA passed, live fil
 | The Twenties | DONE 2026-10-24 | DONE 2026-10-24 | DONE 2026-10-24 | DONE 2026-10-24 | DONE 2026-10-24 | DONE 2026-10-24 | DONE 2026-10-24 | DONE 2026-10-24 |
 | Depression and New Deal | DONE 2026-10-24 | DONE 2026-10-24 | DONE 2026-10-24 | DONE 2026-10-24 | DONE 2026-10-24 | DONE 2026-10-24 | DONE 2026-10-24 | DONE 2026-10-24 |
 | World War II | DONE 2026-10-24 | DONE 2026-10-24 | DONE 2026-10-24 | DONE 2026-10-24 | DONE 2026-10-24 | DONE 2026-10-24 | DONE 2026-10-24 | DONE 2026-10-24 |
-| The Cold War | DONE 2026-10-24 | DONE 2026-10-24 | DONE 2026-10-24 | | | | | |
+| The Cold War | DONE 2026-10-24 | DONE 2026-10-24 | DONE 2026-10-24 | DONE 2026-10-24 | | | | |
 | Civil Rights | | | | | | | | |
 | Modern America | | | | | | | | |
