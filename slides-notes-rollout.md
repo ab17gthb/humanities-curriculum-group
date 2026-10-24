@@ -16,7 +16,7 @@ Status key: DONE = guide built, deck rebuilt, notes applied, QA passed, live fil
 | Early Republic and Expansion | DONE 2026-10-24 | DONE 2026-10-24 | DONE 2026-10-24 | DONE 2026-10-24 | DONE 2026-10-24 | DONE 2026-10-24 | DONE 2026-10-24 | DONE 2026-10-24 |
 | Jackson and Reform | DONE 2026-10-24 | DONE 2026-10-24 | DONE 2026-10-24 | DONE 2026-10-24 | DONE 2026-10-24 | DONE 2026-10-24 | DONE 2026-10-24 | DONE 2026-10-24 |
 | Sectional Crisis and Civil War | DONE 2026-10-24 | DONE 2026-10-24 | DONE 2026-10-24 | DONE 2026-10-24 | DONE 2026-10-24 | DONE 2026-10-24 | DONE 2026-10-24 | DONE 2026-10-24 |
-| Reconstruction | DONE 2026-10-24 | DONE 2026-10-24 | | | | | | |
+| Reconstruction | DONE 2026-10-24 | DONE 2026-10-24 | DONE 2026-10-24 | | | | | |
 | The Gilded Age | | | | | | | | |
 | Progressive Era | | | | | | | | |
 | Imperialism and World War I | | | | | | | | |
