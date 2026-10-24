@@ -21,7 +21,7 @@ Status key: DONE = guide built, deck rebuilt, notes applied, QA passed, live fil
 | Progressive Era | DONE 2026-10-24 | DONE 2026-10-24 | DONE 2026-10-24 | DONE 2026-10-24 | DONE 2026-10-24 | DONE 2026-10-24 | DONE 2026-10-24 | DONE 2026-10-24 |
 | Imperialism and World War I | DONE 2026-10-24 | DONE 2026-10-24 | DONE 2026-10-24 | DONE 2026-10-24 | DONE 2026-10-24 | DONE 2026-10-24 | DONE 2026-10-24 | DONE 2026-10-24 |
 | The Twenties | DONE 2026-10-24 | DONE 2026-10-24 | DONE 2026-10-24 | DONE 2026-10-24 | DONE 2026-10-24 | DONE 2026-10-24 | DONE 2026-10-24 | DONE 2026-10-24 |
-| Depression and New Deal | DONE 2026-10-24 | DONE 2026-10-24 | | | | | | |
+| Depression and New Deal | DONE 2026-10-24 | DONE 2026-10-24 | DONE 2026-10-24 | | | | | |
 | World War II | | | | | | | | |
 | The Cold War | | | | | | | | |
 | Civil Rights | | | | | | | | |
