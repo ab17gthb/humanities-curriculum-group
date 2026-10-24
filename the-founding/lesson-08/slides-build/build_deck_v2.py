@@ -1,0 +1,293 @@
+#!/usr/bin/env python3
+"""The Founding Lesson 8 deck, "Ratification and the Bill of Rights,"
+in V2 (2026-10-24 rollout, improved slide standard): content bullets are
+short complete sentences; speaker notes applied after the build from the
+teacher notes guide (apply_guide_notes.py). Same 29 slides, same order.
+Fonts: Georgia titles, Lato body."""
+import os, sys
+HERE = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, os.path.join(HERE, '..', '..'))
+import deck_common as dc
+from deck_common import (slide, rect, text, notes, kicker, rule, frags, photo_right,
+                         divider_photo, content_photo, content_text, stat, divider_text,
+                         NAVY, CREAM, RUST, RUST_LT, POWDER, INK, MUTED, W, H)
+from pptx.enum.text import PP_ALIGN
+from pptx.util import Inches
+
+dc.IMG = os.path.join(HERE, 'img')
+OUT = os.path.join(HERE, '..', 'lesson-08-slides-v2.pptx')
+
+def vocab(title, terms, note, kick='The vocabulary'):
+    s = slide(CREAM)
+    kicker(s, kick, color=RUST)
+    text(s, 0.9, 0.95, 11.5, 1.0, title, size=30, color=NAVY, font='Georgia')
+    yy = 2.1
+    for term, dfn in terms:
+        text(s, 0.9, yy, 4.1, 0.9, term, size=25, color=NAVY, font='Georgia')
+        text(s, 5.15, yy + 0.06, 7.3, 1.1, dfn, size=19, color=MUTED, leading=1.2)
+        yy += 1.52
+    notes(s, note)
+    return s
+
+# ---------------------------------------------------------------- 1 TITLE
+s = slide(NAVY)
+s.shapes.add_picture(os.path.join(dc.IMG, 'title-169.jpg'), 0, 0, Inches(13.333), Inches(7.5))
+rect(s, 0, 5.05, W, 2.45, NAVY)
+rect(s, 0, 5.05, W, 0.045, RUST)
+text(s, 0.9, 5.32, 11.5, 0.4, 'THE FOUNDING · LESSON 8', size=14, color=RUST_LT, font='Arial', bold=True)
+text(s, 0.9, 5.68, 11.9, 1.1, 'Ratification and the Bill of Rights', size=40, color=CREAM, font='Georgia')
+text(s, 0.9, 6.62, 11.5, 0.5, 'How the Constitution was sold, and what the skeptics won', size=17, color=POWDER)
+text(s, 0.9, 7.02, 11.9, 0.4, 'The Looking Glass for 1787, engraving attributed to Amos Doolittle, New Haven. Library of Congress.', size=11, color=POWDER)
+notes(s, "The image is the title image of the whole contest. The Looking Glass for 1787, an engraving attributed to Amos Doolittle of New Haven, shows Connecticut as a wagon loaded with debts and paper money, sinking into the mud, while Federal councillors pull one way under a beaming sun and Antifederal councillors pull the other way under storm clouds. Students will work this print at Station 4 of the activity. Hold it up as the shape of the lesson. The Constitution left Philadelphia in September 1787 as a proposal that nine state conventions could make law. For a year the country argued about it in newspapers and convention halls, and this lesson follows that argument through its two best statements, its closest votes, and the amendments that closed it in December 1791.")
+
+# ------------------------------------------------- 2 LESSON QUESTION
+s = slide(NAVY)
+kicker(s, 'The question for today')
+text(s, 0.9, 1.9, 11.5, 3.4, [[('How was the Constitution sold to a skeptical people, and what did the skeptics win?', {})]],
+     size=44, color=CREAM, font='Georgia', leading=1.25)
+rule(s, 0.92, 5.6)
+text(s, 0.92, 5.85, 11.5, 0.9, [[('Unit question: ', {'color': dc.RUST_LT, 'italic': True}),
+                                ('Why did the colonies break with Britain, and what did Americans build in the place of the empire they rejected?', {'italic': True})]],
+     size=17, color=dc.POWDER, font='Georgia', leading=1.2)
+notes(s, "The question has two halves, and the lesson grades both. The first half is about persuasion. The Constitution had to be sold, in print and in conventions, to voters and delegates who had just fought a war against distant power and who read the new frame with that war in mind. The Federalist essays and the convention campaigns are the selling. The second half is about the price. The skeptics lost the vote on the frame itself in state after state, and they still changed the document, because the closest conventions ratified only while recommending amendments, and the first ten amendments are the skeptics' monument inside the winner's text. Keep both halves in front of students all hour, since the writing task asks them to weigh the two wins against each other.")
+
+# --------------------------------------------------- 3 LESSON IN ONE SLIDE
+s = slide(NAVY)
+kicker(s, 'The lesson in one slide')
+text(s, 0.9, 1.28, 11.5, 1.0, 'The contest, in seven stretches', size=42, color=CREAM, font='Georgia')
+rule(s, 0.92, 2.36)
+rows = [('A', 'The contest and its terms', 'Conventions, nine of thirteen, a debate in print'),
+        ('B', 'Faction in a large republic', 'Federalist No. 10 and the extended sphere'),
+        ('C', 'A government built to check itself', 'Federalist No. 51 and the double security'),
+        ('D', 'Size, power, and a missing bill of rights', 'Brutus No. 1 and the case against'),
+        ('E', 'The states decide', 'Delaware first, Massachusetts split, New York last of the eleven'),
+        ('F', 'The new government opens', 'Elections, and inauguration day, April 30, 1789'),
+        ('G', 'The amendments', 'Twelve proposed, ten ratified by December 1791')]
+yy = 2.66
+for n, t, d in rows:
+    text(s, 0.9, yy, 0.6, 0.6, n, size=22, color=RUST_LT, font='Georgia')
+    text(s, 1.6, yy + 0.02, 4.9, 0.6, t, size=19, color=CREAM, bold=True)
+    text(s, 6.65, yy + 0.06, 5.8, 0.6, d, size=15, color=POWDER)
+    yy += 0.635
+notes(s, "This is the map of the lesson, and it follows the guided notes section by section, so students can use the letters on screen to find their place in their notes all hour. Section A sets the terms, conventions instead of legislatures and nine states of thirteen. Sections B and C give the Federalist case at its strongest, Madison on faction in the tenth essay and Madison on the design in the fifty first. Section D gives the Anti-Federalist case at its strongest, Brutus on size, on the two clauses, and on the missing bill of rights. Section E follows the states in the order the news arrived. Section F opens the new government, briefly, since the next unit owns it at work. Section G closes the unit with the amendments and the settlement of 1791.")
+
+# ------------------------------------------------- 4 SECTION A DIVIDER
+divider_text('Section A', 'The Contest and Its Terms',
+             'A proposal, not a government, until nine conventions said yes.',
+             "Begin with the oddity of the procedure, because students usually assume the Constitution simply replaced the Articles by vote of Congress. It did not. The Convention sent the frame to conventions elected in each state for that single purpose, deliberately bypassing the state legislatures, whose powers the new government cut and whose consent could not be trusted with the question. Nine ratifications of thirteen would put the Constitution in force, and only among the states that ratified. A state that refused would wake up outside the union it had belonged to the day before, a pressure every holdout eventually felt. Through the fall of 1787 and the year following, the argument ran in newspapers, pamphlets, and convention halls, the first great national argument Americans conducted in print.")
+
+# ------------------------------------------------------ 5 A TERMS
+content_text('Conventions, nine of thirteen, and a year of print',
+             ['The Constitution was signed at Philadelphia in September 1787.',
+              'Conventions were elected for this one question.',
+              'The state legislatures were bypassed on purpose.',
+              'Nine of thirteen states would put it in force.',
+              'Federalists argued against Anti-Federalists, in print.'],
+             "Work the fragments as the rules of a contest whose outcome nobody knew. The essays students are about to read were campaign documents, written at newspaper speed for readers who would choose convention delegates or sit in the conventions themselves. The names on screen are the names the contest produced. Supporters of the Constitution took the name Federalists, a word that had meant friends of a league of states, and their opponents were called Anti-Federalists, a label the Federalists chose for them and they never escaped. The debate was public in a new way. A farmer in Connecticut and a merchant in Virginia could read the same Brutus essay and the same Publius answer within the same season, and the Looking Glass cartoon on the title slide shows the argument reaching people who read pictures more readily than essays.",
+             kick='A · The contest and its terms', size=24)
+
+# ------------------------------------------------- 6 SECTION B DIVIDER
+divider_photo('federalist-port.jpg', 'Section B', 'Faction in a Large Republic',
+              ['The title page of The Federalist,', 'first book edition, New York, 1788.'],
+              "The image is the title page of the first book edition of The Federalist, printed at New York in 1788 while the contest was still running. Section B takes up the Federalist case at its strongest. Eighty five essays by Alexander Hamilton, James Madison, and John Jay appeared in New York newspapers in 1787 and 1788 under the single pen name Publius, aimed at the state whose convention the writers most needed to win. The tenth essay, Madison's answer to the oldest objection in republican theory, is the engine of the whole series. Republican writers since Montesquieu had taught that a republic must be small to survive. Madison argues the opposite, that size is the protection, and the next two slides work his argument step by step.")
+
+# ------------------------------------------------------ 7 B FACTION
+content_text('Faction defined, and the cure refused',
+             ['A faction is a group united by passion or interest.',
+              'Its impulse runs harmful to the rights of others.',
+              'Two cures present themselves: remove the causes, or control the effects.',
+              'Removing the causes means removing liberty itself.'],
+             "Teach the definition whole, because the unit test draws on it and the activity quotes it. In Madison's words from the audited record, a faction is a number of citizens, a majority or a minority, united and actuated by a common impulse of passion or of interest, adverse to the rights of other citizens or to the permanent and aggregate interests of the community. Then set the fork in the road. There are two methods of curing the mischiefs of faction, removing its causes or controlling its effects. Removing the causes is refused, and students should hear why in the reading terms: the deepest cause of faction is liberty itself, the freedom to think, own, and combine differently, and destroying liberty to end faction would be a remedy worse than the disease. Everything after this slide is the second method at work.",
+             kick='B · Faction in a large republic', size=24)
+
+# ------------------------------------------------------ 8 B SPHERE
+content_text('Extend the sphere',
+             ['In a small republic, a majority faction rules at once.',
+              'In a large republic, interests multiply.',
+              'An unjust majority can rarely form.',
+              'And if it forms, it can rarely find its strength and act together.',
+              'Representation refines the public voice.'],
+             "This is the most original argument in the series, and it should be taught slowly. In a small republic, a majority that shares a harmful passion can form, recognize its numbers, and rule in a single motion. Extend the sphere and the arithmetic changes. A continent sized republic takes in a greater variety of parties and interests, so it becomes less probable that a majority of the whole shares a common motive to invade the rights of others. If the motive exists somewhere, the same distance that creates the variety makes it harder for everyone who feels it to discover their own strength and act in unison. Representation adds the second filter, passing the public voice through chosen citizens. Bigness, the thing every theorist had counted against a republic, becomes the safeguard. Brutus will answer this argument directly in Section D.",
+             kick='B · Faction in a large republic', size=24)
+
+# ------------------------------------------------------ 9 STAT 85
+stat('85', 'essays of Publius, written for one state convention',
+     'Hamilton, Madison, and Jay · New York newspapers, 1787 and 1788',
+     "Let the number measure the scale of the selling effort, because no founding document was argued into existence like this one. Eighty five essays in about seven months, most of them written at the pace of a newspaper deadline, addressed to the people of one state, New York, whose convention met at Poughkeepsie in the summer of 1788 with an Anti-Federalist majority. Hamilton wrote the largest share, Madison the next, and John Jay a handful before illness stopped him. The essays were reprinted across the country and collected in book form as The Federalist in 1788, the volume whose title page students saw at the section divider. Their immediate effect is honestly hard to measure, since New York ratified only after the Constitution was already beyond recall. Their lasting effect is the record of the argument itself, the strongest statement of the Federalist case that the contest produced.",
+     kick='B · Faction in a large republic')
+
+# ------------------------------------------------- 10 SECTION C DIVIDER
+divider_text('Section C', 'A Government Built to Check Itself',
+             'Federalist No. 51: the structure supplies the defect of better motives.',
+             "Section C moves from the society the Constitution would govern to the machine itself. The fifty first essay, published in February 1788 and attributed to Madison, answers the fear that the new government, however well designed on paper, would be run by ambitious men who would bend it toward tyranny. Madison's answer is to concede the premise and build on it. The men who run the government will not be angels, and no parchment barrier will stop them. What can stop them is a structure in which each officeholder ambition is aimed at the ambitions around it, so the government polices itself out of the self interest of the people inside it. The next two slides work the two halves of that design, the checking inside the government and the division across governments.")
+
+# ------------------------------------------------------ 11 C AMBITION
+content_text('Ambition against ambition',
+             ['If men were angels, no government would be needed.',
+              'First, the government must control the governed.',
+              'Next, it must oblige itself to control itself.',
+              'Each branch is given the means and the motive to resist.'],
+             "Narrate the argument from the audited text, which Station 3 of the activity puts in front of students. Ambition must be made to counteract ambition, and the interest of the man must be connected with the constitutional rights of the place, so a senator defends the Senate powers because his own standing lives inside them. The famous sentence about angels is the premise, not a decoration. If men were angels, no government would be necessary, and if angels governed men, no controls would be needed either. Since neither holds, the frame faces its great difficulty in Madison order: first enable the government to control the governed, and in the next place oblige it to control itself. The Federalist answer to the Anti-Federalist charge of dangerous power is not that the power is small. It is that the power is divided against itself.",
+             kick='C · A government built to check itself', size=24)
+
+# ------------------------------------------------------ 12 C DOUBLE SECURITY
+content_text('The double security',
+             ['Power is first divided between two governments.',
+              'It is then subdivided among separate departments.',
+              'The governments control each other.',
+              'Each government is also controlled by itself.',
+              'The end of government is justice.'],
+             "Close Section C with the architecture stated as one system, because students tend to memorize separation of powers and federalism as two lists and miss that Madison presents them as one division done twice. The power surrendered by the people is first divided between two distinct governments, the national government and the states, and then the portion allotted to each is subdivided among distinct and separate departments. Hence, in the words of the record, a double security arises to the rights of the people: the different governments control each other, at the same time that each is controlled by itself. The reading closes this argument by naming what the machinery is for. The essay ends by naming justice as the end of government, the purpose all the checking exists to serve.",
+             kick='C · A government built to check itself', size=24)
+
+# ------------------------------------------------- 13 SECTION D DIVIDER
+divider_photo('glass-port.jpg', 'Section D', 'Size, Power, and a Missing Bill of Rights',
+              ['The Looking Glass again: Connecticut', 'pulled apart, in the year of decision.'],
+              "Section D gives the other side its strongest voice, and the Looking Glass returns here because the cartoon is the section subject as much as its illustration. The essays signed Brutus, printed in a New York newspaper in the fall of 1787 and attributed to Robert Yates, a delegate who had left the Philadelphia Convention, made the case the Federalists had to answer all year. Brutus does not argue that the Confederation worked well. He argues that this remedy is worse than the disease, that the Constitution consolidates thirteen republics into one great republic stretched over a continent, and that its powers, once granted, have no fence around them. Teach the section as a serious argument by a serious opponent, since the settlement of 1791 is unintelligible unless students see how much of it Brutus won.")
+
+# ------------------------------------------------------ 14 D SIZE
+content_text('A republic must be small, or it will not be free',
+             ['The United States held near three million people, across a continent.',
+              'In a republic, manners, sentiments, and interests should be similar.',
+              'Its climates, products, and habits differ.',
+              'Representation cannot speak for so many.',
+              'One great republic means consolidation.'],
+             "State the argument in Brutus's own terms, from Station 2 of the activity. A republic rests on similarity: the manners, sentiments, and interests of the people should be alike, so representatives can know and speak the sense of the whole. The United States fails the test on its face. Its territory is vast, holding near three millions of souls and capable of holding ten times that number, spread across a variety of climates whose productions and interests are, in his word, diverse, and whose sentiments are by no means coincident. A legislature for such a country cannot be made small enough to work or large enough to represent, and its distance from the people makes it a government of strangers. Where Madison sees safety in the variety, Brutus sees the dissolution of the only bond a republic has. The two essays disagree about the same fact, which the quick check tests directly.",
+             kick='D · Size, power, and a missing bill of rights', size=24)
+
+# ------------------------------------------------------ 15 D CLAUSES
+content_text('Two clauses, and no fence around rights',
+             ['Necessary and proper reaches every law that carries a power out.',
+              'The supremacy clause sets federal law above state law, in state courts.',
+              'The frame allows a standing army, and a power to tax.',
+              'And the frame carried no bill of rights.'],
+             "Brutus's case is textual before it is theoretical, and students should see him quoting the document against itself. The last clause of Article I, section 8 grants Congress power to make all laws necessary and proper for carrying the granted powers into execution, which he reads as an unlimited reach. Article VI makes the Constitution and federal law the supreme law of the land, binding judges in every state anything in a state constitution or law notwithstanding, which subordinates the states inside their own courtrooms. Add a standing army and a federal power to tax every article of life, and the states fade toward names. Beside the clauses stands the objection that outlasted all the others. The strongest government Americans had ever lived under was proposed without a bill of rights, no written protection for speech, press, religion, juries, and arms. That objection is the one the settlement answers.",
+             kick='D · Size, power, and a missing bill of rights', size=24)
+
+# ------------------------------------------------------ 16 STAT 3M
+stat('3,000,000', 'people in the United States Brutus said one legislature could not represent',
+     'Near three millions of souls, in his count, across a continent of climates',
+     "Pause on the number because both sides build on it and neither disputes it. Brutus counts near three millions of souls in a territory capable of containing more than ten times that number, and asks whether a representation elected across such an extent can speak the sentiments of the people without becoming too numerous to transact business. His answer is that it certainly cannot. Madison, working from the same population and the same map, answers that the numbers are the protection, since a harmful majority scattered among three million people in varied climates and interests can rarely find itself. Teach the pairing plainly: the ratification debate was not an argument between men with different facts. It was an argument about what the shared facts of size and variety meant for a republic, and students meet the same pairing again in the quick check, where one fact must be stated in both its uses.",
+     kick='D · Size, power, and a missing bill of rights')
+
+# ------------------------------------------------- 17 SECTION E DIVIDER
+divider_photo('pillars-port.jpg', 'Section E', 'The States Decide',
+              ['The Federal Pillars, Massachusetts Centinel,', 'January 16, 1788: the sixth pillar rising.'],
+              "The image is the Massachusetts Centinel cartoon of January 16, 1788, the Federal Pillars. Five pillars stand upright, labeled for Delaware, Pennsylvania, New Jersey, Georgia, and Connecticut, and a hand from a cloud is raising the sixth, Massachusetts, under the motto United They Stand, Divided Fall. Benjamin Russell newspaper ran the pillars as a running score of the contest, redrawing the cartoon as each new ratification arrived, and students saw this print in the reading. Section E follows the states in the order the news came in. The sequence is the strategy: early unanimous states built momentum, Massachusetts invented the settlement that the later close states copied, New Hampshire made the count decisive in June 1788, and the two great prizes, Virginia and New York, decided last with the outcome already nearly settled.")
+
+# ------------------------------------------------------ 18 E EARLY
+content_text('Five states, then the Massachusetts settlement',
+             ['Delaware ratified first and unanimously, on December 7, 1787.',
+              'Pennsylvania followed within the week, over protests.',
+              'New Jersey and Georgia ratified unanimously; Connecticut followed in January.',
+              'Massachusetts ratified, and recommended amendments.'],
+             "Work the early returns as momentum and then stop hard on Massachusetts. Delaware, a small state that gained from equal Senate votes, ratified first and unanimously on December 7, 1787. Pennsylvania followed within the week, its Anti-Federalist minority publishing a dissent that the whole country read. New Jersey and Georgia ratified unanimously, and Connecticut followed in January. Massachusetts was different: a large state with a real opposition, still marked by Shays Rebellion, where the votes were not there for unconditional ratification. The convention settlement, carried in February 1788 with John Hancock presiding, was to ratify at once and join to the ratification a formal recommendation of amendments for the first Congress to take up. Samuel Adams's support came with the promise. That invention, consent now and repair promised, is the hinge of the whole lesson, and Virginia and New York both copied the form.",
+             kick='E · The states decide', size=24)
+
+# ------------------------------------------------------ 19 STAT 187
+stat('187 to 168', 'the Massachusetts vote that invented the settlement',
+     'Ratified in February 1788 · Amendments recommended to the first Congress',
+     "Let the closeness of the number carry the section argument, because nineteen votes in a convention of more than three hundred is the margin on which the Bill of Rights was later built. Without the promise of amendments, the Massachusetts convention likely rejects the Constitution or stalls it, and a rejection by Massachusetts, coming after five ratifications, would have broken the momentum of the whole contest and encouraged every wavering state. With the promise, the opposition leaders could vote yes without surrendering their objection, since the objection was written into the ratification itself as a recommendation. Teach students to read the vote as a price tag. The Federalists got their sixth pillar and their road to nine. The Anti-Federalists got a public, recorded commitment that the new government's first business would include the rights the frame had left out. Both halves of that bargain are still visible in the settlement of 1791.",
+     kick='E · The states decide')
+
+# ------------------------------------------------------ 20 E PRIZES
+content_text('The ninth state, and the two prizes',
+             ['Maryland and South Carolina followed.',
+              'New Hampshire, in June 1788, became the ninth state, and decisive.',
+              'Virginia ratified in June, Henry against Madison, 89 to 79.',
+              'New York ratified in July, 30 to 27, after the news arrived.',
+              'North Carolina and Rhode Island stayed out.'],
+             "Close the sequence with the arithmetic of inevitability, because the last conventions voted in a country already remade. Maryland and South Carolina brought the count to eight. In June 1788 New Hampshire became the ninth state, and the Constitution was in force among the ratifying states whatever Virginia and New York did next. Virginia still mattered enormously: the largest state, debating for a month at Richmond, Patrick Henry's eloquence against Madison's brief, and ratifying 89 to 79 with amendments recommended. New York mattered most of all to the essayists, since Publius had been written for it, and its convention at Poughkeepsie began with an Anti-Federalist majority. It ratified 30 to 27 in July only after news arrived that the Constitution was beyond recall. North Carolina and Rhode Island stayed outside the new union, and Rhode Island held out until May 1790, ratifying by two votes under pressure of being treated as a foreign nation for customs.",
+             kick='E · The states decide', size=24)
+
+# ------------------------------------------------- 21 SECTION F DIVIDER
+divider_photo('hall-port.jpg', 'Section F', 'The New Government Opens',
+              ['Federal Hall, the seat of Congress,', 'engraving published at New York, 1790.'],
+              "The image is the engraving of Federal Hall, the seat of Congress, published at New York in 1790, showing the building where the new government opened and where Washington took the oath. Section F is deliberately short, and students should know why: the next unit owns the government at work, the cabinet fights and the parties of the 1790s, and this unit ends where its question ends, with the frame constituted. What belongs here is the launch itself. Elections through the winter of 1788 and 1789 chose the first Congress and the electors, every elector voted for George Washington, and the new government opened at New York in April 1789. The speed of the launch is itself evidence in the ratification argument: the machine the skeptics called unworkable was assembled, staffed, and sitting within two years of the Philadelphia summer.")
+
+# ------------------------------------------------------ 22 F OPENS
+content_text('April 1789: the frame becomes a government',
+             ['Elections ran through the winter of 1788 and 1789.',
+              'Every elector voted for Washington.',
+              'The inauguration came at New York on April 30, 1789.',
+              'Departments were organized, and the Judiciary Act built the courts.',
+              'The first promise waiting was the amendments.'],
+             "Teach the launch as a checklist completed, because the ordinariness of it was the point. Congress organized the executive departments that would run the government day to day and, in the Judiciary Act of 1789, built the federal court system the Constitution had only sketched, a system of district courts and circuit courts under one Supreme Court. Washington's inauguration on the balcony of Federal Hall on April 30, 1789, before a crowd in Wall Street, turned the paper frame into a working presidency held by the one man both sides of the argument trusted. Then direct students to the last fragment, the errand the launch carried with it. First among the promises waiting to be redeemed stood the amendments the ratifying conventions had recommended, and the new House of Representatives contained the man who had argued in print that no bill of rights was necessary. Section G watches him keep the promise.",
+             kick='F · The new government opens', size=24)
+
+# ------------------------------------------------- 23 SECTION G DIVIDER
+divider_photo('bill-port.jpg', 'Section G', 'The Amendments and the Settlement of 1791',
+              ['The engrossed Bill of Rights,', 'proposing twelve amendments, 1789.'],
+              "The image is the engrossed Bill of Rights, the joint resolution of the First Congress written out on parchment in September 1789, carrying twelve amendments rather than the famous ten. Section G closes the unit. James Madison, who had called a bill of rights unnecessary during the ratification argument, took the Massachusetts promise as his own errand in the First Congress and introduced amendments on June 8, 1789, drawn from the state declarations of rights and from the ratifying conventions' own recommendations. What the House and Senate sent to the states, and what the states did with it by December 1791, is the final settlement of the argument this unit has followed since a tax on paper in 1765. The Anti-Federalists monument turns out to stand inside the Federalists building, which is the fact the writing task asks students to weigh.")
+
+# ------------------------------------------------------ 24 G AMENDMENTS
+content_text('Seventeen, twelve, ten',
+             ['Madison introduced the amendments on June 8, 1789.',
+              'Seventeen passed the House; twelve passed the Senate.',
+              'They were drawn from state declarations and convention lists.',
+              'Ten were ratified by December 15, 1791.',
+              'Two were left behind, on apportionment and on pay.'],
+             "Work the funnel of numbers, since each reduction is a decision students can name. Madison's proposals, gathered from the state declarations of rights and the hundreds of amendments the conventions had recommended, were debated through the summer of 1789. The House passed seventeen. The Senate consolidated them into twelve and sent twelve to the states, where ratification required three fourths of the state legislatures under the amendment rule of Article V. Ten completed the course on December 15, 1791, when Virginia approval carried them over the required count and made them part of the Constitution. Two were left behind, one on the apportionment of representatives, which failed, and one on congressional pay, which waited in the record for two centuries and was ratified in 1992 as the Twenty Seventh Amendment. Read as one document, the ten open with the words Congress shall make no law and close with the Ninth and Tenth Amendments, which guard the rights the list does not name and reserve the powers it does not delegate.",
+             kick='G · The amendments and the settlement of 1791', size=24)
+
+# ------------------------------------------------------ 25 STAT 10
+stat('10', 'amendments ratified by December 15, 1791',
+     'Of twelve proposed · Virginia approval completed the count',
+     "End the numbers of the lesson with the date, because December 15, 1791 is where this unit closes and the date now kept as Bill of Rights Day. The ten ratified amendments protect speech, press, religion, and assembly first, then arms, quartering, searches, juries, and bail, and they close with the pair Madison designed against the Federalist objection to any list at all. The Ninth Amendment holds that the naming of some rights in the Constitution shall not be read to deny others the people retain. The Tenth reserves to the states or to the people every power not delegated to the United States. Between them, the closing pair answers Brutus's fear of unlimited federal power and the Federalist fear of a list read as complete, in the same settlement. The government the quarrel of 1763 had made necessary now stood constituted, elected, and amended.",
+     kick='G · The amendments and the settlement of 1791')
+
+# ------------------------------------------------------ 26 VOCAB A
+vocab('Words for the contest',
+      [('ratification', 'formal approval by the body empowered to accept'),
+       ('Federalists', 'supporters of the Constitution in 1787 and 1788'),
+       ('Anti-Federalists', 'opponents who feared power without a bill of rights'),
+       ('Federalist Papers', 'the eighty five essays signed Publius')],
+      "These definitions match the guided notes word for word, and students should copy them exactly, because the unit test draws on them. ratification: the formal approval of a proposed constitution or treaty by the body empowered to accept it, which for the Constitution meant conventions in nine of the thirteen states. Federalists: the supporters of the Constitution in the ratification contests of 1787 and 1788, who argued that the union needed a stronger national government to survive. Anti-Federalists: the opponents of the Constitution in the ratification contests of 1787 and 1788, who argued that it gave the national government too much power and threatened liberty, above all by omitting a bill of rights. Federalist Papers: the eighty-five essays written by Alexander Hamilton, James Madison, and John Jay under the name Publius to persuade New York to ratify the Constitution, published in newspapers in 1787 and 1788.")
+
+# ------------------------------------------------------ 27 VOCAB B
+vocab('Words for the argument and the settlement',
+      [('faction', 'a group whose passion or interest harms the rights of others'),
+       ('Bill of Rights', 'the first ten amendments, ratified by 1791'),
+       ('amendment', 'a formal change, proposed and ratified by set fractions')],
+      "Three more terms, again matching the guided notes exactly. faction: in Madison's argument in Federalist No. 10, a group of citizens united by a passion or interest harmful to the rights of others or to the whole community, whose effects a large republic could control. Bill of Rights: the first ten amendments to the Constitution, proposed by the First Congress in 1789 and ratified by the states by December 1791, which list rights the federal government may not violate. amendment: a formal change or addition to a constitution, made for the Constitution of the United States by proposal of two thirds of Congress and ratification by three fourths of the states. Keep the chain in view as the terms accumulate: a people ratify, through a contest between two named camps, over the danger of faction, and settle the contest by amendment.")
+
+# ------------------------------------------------------ 28 SYNTHESIS
+s = slide(NAVY)
+kicker(s, 'The settlement at a glance')
+text(s, 0.9, 1.28, 11.5, 1.0, 'Sold, resisted, amended', size=42, color=CREAM, font='Georgia')
+rule(s, 0.92, 2.36)
+rows = [('Sold', 'The Federalist essays and the conventions', 'Faction controlled, power divided'),
+        ('Resisted', 'Brutus and the Anti-Federalist case', 'Too large, too strong, unfenced'),
+        ('Decided', 'Nine states by June 1788', 'Massachusetts 187 to 168 set the form'),
+        ('Launched', 'The government opens, April 1789', 'Every elector for Washington'),
+        ('Amended', 'Ten ratified, December 15, 1791', 'The skeptics text inside the frame')]
+yy = 2.78
+for t, d, why in rows:
+    text(s, 0.9, yy, 2.9, 0.7, t, size=22, color=CREAM, font='Georgia')
+    text(s, 3.95, yy + 0.05, 4.3, 0.9, d, size=16, color=POWDER, leading=1.2)
+    text(s, 8.45, yy + 0.05, 4.0, 0.9, why, size=16, color=POWDER, leading=1.2)
+    yy += 1.05
+notes(s, "This slide mirrors the final table in the guided notes, The Settlement at a Glance, and students should complete that table now, from memory where they can and from the lesson where they must. The five rows compress the argument of the hour and of the unit. Sold: the Constitution was carried by argument, the essays of Publius answering faction with extension and tyranny with division. Resisted: the skeptics answered that the frame was too large to be a republic, too strong to be safe, and unfenced where it touched rights. Decided: the conventions voted, and the close ones, Massachusetts first among them, ratified on a promise. Launched: the government opened on schedule under a unanimously chosen president. Amended: the promise was redeemed in the first ten amendments. Every question that built the frame, how large a republic, how strong a union, whose rights it protects, passed open into the republic that follows.")
+
+# ------------------------------------------------------ 29 EXIT
+s = slide(NAVY)
+kicker(s, 'Now your turn')
+text(s, 0.9, 1.35, 11.5, 1.1, 'Work the ratification file', size=44, color=CREAM, font='Georgia')
+rule(s, 0.92, 2.62)
+text(s, 0.9, 2.95, 11.3, 1.4,
+     ['Who won the argument of 1787 and 1788? Work the five records in order, then judge the winners and the skeptics against the settlement of 1791.'],
+     size=23, color=POWDER, leading=1.3)
+rows = [('Activity', 'The Ratification File: No. 10, Brutus, No. 51, the Looking Glass, and the Bill of Rights'),
+        ('Notebook', 'Notebook page: the two arguments, their fears, and the settlement each side got'),
+        ('Quick check', 'Two Arguments About Size: Madison against Brutus on the same fact of variety'),
+        ('Writing', 'Who Won the Argument of 1787 and 1788: a verdict weighed from the votes and the text')]
+yy = 4.15
+for t, d in rows:
+    text(s, 0.9, yy, 2.2, 0.6, t, size=19, color=RUST_LT, bold=True)
+    text(s, 3.2, yy, 8.9, 0.6, d, size=18, color=CREAM)
+    yy += 0.62
+text(s, 0.9, 6.85, 11.5, 0.5, 'Exit ticket: the terms of ratification stated, faction defined and the large republic explained, and the lesson question answered with both wins named.',
+     size=15, color=POWDER)
+notes(s, "Close by handing the lesson to the work. The activity, The Ratification File, runs five stations: Federalist No. 10 and Federalist No. 51 from the Congress.gov texts in the audited bank, Brutus No. 1 from the Constitution.org text in the same bank, the Looking Glass for 1787 as the bank record describes the Library of Congress print, and the Bill of Rights from the National Archives text, ending in a table of fears answered and raised and a defended verdict on who won the argument. The notebook page holds the two arguments and the settlement each side got, in a chart students keep for the review day. The quick check, Two Arguments About Size, tests Madison against Brutus on the shared fact of variety, with the Massachusetts settlement carried in its background. The writing task requires a verdict weighed from at least three bank documents and an answer to the strongest claim of the other side. The exit ticket has three parts, as printed at the end of the guided notes.")
+
+dc.save(OUT)
