@@ -18,7 +18,7 @@ Status key: DONE = guide built, deck rebuilt, notes applied, QA passed, live fil
 | Sectional Crisis and Civil War | DONE 2026-10-24 | DONE 2026-10-24 | DONE 2026-10-24 | DONE 2026-10-24 | DONE 2026-10-24 | DONE 2026-10-24 | DONE 2026-10-24 | DONE 2026-10-24 |
 | Reconstruction | DONE 2026-10-24 | DONE 2026-10-24 | DONE 2026-10-24 | DONE 2026-10-24 | DONE 2026-10-24 | DONE 2026-10-24 | DONE 2026-10-24 | DONE 2026-10-24 |
 | The Gilded Age | DONE 2026-10-24 | DONE 2026-10-24 | DONE 2026-10-24 | DONE 2026-10-24 | DONE 2026-10-24 | DONE 2026-10-24 | DONE 2026-10-24 | DONE 2026-10-24 |
-| Progressive Era | DONE 2026-10-24 | | | | | | | |
+| Progressive Era | DONE 2026-10-24 | DONE 2026-10-24 | | | | | | |
 | Imperialism and World War I | | | | | | | | |
 | The Twenties | | | | | | | | |
 | Depression and New Deal | | | | | | | | |
