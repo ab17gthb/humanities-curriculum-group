@@ -88,3 +88,53 @@
     els.forEach(function (el) { io.observe(el); });
   })();
 })();
+
+  // ---- planner showcase: rotating spotlight with click-to-enlarge ----
+  (function plannerShowcase() {
+    var stage = document.querySelector(".sc-stage");
+    if (!stage) return;
+    document.documentElement.classList.add("sc-on");
+    var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    var slides = Array.prototype.slice.call(stage.querySelectorAll(".sc-slide"));
+    var caps = Array.prototype.slice.call(document.querySelectorAll(".sc-cap"));
+    var btns = Array.prototype.slice.call(document.querySelectorAll(".sc-btn"));
+    var cur = 0, timer = null, userDrove = false;
+    function go(n) {
+      cur = (n + slides.length) % slides.length;
+      slides.forEach(function (el, i) { el.classList.toggle("is-active", i === cur); });
+      caps.forEach(function (el, i) { el.classList.toggle("is-active", i === cur); });
+      btns.forEach(function (el, i) { el.classList.toggle("is-active", i === cur); });
+    }
+    function start() {
+      if (reduce || userDrove || timer) return;
+      timer = window.setInterval(function () { go(cur + 1); }, 6000);
+    }
+    function stop() { if (timer) { window.clearInterval(timer); timer = null; } }
+    btns.forEach(function (btn, i) {
+      btn.addEventListener("click", function () { userDrove = true; stop(); go(i); });
+    });
+    var box = document.querySelector(".showcase");
+    if (box) {
+      box.addEventListener("mouseenter", stop);
+      box.addEventListener("mouseleave", start);
+    }
+    var lb = document.getElementById("scLightbox");
+    var lbImg = lb ? lb.querySelector("img") : null;
+    slides.forEach(function (slide) {
+      var frame = slide.querySelector(".sc-frame");
+      if (!frame || !lb) return;
+      frame.addEventListener("click", function () {
+        var img = slide.querySelector("img");
+        lbImg.src = img.currentSrc || img.src;
+        lbImg.alt = img.alt;
+        lb.hidden = false;
+        document.body.style.overflow = "hidden";
+      });
+    });
+    if (lb) {
+      function closeLb() { lb.hidden = true; document.body.style.overflow = ""; }
+      lb.addEventListener("click", closeLb);
+      document.addEventListener("keydown", function (ev) { if (ev.key === "Escape" && !lb.hidden) closeLb(); });
+    }
+    start();
+  })();

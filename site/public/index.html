@@ -142,27 +142,49 @@ html.rv-init .rv.in { opacity: 1; transform: none; }
   </div>
 </section>
 
-<section class="block">
+<section class="block band-navy">
   <div class="wrap">
     <h2 class="rv">The planner at work</h2>
-    <p class="sub rv">Real screens from the planner, running on the free Progressive Era sample unit.</p>
-    <div class="shots rv">
-      <figure class="shot">
-        <img src="assets/shot-year-calendar.webp" width="1908" height="1938" loading="lazy" alt="Year planner calendar for September, October, and November 2026, with unit bands for the Founding, Early Republic and Expansion, Jackson and Reform, and Sectional Crisis and Civil War laid across the school days">
-        <figcaption>The year planner lays the whole course across your school days. Unit bands flow around days off, and each band ends on its test day.</figcaption>
-      </figure>
-      <figure class="shot">
-        <img src="assets/shot-unit-plan.webp" width="2880" height="1800" loading="lazy" alt="Unit planner day list for the Progressive Era with lessons placed on school days, next to the coverage check panel showing 15 of 15 blueprint entries covered">
-        <figcaption>In the unit planner, your picks land on real school days, and the coverage check keeps score against the test blueprint as you plan.</figcaption>
-      </figure>
-      <figure class="shot">
-        <img src="assets/shot-addition.webp" width="1228" height="838" loading="lazy" alt="Unit planner day list with a TPSP source, The Jungle (excerpt), pinned to Friday, October 23 between regular lesson items">
-        <figcaption>Resources you add join the same plan. This TPSP source, The Jungle (excerpt), sits pinned to Friday, October 23, between regular lessons.</figcaption>
-      </figure>
-      <figure class="shot">
-        <img src="assets/shot-teacher-home.webp" width="1976" height="1434" loading="lazy" alt="Teacher home page for Wednesday, October 21, showing today's Progressive Era lesson, tomorrow's activity, and the week at a glance">
-        <figcaption>Teacher home opens on the day itself: today and tomorrow in full, and the week at a glance, drawn from your saved plans.</figcaption>
-      </figure>
+    <p class="sub rv">Real screens from the planner, running on the free Progressive Era sample unit. Click a screen to see it full size.</p>
+    <div class="showcase rv">
+      <div class="sc-stage">
+        <figure class="sc-slide is-active">
+          <div class="sc-frame">
+            <div class="sc-bar"><i></i><i></i><i></i><span>humanitiescurriculumgroup.web.app</span></div>
+            <img src="assets/shot-year-calendar.webp" width="1908" height="1938" loading="lazy" alt="Year planner calendar for September, October, and November 2026, with unit bands for the Founding, Early Republic and Expansion, Jackson and Reform, and Sectional Crisis and Civil War laid across the school days">
+          </div>
+        </figure>
+        <figure class="sc-slide">
+          <div class="sc-frame">
+            <div class="sc-bar"><i></i><i></i><i></i><span>humanitiescurriculumgroup.web.app</span></div>
+            <img src="assets/shot-unit-plan.webp" width="2880" height="1800" loading="lazy" alt="Unit planner day list for the Progressive Era with lessons placed on school days, next to the coverage check panel showing 15 of 15 blueprint entries covered">
+          </div>
+        </figure>
+        <figure class="sc-slide">
+          <div class="sc-frame">
+            <div class="sc-bar"><i></i><i></i><i></i><span>humanitiescurriculumgroup.web.app</span></div>
+            <img src="assets/shot-addition.webp" width="1228" height="838" loading="lazy" alt="Unit planner day list with a TPSP source, The Jungle (excerpt), pinned to Friday, October 23 between regular lesson items">
+          </div>
+        </figure>
+        <figure class="sc-slide">
+          <div class="sc-frame">
+            <div class="sc-bar"><i></i><i></i><i></i><span>humanitiescurriculumgroup.web.app</span></div>
+            <img src="assets/shot-teacher-home.webp" width="1976" height="1434" loading="lazy" alt="Teacher home page for Wednesday, October 21, showing today's Progressive Era lesson, tomorrow's activity, and the week at a glance">
+          </div>
+        </figure>
+      </div>
+      <div class="sc-caps">
+        <p class="sc-cap is-active"><strong>The whole year, laid out</strong>The year planner lays the whole course across your school days. Unit bands flow around days off, and each band ends on its test day.</p>
+        <p class="sc-cap"><strong>Picks land on real days</strong>In the unit planner, your picks land on real school days, and the coverage check keeps score against the test blueprint as you plan.</p>
+        <p class="sc-cap"><strong>Your additions join the same plan</strong>Resources you add join the same plan. This TPSP source, The Jungle (excerpt), sits pinned to Friday, October 23, between regular lessons.</p>
+        <p class="sc-cap"><strong>Open it and teach</strong>Teacher home opens on the day itself: today and tomorrow in full, and the week at a glance, drawn from your saved plans.</p>
+      </div>
+      <div class="sc-controls">
+        <button type="button" class="sc-btn is-active" data-go="0"><strong>Year planner</strong><span>All fifteen units on your calendar</span></button>
+        <button type="button" class="sc-btn" data-go="1"><strong>Unit planner</strong><span>Picks, days, and the coverage check</span></button>
+        <button type="button" class="sc-btn" data-go="2"><strong>Your additions</strong><span>TPSP sources and your own picks</span></button>
+        <button type="button" class="sc-btn" data-go="3"><strong>Teacher home</strong><span>Today, tomorrow, the week</span></button>
+      </div>
     </div>
   </div>
 </section>
@@ -254,6 +276,7 @@ html.rv-init .rv.in { opacity: 1; transform: none; }
   </div>
 </footer>
 
+<div class="sc-lightbox" id="scLightbox" hidden><button class="sc-close" type="button" aria-label="Close full-size view">&times;</button><img alt=""></div>
 <script src="firebase-config.js"></script>
 <script src="auth.js"></script>
 <script src="home.js"></script>
