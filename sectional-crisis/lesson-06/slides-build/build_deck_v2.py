@@ -1,0 +1,250 @@
+#!/usr/bin/env python3
+"""Sectional Crisis and Civil War Lesson 6 deck, "The War Begins: Sumter to
+Antietam," built to the approved system: image-led slides, fragments only
+on screen, comprehensive speaker notes, full lesson and vocabulary
+coverage. Fonts: Georgia titles, Lato body."""
+import os, sys
+HERE = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, os.path.join(HERE, '..', '..'))
+import deck_common as dc
+from deck_common import (slide, rect, text, notes, kicker, rule, frags, photo_right,
+                         divider_photo, content_photo, content_text, stat, divider_text,
+                         NAVY, CREAM, RUST, RUST_LT, POWDER, INK, MUTED, W, H)
+from pptx.enum.text import PP_ALIGN
+from pptx.util import Inches
+
+dc.IMG = os.path.join(HERE, 'img')
+OUT = os.path.join(HERE, '..', 'lesson-06-slides.pptx')
+
+def vocab(title, terms, note, kick='The vocabulary'):
+    s = slide(CREAM)
+    kicker(s, kick, color=RUST)
+    text(s, 0.9, 0.95, 11.5, 1.0, title, size=30, color=NAVY, font='Georgia')
+    yy = 2.1
+    for term, dfn in terms:
+        text(s, 0.9, yy, 4.1, 0.9, term, size=25, color=NAVY, font='Georgia')
+        text(s, 5.15, yy + 0.06, 7.3, 1.1, dfn, size=19, color=MUTED, leading=1.2)
+        yy += 1.52
+    notes(s, note)
+    return s
+
+def content_photo_s(img, title, items, note, kick=None, size=21):
+    s = slide(CREAM)
+    photo_right(s, img)
+    if kick: kicker(s, kick, color=RUST)
+    text(s, 0.9, 0.95 if kick else 0.8, 6.9, 1.2, title, size=31, color=NAVY, font='Georgia', leading=1.05)
+    frags(s, items, y=2.12 if kick else 2.0, size=size, gap=11, leading=1.2)
+    notes(s, note)
+    return s
+
+# ---------------------------------------------------------------- 1 TITLE
+s = slide(NAVY)
+s.shapes.add_picture(os.path.join(dc.IMG, 'title-169.jpg'), 0, 0, Inches(13.333), Inches(7.5))
+rect(s, 0, 5.05, W, 2.45, NAVY)
+rect(s, 0, 5.05, W, 0.045, RUST)
+text(s, 0.9, 5.32, 11.5, 0.4, 'SECTIONAL CRISIS AND CIVIL WAR · LESSON 6', size=14, color=RUST_LT, font='Arial', bold=True)
+text(s, 0.9, 5.68, 11.9, 1.1, 'The War Begins', size=40, color=CREAM, font='Georgia')
+text(s, 0.9, 6.62, 11.5, 0.5, 'Sumter to Antietam, April 1861 to September 1862', size=17, color=POWDER)
+notes(s, "The image is a detail of the United States Coast Survey map of 1861 showing the distribution of the slave population of the southern states, shaded by county from the 1860 census, and students study the whole map at Station 3 of the activity. It belongs on the title because the map is the war's arithmetic drawn as geography. This lesson covers the war's first seventeen months, from the bombardment of Fort Sumter in April 1861 to the battle of Antietam in September 1862. Two governments entered the war with opposite theories of how it would be won. The lesson tests those theories against the record: Bull Run, the building of armies, the campaigns of 1862, the suspension of habeas corpus, and the bloodiest single day in American history.")
+
+# ------------------------------------------------- 2 LESSON QUESTION
+s = slide(NAVY)
+kicker(s, 'The question for today')
+text(s, 0.9, 1.9, 11.5, 3.4, [[("What did each side think would win the war, and what did the first seventeen months teach them?", {})]],
+     size=44, color=CREAM, font='Georgia', leading=1.25)
+rule(s, 0.92, 5.6)
+text(s, 0.92, 5.85, 11.5, 0.9, [[('Unit question: ', {'color': dc.RUST_LT, 'italic': True}),
+                                ("How did compromise over slavery finally fail, and what did the war it caused settle about slavery and the Union, and what did it leave open?", {'italic': True})]],
+     size=17, color=dc.POWDER, font='Georgia', leading=1.2)
+notes(s, "Read the lesson question slowly and notice that it asks for theories before it asks for events. Each side thought something specific would win the war, and the theories were fitted to what each side held. The Union held the people, the factories, and the sea, and its oldest general proposed strangling the Confederacy by blockade and river. The Confederacy held cotton and its own ground, and it proposed enduring until northern patience and European need ended the contest. The seventeen months that follow are the test of both theories. By the end of the hour students will be able to say, from the record, which theory the evidence supported by September 1862, and what Antietam changed about the war's purpose.")
+
+# ------------------------------------------------- 3 ONE SLIDE
+s = slide(CREAM)
+kicker(s, 'The lesson in one slide', color=RUST)
+text(s, 0.9, 0.95, 11.5, 1.0, 'Seven parts, in order', size=31, color=NAVY, font='Georgia')
+frags(s, ['A. The fort and the answer',
+          'B. Two peoples, two theories of victory',
+          'C. First Bull Run and the army that had to be built',
+          'D. The war widens: east and west in 1862',
+          'E. The liberties the war suspended',
+          'F. Antietam: the bloodiest day',
+          'G. A letter home and the lessons of seventeen months'], y=2.0, size=25, gap=10)
+notes(s, "Use this slide as the map of the hour, and point students to the same seven letters in their guided notes, because the letters are the filing system for the reading, the notes, and the activity. Section A opens the war at Fort Sumter and follows Lincoln's call for volunteers into a second wave of secession. Section B states the arithmetic and the two theories of victory. Section C tests the short war hope at First Bull Run and meets McClellan. Section D follows the divided record of 1862, stalling in the east and moving in the west. Section E takes up habeas corpus. Section F reaches Antietam. Section G closes with one soldier's letter and the lessons both sides had learned.")
+
+# ------------------------------------------------- 4 DIVIDER A
+divider_photo('lincoln-port.jpg', 'Section A', 'The Fort and the Answer',
+    ['Charleston harbor, April 12 and 14, 1861'],
+    "The image is Alexander Gardner's 1861 photograph of Abraham Lincoln, in the public domain. Open with Lincoln's position in his first month, because Fort Sumter was a provisioning problem before it was a battle. The federal garrison in Charleston harbor was running out of food, and Lincoln had to choose between resupplying the fort, and risking the first shot, or abandoning it, and conceding that secession worked. He sent provisions and gave notice. Confederate batteries opened fire on April 12, 1861, and the garrison surrendered on April 14. No one was killed in the bombardment, and both capitals still spoke of a short war, a confidence this lesson watches dissolve month by month, as armies, costs, and purposes all grew past anything April had imagined.")
+
+# ------------------------------------------------- 5 CONTENT A
+content_photo_s('lincoln-port.jpg', 'Seventy five thousand men, for ninety days',
+    ['Sumter was bombarded on April 12, and surrendered on April 14.', 'Lincoln called 75,000 volunteers, for ninety days.', 'Virginia, Arkansas, Tennessee, and North Carolina seceded.', 'Four border slave states stayed in the Union.'],
+    "Teach the first term in its full form here, as the guided notes carry it. Fort Sumter: the federal fort in Charleston harbor whose provisioning became the crisis of Lincoln's first month in office, bombarded by Confederate batteries on April 12, 1861, and surrendered on April 14, the act that opened the Civil War. Then follow the call's consequence, because the call enlarged the war it meant to end. Virginia had waited through the winter. The demand for troops settled its argument, and Virginia, Arkansas, Tennessee, and North Carolina seceded, bringing the Confederacy to eleven states. Delaware, Maryland, Kentucky, and Missouri stayed, held by occupation, maneuver, and Kentucky's temporary neutrality, each of them a strategic fact the rest of the lesson keeps using.",
+    kick='Section A · The opening')
+
+# ------------------------------------------------- 6 STAT A
+stat('11', 'states in the Confederacy after Lincoln\'s call',
+    'Four states seceded only after the call for volunteers, in April and May 1861',
+    "Use the number to fix the sequence students most often reverse. When Lincoln took office, seven states had seceded and organized the Confederate government at Montgomery. Fort Sumter did not complete the Confederacy. The call for seventy five thousand volunteers did. Virginia went out on April 17, Arkansas and Tennessee in May, and North Carolina on May 20, and the Confederacy reached its full size of eleven states, taking with it Virginia's industry, its officers, and Robert E. Lee, and moving its capital to Richmond within reach of Washington. The four slave states that stayed, Delaware, Maryland, Kentucky, and Missouri, were not a footnote. Maryland surrounded Washington, Kentucky commanded the Ohio River, and Missouri the Mississippi's middle reach, and holding them shaped Union strategy from the first month.",
+    kick='Section A · The second secession')
+
+# ------------------------------------------------- 7 DIVIDER B
+divider_photo('scott-port.jpg', 'Section B', 'Two Peoples, Two Theories of Victory',
+    ['Strangulation against endurance and King Cotton'],
+    "The image is the 1862 photograph of Winfield Scott by Fredricks, in the public domain. Scott was seventy four, the army's general in chief, a veteran of the War of 1812 and the conqueror of Mexico City, and he read the war's arithmetic more clearly than any younger man in either capital. His theory assumed a long war and proposed winning it without first storming the Confederacy in force. The Confederacy's theory assumed the opposite calendar: survive, defend, and let cotton and exhaustion do the work. Teach the two theories as answers to the same arithmetic, because the lesson's verdict at the end is a judgment between them, and students cannot judge theories they were never made to state plainly.")
+
+# ------------------------------------------------- 8 CONTENT B
+content_photo('scott-port.jpg', 'The Anaconda Plan',
+    ['The plan would blockade the southern coast.', 'It would drive down the Mississippi, and split the Confederacy.', 'It was mocked as slow by the newspapers.', 'It was adopted in substance as the war lengthened.'],
+    "Two terms belong to this slide, and the notes carry both in full. Anaconda Plan: General Winfield Scott's strategy of 1861, to strangle the Confederacy by naval blockade of its coast and a drive down the Mississippi that would split it in two, derided as slow by a public demanding a quick blow and adopted in substance as the war became long. blockade: the naval closure of an enemy's ports to trade, proclaimed by Lincoln against the Confederacy in April 1861 and enforced by a navy built from almost nothing to some six hundred vessels, the instrument that strangled the cotton trade on which Confederate finance rested. Scott expected the pressure to revive Union feeling inside the enclosed states, and he expected the whole design to work without the great invasion battles the newspapers demanded every week.",
+    kick='Section B · The Union theory')
+
+# ------------------------------------------------- 9 STAT B
+stat('22 million', 'people in the Union, against about 9 million in the Confederacy',
+    'More than a third of the Confederate 9 million were enslaved people',
+    "Put the arithmetic on the screen by itself, because every strategy in this lesson runs on it. The Union held about twenty two million people, most of the country's factories, most of its railroad mileage, and its shipping. The Confederacy held about nine million people, and more than a third of them were enslaved, which means the Confederacy's free population, the pool from which it could draw soldiers and taxpayers, was nearer six million. The same enslaved population was the Confederacy's labor force, and it owed the Confederacy no loyalty, a fact the slave population map at Station 3 draws county by county. The Confederate answer to this arithmetic was never to deny it. It was to argue that arithmetic was not the war's deciding term.",
+    kick='Section B · The arithmetic')
+
+# ------------------------------------------------- 10 DIVIDER C
+divider_photo('mcclellan-port.jpg', 'Section C', 'First Bull Run and the Army That Had to Be Built',
+    ['Manassas, Virginia, July 21, 1861'],
+    "The image is the period photograph of George B. McClellan carried by Wikimedia Commons, in the public domain. Before McClellan there was Bull Run, and Bull Run has to be taught as a scene before it is taught as a result. The Union army that marched into Virginia in July 1861 was a ninety day force, green in every rank, commanded by officers as new to large formations as their men. Washington society rode out behind it with picnic baskets, expecting an afternoon's spectacle and a short ride home. What they watched, and then joined, was a rout. The battle's real product was not territory. It was the end of an idea, the idea that this war could be fought by the armies that existed in the spring.")
+
+# ------------------------------------------------- 11 CONTENT C
+content_text('The picnic battle',
+    ['Excursion crowds rode out to watch.', 'The Confederate army won the field.', 'The Union army dissolved into a rout.', 'The ninety-day war ended in an afternoon.'],
+    "Give the battle its term in full. First Bull Run: the war's first great battle, fought near Manassas, Virginia, on July 21, 1861, before excursion crowds from Washington, whose Confederate victory and Union rout ended the hope of a short war and taught both governments to build real armies. Teach both governments in that sentence, because Richmond drew the same lesson in reverse. The Confederacy had won, but it had won with an army nearly as green as the one it beat, too disorganized by its own victory to pursue, and nearly as short of officers, shoes, and organization as the army it had beaten. Both capitals now faced the same task: raise, train, officer, feed, and replace armies for a war measured in years, and tax and borrow to pay for them.",
+    kick='Section C · The test')
+
+# ------------------------------------------------- 12 CONTENT C2
+content_photo('mcclellan-port.jpg', 'The organizer who would not spend his army',
+    ['McClellan built the Army of the Potomac.', 'It was the largest trained force the country had fielded.', 'He was certain the enemy always outnumbered him.', 'Lincoln\'s patience was spent by November 1862.'],
+    "The term for this slide is the commander's, carried in full. George B. McClellan: the organizer who built the Army of the Potomac and commanded it through the Peninsula campaign and Antietam, a brilliant administrator whose caution before the enemy Lincoln finally exhausted, removing him in November 1862. Students should hold both halves of the record at once. The building was a genuine achievement: camps, drill, staff work, supply, and an army that adored him. The refusal was as consistent as the building. McClellan habitually credited the enemy with numbers he did not have, demanded reinforcements as the price of moving, and treated the army he had built as a possession to protect rather than an instrument to use, and the war's clock ran while he protected it.",
+    kick='Section C · The builder')
+
+# ------------------------------------------------- 13 DIVIDER D
+divider_text('Section D', 'The War Widens: East and West in 1862',
+    'Lee rises in the east, Grant and Farragut move in the west',
+    "Frame 1862 as two wars running at once, because that contrast is the year's lesson and students blur it if the campaigns are taught as one list. In the east, the Union's largest army crept toward Richmond and was driven off by a new Confederate commander whose name the class will carry through the rest of the unit. In the west, on the rivers Scott's plan had marked, Union forces took forts, a great port city, and the upper Mississippi's approaches in a single season. And at a Tennessee meeting house named Shiloh, the two sections learned the price schedule of the war they were now in. Teach the east first, then the west, then the price, in the reading's order.")
+
+# ------------------------------------------------- 14 CONTENT D
+content_photo('lee-port.jpg', 'Lee takes command in the east',
+    ['McClellan crept toward Richmond by the peninsula.', 'The Seven Days drove him off, in June and July 1862.', 'Second Bull Run was another Confederate victory, in August.', 'The eastern war hardened into a contest.'],
+    "The image is the period portrait of Robert E. Lee carried by Wikimedia Commons, in the public domain. Lee took command of the Confederate army before Richmond when Joseph Johnston was wounded at the end of May 1862, and within weeks he changed the eastern war's character. In the Seven Days battles he attacked a larger army until it retreated to the James River, trading casualties the Confederacy could not afford for a capital it could not lose. In August his army beat John Pope at Second Bull Run, on the same Manassas ground as the first battle. Teach the result as a strategic fact, not a personality verdict: by the autumn of 1862 the Union's main eastern army had been checked twice, and the invasion strategy Scott had postponed looked no nearer its end.",
+    kick='Section D · The east')
+
+# ------------------------------------------------- 15 CONTENT D2
+content_photo_s('map-port.jpg', 'The west moves',
+    ['Grant took Forts Henry and Donelson in February.', 'Farragut seized New Orleans in April.', 'The rivers began to close as Scott proposed.', 'The ironclads fought at Hampton Roads in March.'],
+    "Now run the western record against the eastern one, place by place. Fort Henry fell to Grant and the gunboats in February 1862, Fort Donelson surrendered days later with its garrison, and Tennessee opened. In April Farragut ran his fleet past the forts below New Orleans and took the Confederacy's largest city and busiest port, the blockade's greatest single prize of the year. In March, off Hampton Roads, the Confederate ironclad Virginia destroyed wooden warships one day and fought the Union ironclad Monitor to a draw the next, ending the wooden navy's long century in a single weekend. Students should name what these events share: each one is a piece of Scott's map, coast and river, closing on schedule while the famous eastern armies stalled.",
+    kick='Section D · The west')
+
+# ------------------------------------------------- 16 STAT D
+stat('24,000', 'casualties at Shiloh in two days, by the usual estimates',
+    'April 6 and 7, 1862, in Tennessee, a number no American battle had approached',
+    "Pause on this figure, and state it as the lesson states all such figures: by the usual estimates. Shiloh began on April 6, 1862, when a Confederate army surprised Grant's camps along the Tennessee River, and it took a second day, Union reinforcements, and the Confederate commander's death on the field to reverse the first day's rout. The two armies together lost some twenty four thousand men killed, wounded, and missing in two days, more than all the country's earlier wars had cost in battle by the common reckoning. Both governments read the casualty lists as a schedule for the future. Whatever either theory of victory now required, it would be paid for at this rate, in men neither side could replace indefinitely.",
+    kick='Section D · The price')
+
+# ------------------------------------------------- 17 DIVIDER E
+divider_photo('lincoln-port.jpg', 'Section E', 'The Liberties the War Suspended',
+    ['Habeas corpus, the Merryman case, and the order of September 1862'],
+    "The image is Gardner's 1861 Lincoln photograph again, and the section belongs to him in a harder sense than the first. From April 1861 Lincoln suspended the writ of habeas corpus along the army's lines of operation, so that men the army arrested could be held without a hearing before a judge. Teach the tension as a tension, in the reading's own terms, and do not resolve it for the class. The government claimed the measures saved the Union, beginning with Maryland, which surrounded the capital. Its critics answered that a Union saved by suspending its own charter was being changed by the saving. Both claims are in the record, and the documents at Station 1 let students weigh the second one in Lincoln's own words.")
+
+# ------------------------------------------------- 18 CONTENT E
+content_photo_s('lincoln-port.jpg', 'The writ suspended',
+    ['Habeas corpus was suspended along the military lines.', 'Prisoners were held without a hearing before a judge.', 'Taney ruled in Merryman that only Congress could suspend it.', 'Lincoln did not comply.'],
+    "Carry the term in its full form. habeas corpus: the constitutional writ by which a prisoner may demand to be brought before a judge and shown the cause of detention, which Lincoln suspended along the war's military lines from 1861 and Congress authorized in 1863, so that military arrests could proceed without civil trial. The Merryman case gave the dispute its constitutional shape. John Merryman, a Maryland militia officer held at Fort McHenry for destroying bridges, sued for the writ, and Chief Justice Taney, sitting on circuit, ruled that the president had no power to suspend it. Lincoln neither released Merryman nor answered the ruling, and the suspension stood. Congress authorized the suspension by statute in March 1863, which settled the authority question on paper without settling the argument the war had started.",
+    kick='Section E · The writ')
+
+# ------------------------------------------------- 19 CONTENT E2
+content_text('Maryland held, and the suspension widened',
+    ['Maryland legislators were arrested in September 1861.', 'The state stayed, and Washington stayed supplied.', 'Resistance to the militia draft grew in 1862.', 'The proclamation of September 24, 1862, applied nationwide.'],
+    "Follow the suspension's widening circle, because the geography is the argument. The first suspensions guarded the rail lines between Washington and the North, through a Maryland whose secession would have stranded the capital inside the Confederacy. In September 1861 federal troops arrested members of the Maryland legislature before it could meet, and Maryland stayed. By September 1862 the problem was no longer one state's legislature. It was resistance to the new militia draft across the North, and Lincoln's proclamation of September 24 suspended the writ nationwide and made rebels, draft resisters, and anyone guilty of any disloyal practice subject to martial law and trial by military commission. Students work that text at Station 1 and should quote its categories, not paraphrase them loosely.",
+    kick='Section E · The widening')
+
+# ------------------------------------------------- 20 DIVIDER F
+divider_text('Section F', 'Antietam: The Bloodiest Day',
+    'Sharpsburg, Maryland, September 17, 1862',
+    "Set the scene from Lee's side first, because the invasion explains the battle. Lee carried the Army of Northern Virginia into Maryland in September 1862 to feed his army from northern farms, to relieve Virginia's farms of the war for a season, and above all to win a victory on northern soil that might bring the European recognition the Confederacy's whole theory required. Then introduce the accident that shaped the battle: a copy of Lee's marching orders, lost by a Confederate officer and found by Union soldiers wrapped around three cigars, reached McClellan and told him the Confederate army was divided in pieces across Maryland. Few battles in the war were fought with one commander holding the other's plan in his hand.")
+
+# ------------------------------------------------- 21 CONTENT F
+content_text('The lost orders and the standstill',
+    ['Lee invaded Maryland, seeking recognition.', 'His lost orders reached McClellan.', 'The armies met on September 17, along Antietam Creek.', 'It was a tactical draw, and a strategic Union victory.'],
+    "The last of the lesson's terms, in full. Antietam: the battle of September 17, 1862, near Sharpsburg, Maryland, where McClellan, holding a copy of Lee's lost orders, fought the Army of Northern Virginia to a standstill in the single bloodiest day in American history, ending the first invasion of the North and giving Lincoln ground to issue the Emancipation Proclamation. Teach the double verdict carefully. On the field it was a draw, and McClellan, holding reserves he would not commit, let Lee withdraw across the Potomac two nights later, the failure Lincoln removed him for in November. In the war's strategy it was a Union victory, because the invasion ended, recognition receded, and Lincoln at last had a field that was not a defeat from which to speak.",
+    kick='Section F · The battle')
+
+# ------------------------------------------------- 22 STAT F
+stat('22,700', 'casualties in one day at Antietam, by the usual reckoning',
+    'September 17, 1862, the single bloodiest day in American history',
+    "State this figure as the documents state it, as the usual reckoning, an estimate assembled from both armies' returns, not a count anyone made on the field. Some twenty two thousand seven hundred men were killed, wounded, or went missing along Antietam Creek on September 17, 1862, in fighting that ran from the cornfield in the morning to the sunken road at midday to the bridge over the creek in the afternoon. Set it beside the Shiloh figure from earlier in the lesson: Shiloh's two days had seemed a new order of cost in April, and Antietam exceeded it in one day, five months later. The escalation is itself evidence about what the war's first seventeen months had built: armies large enough, and committed enough, to spend men at this rate without breaking.",
+    kick='Section F · The cost')
+
+# ------------------------------------------------- 23 CONTENT F2
+content_text('The photographs, described and not reproduced',
+    ['Gardner photographed the unburied dead.', 'Brady exhibited them in New York in October 1862.', 'Civilians saw the war\'s work for the first time.', 'This lesson describes the record, and does not reproduce it.'],
+    "Teach this slide slowly, because it carries the unit's image discipline and students should hear the reason, not just the rule. Alexander Gardner, working in Mathew Brady's operation, reached Antietam days after the battle and photographed the unburied Confederate dead before burial parties finished their work. Brady exhibited the photographs in his New York gallery that October as The Dead of Antietam, and civilians who had followed the war in engravings stood before photographs of the dead themselves. Following the bank record's own presentation and the practice stated in the unit frame, this lesson teaches that record through the audited description of the photograph, quoted at Station 4, and does not reproduce any photograph of the dead, at Antietam or anywhere else.",
+    kick='Section F · The record')
+
+# ------------------------------------------------- 24 CONTENT G
+content_text('A letter home',
+    ['Sullivan Ballou wrote Sarah on July 14, 1861.', 'He had no misgivings about the cause.', 'He was killed at First Bull Run, a week later.', 'The letter was found in his trunk, never mailed.'],
+    "Close the narrative with the war's private register, set against the grand strategies. Sullivan Ballou, a Rhode Island lawyer and former speaker of its house, major in the 2nd Rhode Island Volunteers, wrote his wife Sarah on July 14, 1861, that he had no misgivings about the cause in which he was engaged and was willing to lay down all his joys in this life to help maintain the government, while his love for his family bound him, in his image, with mighty cables. He was mortally wounded at Bull Run a week later, and the letter, never mailed, was found in his trunk. Teach the record's honesty note with it: no manuscript in Ballou's hand survives, and the American Battlefield Trust and the National Park Service present the letter as his while acknowledging the debate.",
+    kick='Section G · The voice')
+
+# ------------------------------------------------- 25 AT A GLANCE
+content_text('The lesson at a glance',
+    ['Sumter and the call of April 1861 brought the Confederacy to eleven.',
+     'The two theories were strangulation against endurance and cotton.',
+     'At Bull Run the ninety-day war ended, and real armies began.',
+     'In 1862 the east stalled, and the west and the rivers moved.',
+     'Antietam ended the invasion, and emancipation got its ground.'],
+    "This slide mirrors the closing table in the guided notes, The Lesson at a Glance, and students should complete that table now, from memory where they can and from the lesson where they must. The five lines are the lesson's measured answer to its question. Each side had a theory fitted to its resources. The Union's, strangulation on superior numbers, was mocked in May 1861 and adopted in substance within the year. The Confederacy's, endurance rewarded by recognition, survived Bull Run and the eastern victories of 1862, and failed at the two points it could not replace: cotton brought no European flag in, and the invasion meant to win recognition ended at Antietam on September 17, 1862, with the Preliminary Emancipation Proclamation following on September 22.",
+    kick='Review')
+
+# ------------------------------------------------- 26 VOCAB 1
+vocab('Words for the opening and the strategy', [
+    ('Fort Sumter', 'the Charleston fort, bombarded April 12, 1861, surrendered April 14'),
+    ('First Bull Run', 'July 21, 1861, the rout that ended the short war'),
+    ('Anaconda Plan', "Scott's blockade and Mississippi strategy of 1861"),
+    ('blockade', 'the naval closure of the southern ports, six hundred vessels')],
+    "These definitions match the guided notes word for word. Fort Sumter: the federal fort in Charleston harbor whose provisioning became the crisis of Lincoln's first month in office, bombarded by Confederate batteries on April 12, 1861, and surrendered on April 14, the act that opened the Civil War. First Bull Run: the war's first great battle, fought near Manassas, Virginia, on July 21, 1861, before excursion crowds from Washington, whose Confederate victory and Union rout ended the hope of a short war and taught both governments to build real armies. Anaconda Plan: General Winfield Scott's strategy of 1861, to strangle the Confederacy by naval blockade of its coast and a drive down the Mississippi that would split it in two, derided as slow by a public demanding a quick blow and adopted in substance as the war became long. blockade: the naval closure of an enemy's ports to trade, proclaimed by Lincoln against the Confederacy in April 1861 and enforced by a navy built from almost nothing to some six hundred vessels, the instrument that strangled the cotton trade on which Confederate finance rested.")
+
+# ------------------------------------------------- 27 VOCAB 2
+vocab('Words for the suspension and the day', [
+    ('habeas corpus', 'the writ Lincoln suspended, Congress authorized in 1863'),
+    ('George B. McClellan', 'the organizer of the Army of the Potomac, removed November 1862'),
+    ('Antietam', 'September 17, 1862, the bloodiest single day')],
+    "Three more terms, again matching the guided notes exactly, and students copy them as written. habeas corpus: the constitutional writ by which a prisoner may demand to be brought before a judge and shown the cause of detention, which Lincoln suspended along the war's military lines from 1861 and Congress authorized in 1863, so that military arrests could proceed without civil trial. George B. McClellan: the organizer who built the Army of the Potomac and commanded it through the Peninsula campaign and Antietam, a brilliant administrator whose caution before the enemy Lincoln finally exhausted, removing him in November 1862. Antietam: the battle of September 17, 1862, near Sharpsburg, Maryland, where McClellan, holding a copy of Lee's lost orders, fought the Army of Northern Virginia to a standstill in the single bloodiest day in American history, ending the first invasion of the North and giving Lincoln ground to issue the Emancipation Proclamation.")
+
+# ------------------------------------------------- 28 SYNTHESIS
+content_text('Synthesis: two theories, tested',
+    ['The Union trusted numbers, blockade, and the river.',
+     'The Confederacy trusted endurance and cotton.',
+     'The short war died at Bull Run in July 1861.',
+     'Cotton brought no recognition, and the rivers kept closing.',
+     'Antietam ended the invasion, and widened the war.'],
+    "Draw the lesson together by answering the lesson question in full sentences students can borrow. What did each side think would win the war? The Union thought its arithmetic would, applied as Scott proposed: a blockade of the coast, a drive down the Mississippi, and time. The Confederacy thought endurance would: defense on its own ground until northern patience broke and cotton brought Europe in. What did the first seventeen months teach them? That armies had to be built for years, that the price would be counted at Shiloh and Antietam in tens of thousands, that cotton's leverage collapsed as Britain found other fields, and that the war's purpose itself was about to change, on the ground Antietam won, ground the next lesson takes up when it reads the proclamation itself and asks what emancipation changed.",
+    kick='Synthesis')
+
+# ------------------------------------------------- 29 EXIT
+s = slide(NAVY)
+kicker(s, 'Now your turn')
+text(s, 0.9, 1.15, 11.5, 1.6, 'Answer the question, from the records',
+     size=36, color=CREAM, font='Georgia', leading=1.15)
+text(s, 0.9, 2.55, 11.5, 1.1, ['What did each side think would win the war, and what did',
+                               'the first seventeen months teach them? Build from the documents.'],
+     size=23, color=POWDER, leading=1.3)
+rows = [('Activity', 'The First War File: five records, a ledger, and a verdict'),
+        ('Notebook', 'Notebook page: expectation, event, lesson, and one paragraph'),
+        ('Quick check', 'Theories of Victory: Lincoln\'s order and Ballou\'s letter'),
+        ('Writing', 'What Did Each Side Think Would Win the War? Argued from the file')]
+yy = 4.15
+for t, d in rows:
+    text(s, 0.9, yy, 2.2, 0.6, t, size=19, color=RUST_LT, bold=True)
+    text(s, 3.2, yy, 8.9, 0.6, d, size=18, color=CREAM)
+    yy += 0.62
+text(s, 0.9, 6.85, 11.5, 0.5, "Exit ticket: Scott's plan and the Confederate theory in one sentence, the writ and Taney's ruling, and the lesson question in two or three sentences.",
+     size=15, color=POWDER)
+notes(s, "Close by returning to the lesson question and handing the lesson to the work. The activity, The First War File, runs five records: Lincoln's proclamation on the suspension of habeas corpus of September 24, 1862, quoted from the audited bank record; Sullivan Ballou's letter to Sarah of July 14, 1861, quoted from the bank record with its authenticity caveat stated; the Coast Survey map of 1861, reproduced as the bank record carries it and read with the record's own description; the Antietam record, whose photograph is described in the bank text and not reproduced anywhere in this unit; and a labeled teaching summary of Scott's Anaconda Plan built from the public record of his May 1861 letter. Students keep a ledger of theories and close with a verdict on which side's theory the evidence supports.")
+
+dc.save(OUT)
