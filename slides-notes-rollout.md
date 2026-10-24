@@ -14,7 +14,7 @@ Status key: DONE = guide built, deck rebuilt, notes applied, QA passed, live fil
 | Colonial America | DONE 2026-10-23 | DONE 2026-10-23 | DONE 2026-10-24 | DONE 2026-10-24 | DONE 2026-10-24 | DONE 2026-10-24 | DONE 2026-10-24 | DONE 2026-10-24 |
 | The Founding | DONE 2026-10-24 | DONE 2026-10-24 | DONE 2026-10-24 | DONE 2026-10-24 | DONE 2026-10-24 | DONE 2026-10-24 | DONE 2026-10-24 | DONE 2026-10-24 |
 | Early Republic and Expansion | DONE 2026-10-24 | DONE 2026-10-24 | DONE 2026-10-24 | DONE 2026-10-24 | DONE 2026-10-24 | DONE 2026-10-24 | DONE 2026-10-24 | DONE 2026-10-24 |
-| Jackson and Reform | DONE 2026-10-24 | DONE 2026-10-24 | DONE 2026-10-24 | DONE 2026-10-24 | DONE 2026-10-24 | | | |
+| Jackson and Reform | DONE 2026-10-24 | DONE 2026-10-24 | DONE 2026-10-24 | DONE 2026-10-24 | DONE 2026-10-24 | DONE 2026-10-24 | | |
 | Sectional Crisis and Civil War | | | | | | | | |
 | Reconstruction | | | | | | | | |
 | The Gilded Age | | | | | | | | |
