@@ -89,9 +89,9 @@ divider_text('Section A', 'A Hemisphere Full of People',
 # ------------------------------------------------------ 5 HEMISPHERE
 content_photo_s('secotan-port.jpg', 'A lived in world, not an empty one',
              ['Perhaps fifty million people or more lived in the Americas in 1491.',
-              'That number is a scholarly estimate, and the lesson labels it as one.',
+              'That number is a scholarly estimate, built from early records and archaeology.',
               'Maize, beans, and squash fed millions, from Mesoamerica and the Andes to the Eastern Woodlands.',
-              'Hundreds of nations governed themselves, and trade routes crossed both continents'],
+              'Hundreds of nations governed themselves, and trade routes crossed both continents.'],
              "Work the fragments as a correction to the picture students bring into the room. Many arrive imagining a handful of scattered bands in an untouched wilderness. The record shows farming peoples whose three crops, maize, beans, and squash, fed dense populations in Mesoamerica and the Andes and villages across the Eastern Woodlands. It shows trade moving copper from the Great Lakes, shells from the Gulf, and stone from the plains along routes older than any European kingdom in the room's textbooks. And it shows government everywhere: councils, chiefs, kings, and leagues making war and peace and keeping accounts of the past. The point of the section is not admiration. It is accuracy about what contact struck. Every later figure in this unit, above all the death toll of Section G, is measured against the population and the political order established here.",
              kick='A · A hemisphere full of people')
 
@@ -111,7 +111,7 @@ content_photo_s('tenochtitlan-city-port.jpg', 'An island capital, larger than Lo
              ['Tenochtitlan stood on an island in Lake Texcoco and held perhaps 200,000 people in 1500, more than London.',
               'Causeways joined it to the shore, canals carried its canoes, and aqueducts brought its water.',
               'Chinampas, garden plots in the shallow lake, fed the city through the year.',
-              'Its great market drew tens of thousands, and the Templo Mayor stood at its center'],
+              'Its great market drew tens of thousands, and the Templo Mayor stood at its center.'],
              "Teach the city through its systems, because systems are what the unit test asks students to describe. Water came first: an island city drank through aqueducts, moved goods by canoe through canals, and reached the shore on causeways that could be cut in war. Food came second: chinampas yielded crops through the year in the shallow lake, and tribute in food arrived from subject peoples across Mesoamerica. Exchange came third: the great market drew tens of thousands of traders on market days, by the counts Spanish visitors later reported. Power stood at the center, in the Templo Mayor precinct of an empire that taxed a continent. Hold the comparison steady for students: in 1500 this city held more people than London, and it was one of the largest cities in the world, built by a people Europeans had not known existed a decade earlier.",
              kick='B · Tenochtitlan on the lake')
 
