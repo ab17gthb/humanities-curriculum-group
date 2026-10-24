@@ -38,21 +38,23 @@
 <section class="block">
   <div class="wrap">
     <h1>Jackson and Reform</h1>
-    <p class="sub">The thirteenth complete unit and the fourth in the course, included with All-Access. Eight lessons, a review day, and the unit test, fifty-one documents in all, plus a slide deck with full speaker notes and a teacher notes document for every lesson. Every PDF includes the teacher key, and every document follows the same print standard as the sample unit: black text, open writing space, no ink-heavy design. If you are new here, the <a href="progressive-era.html">Progressive Era unit</a> is the free sample, and it runs on the same plate and the same planner. Primary source work for this unit lives in the bank at <a href="https://tpsp.web.app">The Primary Source Project</a>, which holds audited sources for this era.</p>
-    <p><a class="btn" href="subscribe.html">Get this unit with All-Access</a> <a class="btn secondary" href="progressive-era.html">See the free sample unit</a> <a class="btn secondary" href="planner.html?unit=jr">Plan this unit</a></p>
-    <div id="jr-entitled-note" hidden><strong>Your All-Access is active.</strong> Download buttons appear next to every document below, including each lesson's slide deck (PowerPoint) and teacher notes.</div>
+    <p class="sub">The fourth unit in the course, included with All-Access. Eight lessons, a review day, and the unit test, fifty-one documents in all, plus a slide deck with full speaker notes and a teacher notes document for every lesson. Every PDF includes the teacher key, and every document follows the same print standard as the sample unit: black text, open writing space, no ink-heavy design. If you are new here, the <a href="progressive-era.html">Progressive Era unit</a> is the free sample, and it runs on the same plate and the same planner. Primary source work for this unit lives in the bank at <a href="https://tpsp.web.app">The Primary Source Project</a>, which holds audited sources for this era.</p>
+    <p><a class="btn" id="jr-get-btn" href="subscribe.html">Get this unit with All-Access</a> <a class="btn secondary" href="progressive-era.html">See the free sample unit</a> <a class="btn secondary" href="planner.html?unit=jr">Plan this unit</a></p>
+    <div id="jr-entitled-note" hidden><strong>Your All-Access is active.</strong> Download buttons appear next to every document below.</div>
 
     <div class="note rycal-note" style="max-width:820px;">
       <strong>Student vocabulary review.</strong> Post this link for students on the first day of the unit, not on the review day: <a href="https://rycal.web.app/hcg-jackson-reform-flashcards">https://rycal.web.app/hcg-jackson-reform-flashcards</a>. The deck holds every key term from this unit's guided notes, with the definitions word for word as the notes print them. Students need no account: they open the link, copy the deck to their own set, enter the unit test date, and Rycal paces short spaced sessions across the whole unit. HCG collects nothing about students; the link simply takes them to Rycal. Paste the address into your LMS so students have it from day one.
     </div>
 
-    <h2 style="margin-top:30px;">About this unit</h2>
-    <div style="max-width:820px;">
+    <details class="about-drop">
+      <summary>About this unit</summary>
+      <div style="max-width:820px;">
       <p>The unit opens with a vote widened and a grievance carried into it. Through the 1810s and 1820s the states struck down the property qualifications that had fenced the ballot since the founding, until by 1828 nearly every white man could vote, and the election of that year was the first decided by a mass electorate. Andrew Jackson, beaten in 1824 when the House chose John Quincy Adams, returned as the people's candidate, won, and filled the White House with the crowd that had elected him. His doctrine followed: offices were public trusts, rotation in office was democracy's answer to a permanent officeholding class, and the removals his opponents named the spoils system made the doctrine real. The widening had walls. Women stood outside it everywhere, free Black men were losing the vote in state after state, and the Native nations stood outside the polity.</p>
       <p>In office, the people's president governed by collision. Georgia demanded the Cherokee country, and removal became national policy in the Indian Removal Act of 1830; the Supreme Court answered in Worcester v. Georgia that Georgia's laws had no force in Cherokee country, the judgment went unenforced, and a minority treaty at New Echota supplied the paper for the march west in 1838, on which roughly a quarter of the Cherokee died. South Carolina, squeezed by the tariff, answered with Calhoun's doctrine of nullification and an ordinance voiding the duties; Webster defended a Union of the people, Jackson proclaimed nullification treason's argument, and the crisis closed with the Force Bill in one hand and a compromise tariff in the other. The Bank War ran the same course: a veto that made the president the people's tribune, the deposits scattered among pet banks, loose money, and the Panic of 1837, which raised the Whig Party from the wreck.</p>
       <p>The country underneath the collisions was remaking itself. Railroads, canals, and after 1844 the telegraph cut the cost of moving goods and news; the Lowell mills set young women at power looms under corporation rules, and the mill women answered with a magazine, with turn outs, and with a petition for the ten hour day. Revival supplied the reformers: Finney's converts carried their conversion into temperance pledges, Horace Mann's common schools, and Dorothea Dix's asylum memorials. Abolition turned immediate under Walker and Garrison, was answered with mobs, a gag rule, and the closing of the South's debate, and Douglass's Narrative argued by existing. In July 1848 the women who had done abolition's local work for a decade met at Seneca Falls and turned its logic on coverture, in a Declaration of Sentiments modeled beam for beam on 1776.</p>
       <p>The unit is organized around the essential question, “What did democracy mean in Jackson's America, who was it for, and what did the era's reformers claim it still owed?” A review day gives students a study guide and crossword before the 50-point unit test. Every test item is tagged in the key to a published 15-entry blueprint, so teachers can see what the test asks and where it was taught. The planner turns those choices into a calendar and checks the work against the blueprint, naming any gap while there is time to close it.</p>
-    </div>
+      </div>
+    </details>
 
     <div style="display:flex; gap:26px; align-items:flex-start; margin:28px 0 4px; flex-wrap:wrap;">
       <img src="assets/jackson-reform-cover.png" alt="The Jackson and Reform unit cover" style="width:270px; border:1px solid #c9bfa5; box-shadow:0 2px 10px rgba(31,51,80,.15); display:block;">
@@ -252,8 +254,10 @@
     function render() {
       var ent = window.HCGAuth.entitlement();
       var note = document.getElementById("jr-entitled-note");
-      if (!ent.paid) { if (note) note.hidden = true; return; }
+      var getBtn = document.getElementById("jr-get-btn");
+      if (!ent.paid) { if (note) note.hidden = true; if (getBtn) getBtn.style.display = ""; return; }
       if (note) note.hidden = false;
+      if (getBtn) getBtn.style.display = "none";
       document.querySelectorAll("li[data-file]").forEach(function (li) {
         if (li.querySelector("a.dl")) return;
         li.appendChild(document.createTextNode(" \u00b7 "));

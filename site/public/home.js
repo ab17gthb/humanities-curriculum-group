@@ -72,59 +72,19 @@
     whenVisible(fig, function (vis) { if (vis) start(); else stop(); });
   })();
 
-  /* ---------------- Planner sequence ---------------- */
-  (function plannerSequence() {
-    var box = document.getElementById("panim");
-    if (!box || reduceMotion) return;
-    var chips = Array.prototype.slice.call(box.querySelectorAll(".pick-chip"));
-    var bar = document.getElementById("panim-bar");
-    var count = document.getElementById("panim-count");
-    var note = document.getElementById("panim-note");
-    // Coverage after each pick lands, ending where the real planner's
-    // fresh core plan ends: 15 of 15 blueprint entries.
-    var steps = [6, 10, 13, 15];
-    var timers = [];
-    var running = false;
-
-    function later(fn, ms) { timers.push(window.setTimeout(fn, ms)); }
-    function clearTimers() {
-      timers.forEach(function (t) { window.clearTimeout(t); });
-      timers = [];
+  /* ---------------- Scroll reveal ---------------- */
+  (function scrollReveal() {
+    var els = Array.prototype.slice.call(document.querySelectorAll(".rv"));
+    if (!els.length) return;
+    if (reduceMotion || !("IntersectionObserver" in window)) {
+      els.forEach(function (el) { el.classList.add("in"); });
+      return;
     }
-    function setCoverage(n) {
-      if (bar) bar.style.width = (n / 15 * 100) + "%";
-      if (count) count.textContent = n + " of 15";
-    }
-    function reset() {
-      chips.forEach(function (c) { c.classList.remove("in"); });
-      setCoverage(0);
-      if (note) note.textContent = "Picks land on real school days. The test is already waiting at the end of the unit.";
-    }
-    function play() {
-      clearTimers();
-      reset();
-      chips.forEach(function (chip, i) {
-        later(function () {
-          chip.classList.add("in");
-          setCoverage(steps[i]);
-          if (i === chips.length - 1 && note) {
-            note.textContent = "Every blueprint entry covered, before the test arrives.";
-          }
-        }, 700 + i * 950);
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); }
       });
-      later(play, 700 + chips.length * 950 + 3000); // hold the finished week, then loop
-    }
-    function start() {
-      if (running) return;
-      running = true;
-      play();
-    }
-    function stop() {
-      running = false;
-      clearTimers();
-    }
-    box.classList.add("live");
-    reset();
-    whenVisible(box, function (vis) { if (vis) start(); else stop(); });
+    }, { threshold: 0.1, rootMargin: "0px 0px -6% 0px" });
+    els.forEach(function (el) { io.observe(el); });
   })();
 })();

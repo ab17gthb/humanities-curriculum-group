@@ -38,21 +38,23 @@
 <section class="block">
   <div class="wrap">
     <h1>Depression and New Deal</h1>
-    <p class="sub">The fifth complete unit, included with All-Access. Eight lessons, a review day, and the unit test, fifty-one documents in all, plus a slide deck with full speaker notes and a teacher notes document for every lesson. Every PDF includes the teacher key, and every document follows the same print standard as the sample unit: black text, open writing space, no ink-heavy design. If you are new here, the <a href="progressive-era.html">Progressive Era unit</a> is the free sample, and it runs on the same plate and the same planner. Primary source work for this unit lives in the bank at <a href="https://tpsp.web.app">The Primary Source Project</a>, which holds audited sources for this era.</p>
-    <p><a class="btn" href="subscribe.html">Get this unit with All-Access</a> <a class="btn secondary" href="progressive-era.html">See the free sample unit</a> <a class="btn secondary" href="planner.html?unit=dp">Plan this unit</a></p>
-    <div id="dp-entitled-note" hidden><strong>Your All-Access is active.</strong> Download buttons appear next to every document below, including each lesson's slide deck (PowerPoint) and teacher notes.</div>
+    <p class="sub">The eleventh unit in the course, included with All-Access. Eight lessons, a review day, and the unit test, fifty-one documents in all, plus a slide deck with full speaker notes and a teacher notes document for every lesson. Every PDF includes the teacher key, and every document follows the same print standard as the sample unit: black text, open writing space, no ink-heavy design. If you are new here, the <a href="progressive-era.html">Progressive Era unit</a> is the free sample, and it runs on the same plate and the same planner. Primary source work for this unit lives in the bank at <a href="https://tpsp.web.app">The Primary Source Project</a>, which holds audited sources for this era.</p>
+    <p><a class="btn" id="dp-get-btn" href="subscribe.html">Get this unit with All-Access</a> <a class="btn secondary" href="progressive-era.html">See the free sample unit</a> <a class="btn secondary" href="planner.html?unit=dp">Plan this unit</a></p>
+    <div id="dp-entitled-note" hidden><strong>Your All-Access is active.</strong> Download buttons appear next to every document below.</div>
 
     <div class="note rycal-note" style="max-width:820px;">
       <strong>Student vocabulary review.</strong> Post this link for students on the first day of the unit, not on the review day: <a href="https://rycal.web.app/hcg-depression-new-deal-flashcards">https://rycal.web.app/hcg-depression-new-deal-flashcards</a>. The deck holds every key term from this unit's guided notes, with the definitions word for word as the notes print them. Students need no account: they open the link, copy the deck to their own set, enter the unit test date, and Rycal paces short spaced sessions across the whole unit. HCG collects nothing about students; the link simply takes them to Rycal. Paste the address into your LMS so students have it from day one.
     </div>
 
-    <h2 style="margin-top:30px;">About this unit</h2>
-    <div style="max-width:820px;">
+    <details class="about-drop">
+      <summary>About this unit</summary>
+      <div style="max-width:820px;">
       <p>The crash of October 1929 broke the stock market. The Depression was what followed, when bank failures, deflation, and collapsing demand turned a market collapse into a decade of collapse: production cut nearly in half, farm prices below the cost of growing food, and unemployment reaching one worker in four in 1933. The unit follows the collapse into ordinary life: breadlines, Hoovervilles, evictions, and the Dust Bowl migration west. Its first question is whether a collapse of this size was a private misfortune to be waited out or a public emergency the government had a duty to answer.</p>
       <p>Hoover gets a lesson on his own terms. He believed federal relief would weaken character and unbalance the budget, so he asked business, charities, and local government to carry relief by cooperation, not compulsion. Students test that program of voluntarism against the size of the collapse, weighing the Farm Board, public works, and the Reconstruction Finance Corporation against what voluntarism could not reach, and the lesson ends with the Bonus Army and the winter of 1932 and 1933. Roosevelt's answer follows: the bank holiday, the Emergency Banking Act passed in a day, the first fireside chat, and then the Hundred Days, when Congress rebuilt banking, raised farm prices, and took on a whole river valley in one season.</p>
       <p>The middle of the unit watches the New Deal at work and under attack. One lesson follows the alphabet agencies into people's lives, keeping the distinction the work ran on, direct relief against work relief: FERA money, CCC camps, CWA winter jobs, PWA construction, and the NRA codes, measured against the millions no agency reached. The next lesson takes up the critics of 1935: Long, Townsend, and Coughlin charging too little, the Liberty League and the Supreme Court charging too much, and that two-front pressure explains the Second New Deal of 1935, the WPA, the Wagner Act, and the Social Security Act, the settlement that made those duties permanent.</p>
       <p>In 1937 the Wagner Act in workers' hands produced the sit-down strikes and Flint, and the same year brought the court packing fight and a recession inside the Depression. The final lesson weighs the changed country, insured deposits, regulated securities markets, a safety net, a landscape of dams and schools still in daily use, against the limits: unemployment never fell below fourteen percent in the decade, the exclusions written into the settlement fell hardest on Black workers and women, and full employment arrived only with war spending. The unit is organized around the essential question, “How did the New Deal change the relationship between Americans and their federal government, and what did it leave undone?” Each lesson has a reading, guided notes, slides with full speaker notes, an activity, a notebook page, a quick check, and a writing task. A review day gives students a study guide and crossword before the 50-point unit test. Every test item is tagged in the key to a published 15-entry blueprint, so students and teachers can see what the test asks and where that material was taught. The planner turns those choices into a calendar and checks the selected work against the blueprint, naming any gap while there is still time to close it.</p>
-    </div>
+      </div>
+    </details>
 
     <div style="display:flex; gap:26px; align-items:flex-start; margin:28px 0 4px; flex-wrap:wrap;">
       <img src="assets/depression-new-deal-cover.png" alt="The Depression and New Deal unit cover" style="width:270px; border:1px solid #c9bfa5; box-shadow:0 2px 10px rgba(31,51,80,.15); display:block;">
@@ -259,8 +261,10 @@
     function render() {
       var ent = window.HCGAuth.entitlement();
       var note = document.getElementById("dp-entitled-note");
-      if (!ent.paid) { if (note) note.hidden = true; return; }
+      var getBtn = document.getElementById("dp-get-btn");
+      if (!ent.paid) { if (note) note.hidden = true; if (getBtn) getBtn.style.display = ""; return; }
       if (note) note.hidden = false;
+      if (getBtn) getBtn.style.display = "none";
       document.querySelectorAll("li[data-file]").forEach(function (li) {
         if (li.querySelector("a.dl")) return;
         li.appendChild(document.createTextNode(" \u00b7 "));

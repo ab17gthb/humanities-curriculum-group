@@ -38,21 +38,23 @@
 <section class="block">
   <div class="wrap">
     <h1>The Founding</h1>
-    <p class="sub">The eleventh complete unit and the second in the course, included with All-Access. Eight lessons, a review day, and the unit test, fifty-one documents in all, plus a slide deck with full speaker notes and a teacher notes document for every lesson. Every PDF includes the teacher key, and every document follows the same print standard as the sample unit: black text, open writing space, no ink-heavy design. If you are new here, the <a href="progressive-era.html">Progressive Era unit</a> is the free sample, and it runs on the same plate and the same planner. Primary source work for this unit lives in the bank at <a href="https://tpsp.web.app">The Primary Source Project</a>, which holds audited sources for this era.</p>
-    <p><a class="btn" href="subscribe.html">Get this unit with All-Access</a> <a class="btn secondary" href="progressive-era.html">See the free sample unit</a> <a class="btn secondary" href="planner.html?unit=fd">Plan this unit</a></p>
-    <div id="fd-entitled-note" hidden><strong>Your All-Access is active.</strong> Download buttons appear next to every document below, including each lesson's slide deck (PowerPoint) and teacher notes.</div>
+    <p class="sub">The second unit in the course, included with All-Access. Eight lessons, a review day, and the unit test, fifty-one documents in all, plus a slide deck with full speaker notes and a teacher notes document for every lesson. Every PDF includes the teacher key, and every document follows the same print standard as the sample unit: black text, open writing space, no ink-heavy design. If you are new here, the <a href="progressive-era.html">Progressive Era unit</a> is the free sample, and it runs on the same plate and the same planner. Primary source work for this unit lives in the bank at <a href="https://tpsp.web.app">The Primary Source Project</a>, which holds audited sources for this era.</p>
+    <p><a class="btn" id="fd-get-btn" href="subscribe.html">Get this unit with All-Access</a> <a class="btn secondary" href="progressive-era.html">See the free sample unit</a> <a class="btn secondary" href="planner.html?unit=fd">Plan this unit</a></p>
+    <div id="fd-entitled-note" hidden><strong>Your All-Access is active.</strong> Download buttons appear next to every document below.</div>
 
     <div class="note rycal-note" style="max-width:820px;">
       <strong>Student vocabulary review.</strong> Post this link for students on the first day of the unit, not on the review day: <a href="https://rycal.web.app/hcg-the-founding-flashcards">https://rycal.web.app/hcg-the-founding-flashcards</a>. The deck holds every key term from this unit's guided notes, with the definitions word for word as the notes print them. Students need no account: they open the link, copy the deck to their own set, enter the unit test date, and Rycal paces short spaced sessions across the whole unit. HCG collects nothing about students; the link simply takes them to Rycal. Paste the address into your LMS so students have it from day one.
     </div>
 
-    <h2 style="margin-top:30px;">About this unit</h2>
-    <div style="max-width:820px;">
+    <details class="about-drop">
+      <summary>About this unit</summary>
+      <div style="max-width:820px;">
       <p>The unit opens with the empire's bill. Britain's debt had doubled in the French and Indian War, an army stood in America, and Grenville's ministry resolved the colonies should pay for their defense. The Stamp Act of 1765, the first tax laid directly on the colonies, drew an answer in three registers: argument, in the Virginia Resolves and the Stamp Act Congress; combination, in household boycotts; and crowd action that drove the stamp distributors to resign. Parliament repealed the act and claimed, in the Declaratory Act, power to legislate in all cases whatsoever. The Townshend duties followed, troops came to Boston, and on March 5, 1770, soldiers fired on a crowd and killed five men, the night Revere's engraving fixed as a massacre.</p>
       <p>A protest over tea became a war. The Tea Act let the East India Company sell tea with the tax on it, so every cup conceded Parliament's right to tax; Boston emptied 342 chests into the harbor, and Parliament answered with the Intolerable Acts. The First Continental Congress built a second government from the boycott, and in April 1775 shooting started at Lexington and Concord. Paine's Common Sense recast the quarrel: the villain was not a tax or a minister but monarchy. Congress voted independence on July 2, 1776, and adopted the Declaration on July 4, its preamble stating government by consent and equal rights, its grievances charged against the king alone, and one passage, Jefferson's charge of a war against human nature in the slave trade, struck out before adoption.</p>
       <p>The war takes two lessons, one for its campaigns and one for the peoples who fought, paid, and waited. The Continental Army survived on endurance: Trenton and Princeton, Saratoga and the French alliance it won, Valley Forge, and the southern campaigns that ended at Yorktown and in the Treaty of Paris. The other war ran through households and nations. Dunmore's Proclamation offered freedom to the enslaved who reached British lines, some five thousand Black soldiers served in American ranks, women ran farms and followed armies, Native nations chose their sides and paid the war's highest territorial price, and sixty thousand Loyalists went into exile.</p>
       <p>Peace exposed the government's limits. The Articles won the war and built a national domain in the land ordinances, but Congress could not tax, compel a state, or pay its army, and Shays's Rebellion sent fifty-five men to Philadelphia. The Convention answered through the Great Compromise, shadowed by the three-fifths count that built slavery into the House unnamed. Ratification ran in print, The Federalist against Brutus, eased by promised amendments: the Bill of Rights of 1791, the skeptics' monument inside the Federalists' victory. The unit is organized around the essential question, “Why did the colonies break with Britain, and what did Americans build in the place of the empire they rejected?” A review day gives students a study guide and crossword before the 50-point unit test. Every test item is tagged in the key to a published 15-entry blueprint, so teachers can see what the test asks and where it was taught. The planner turns those choices into a calendar and checks the work against the blueprint, naming any gap while there is time to close it.</p>
-    </div>
+      </div>
+    </details>
 
     <div style="display:flex; gap:26px; align-items:flex-start; margin:28px 0 4px; flex-wrap:wrap;">
       <img src="assets/the-founding-cover.png" alt="The Founding unit cover" style="width:270px; border:1px solid #c9bfa5; box-shadow:0 2px 10px rgba(31,51,80,.15); display:block;">
@@ -260,8 +262,10 @@
     function render() {
       var ent = window.HCGAuth.entitlement();
       var note = document.getElementById("fd-entitled-note");
-      if (!ent.paid) { if (note) note.hidden = true; return; }
+      var getBtn = document.getElementById("fd-get-btn");
+      if (!ent.paid) { if (note) note.hidden = true; if (getBtn) getBtn.style.display = ""; return; }
       if (note) note.hidden = false;
+      if (getBtn) getBtn.style.display = "none";
       document.querySelectorAll("li[data-file]").forEach(function (li) {
         if (li.querySelector("a.dl")) return;
         li.appendChild(document.createTextNode(" \u00b7 "));

@@ -38,21 +38,23 @@
 <section class="block">
   <div class="wrap">
     <h1>Modern America</h1>
-    <p class="sub">The ninth complete unit and the last in the course, included with All-Access. Eight lessons, a review day, and the unit test, fifty-one documents in all, plus a slide deck with full speaker notes and a teacher notes document for every lesson. Every PDF includes the teacher key, and every document follows the same print standard as the sample unit: black text, open writing space, no ink-heavy design. If you are new here, the <a href="progressive-era.html">Progressive Era unit</a> is the free sample, and it runs on the same plate and the same planner. Primary source work for this unit lives in the bank at <a href="https://tpsp.web.app">The Primary Source Project</a>, which holds audited sources for this era.</p>
-    <p><a class="btn" href="subscribe.html">Get this unit with All-Access</a> <a class="btn secondary" href="progressive-era.html">See the free sample unit</a> <a class="btn secondary" href="planner.html?unit=ma">Plan this unit</a></p>
-    <div id="ma-entitled-note" hidden><strong>Your All-Access is active.</strong> Download buttons appear next to every document below, including each lesson's slide deck (PowerPoint) and teacher notes.</div>
+    <p class="sub">The last unit in the course, included with All-Access. Eight lessons, a review day, and the unit test, fifty-one documents in all, plus a slide deck with full speaker notes and a teacher notes document for every lesson. Every PDF includes the teacher key, and every document follows the same print standard as the sample unit: black text, open writing space, no ink-heavy design. If you are new here, the <a href="progressive-era.html">Progressive Era unit</a> is the free sample, and it runs on the same plate and the same planner. Primary source work for this unit lives in the bank at <a href="https://tpsp.web.app">The Primary Source Project</a>, which holds audited sources for this era.</p>
+    <p><a class="btn" id="ma-get-btn" href="subscribe.html">Get this unit with All-Access</a> <a class="btn secondary" href="progressive-era.html">See the free sample unit</a> <a class="btn secondary" href="planner.html?unit=ma">Plan this unit</a></p>
+    <div id="ma-entitled-note" hidden><strong>Your All-Access is active.</strong> Download buttons appear next to every document below.</div>
 
     <div class="note rycal-note" style="max-width:820px;">
       <strong>Student vocabulary review.</strong> Post this link for students on the first day of the unit, not on the review day: <a href="https://rycal.web.app/hcg-modern-america-flashcards">https://rycal.web.app/hcg-modern-america-flashcards</a>. The deck holds every key term from this unit's guided notes, with the definitions word for word as the notes print them. Students need no account: they open the link, copy the deck to their own set, enter the unit test date, and Rycal paces short spaced sessions across the whole unit. HCG collects nothing about students; the link simply takes them to Rycal. Paste the address into your LMS so students have it from day one.
     </div>
 
-    <h2 style="margin-top:30px;">About this unit</h2>
-    <div style="max-width:820px;">
+    <details class="about-drop">
+      <summary>About this unit</summary>
+      <div style="max-width:820px;">
       <p>The unit opens in the late 1970s, with the postwar settlement breaking down. After 1945, Americans had expected rising wages, cheap energy, and a government that managed the economy; by the middle 1970s all three had failed at once. Inflation rose while growth stalled, the mix named stagflation, and oil shocks sent drivers into gasoline lines. Around the economics stood Watergate, a resignation and a pardon, a lost war just closed, and New York City near bankruptcy. Carter named a crisis of confidence in 1979, and the answer was organized from the right: Proposition 13 opened the tax revolt, the New Right built its machinery, the Moral Majority mobilized evangelical voters, and 1980 became the hinge.</p>
       <p>Ronald Reagan stated the mandate in 1981: government is not the solution to the problem, government is the problem. His program cut tax rates by a quarter, deregulated industry, and stood behind the Federal Reserve while it broke inflation through a deep recession. He fired eleven thousand air traffic controllers, and both sides read the terms. The limits were real: the debt tripled, entitlements went untouched, and Iran-Contra became the era's largest scandal. The Cold War's end landed at home in the Gulf War, the peace dividend argument, and the Americans with Disabilities Act. Trade remade the economy, NAFTA and China above all, and the 1990s boom ended in surpluses. Then the computer and the Internet remade work, commerce, and news.</p>
       <p>The population was remade too: the immigration system built in 1965 shifted the sources of new Americans from Europe toward Latin America and Asia, and the foreign-born share nearly tripled. The 1986 act joined legal status for about three million people to the first ban on hiring unauthorized workers. Americans moved toward the Sun Belt, and congressional seats followed. On September 11, 2001, hijackers killed 2,977 people; the answer ran from the Authorization for Use of Military Force and the PATRIOT Act to wars in Afghanistan and Iraq. In 2008 the financial system nearly failed: Lehman fell, credit froze, the government rescued the banks, and unemployment reached ten percent. The Tea Party and Occupy Wall Street drew opposite lessons from the wreckage.</p>
       <p>The unit closes in the present those decades built: parties pulled apart, elections settled narrowly, and the Supreme Court refereeing the era's arguments in Bush v. Gore, Heller, Citizens United, Obergefell, and the 2023 admissions decision, with a pandemic as its stress test. The unit is organized around the essential question, “How did the United States remake itself after 1980, in its economy, its population, and its place in the world, and what did the remaking settle and what did it leave open?” Each lesson has a reading, guided notes, slides with full speaker notes, an activity, a notebook page, a quick check, and a writing task. A review day gives students a study guide and crossword before the 50-point unit test. Every test item is tagged in the key to a published 15-entry blueprint, so teachers can see what the test asks and where it was taught. The planner turns those choices into a calendar and checks the selected work against the blueprint, naming any gap while there is still time to close it.</p>
-    </div>
+      </div>
+    </details>
 
     <div style="display:flex; gap:26px; align-items:flex-start; margin:28px 0 4px; flex-wrap:wrap;">
       <img src="assets/modern-america-cover.png" alt="The Modern America unit cover" style="width:270px; border:1px solid #c9bfa5; box-shadow:0 2px 10px rgba(31,51,80,.15); display:block;">
@@ -259,8 +261,10 @@
     function render() {
       var ent = window.HCGAuth.entitlement();
       var note = document.getElementById("ma-entitled-note");
-      if (!ent.paid) { if (note) note.hidden = true; return; }
+      var getBtn = document.getElementById("ma-get-btn");
+      if (!ent.paid) { if (note) note.hidden = true; if (getBtn) getBtn.style.display = ""; return; }
       if (note) note.hidden = false;
+      if (getBtn) getBtn.style.display = "none";
       document.querySelectorAll("li[data-file]").forEach(function (li) {
         if (li.querySelector("a.dl")) return;
         li.appendChild(document.createTextNode(" \u00b7 "));

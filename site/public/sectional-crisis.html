@@ -38,21 +38,23 @@
 <section class="block">
   <div class="wrap">
     <h1>Sectional Crisis and Civil War</h1>
-    <p class="sub">The fourteenth complete unit and the fifth in the course, included with All-Access. Eight lessons, a review day, and the unit test, fifty-one documents in all, plus a slide deck with full speaker notes and a teacher notes document for every lesson. Every PDF includes the teacher key, and every document follows the same print standard as the sample unit: black text, open writing space, no ink-heavy design. If you are new here, the <a href="progressive-era.html">Progressive Era unit</a> is the free sample, and it runs on the same plate and the same planner. Primary source work for this unit lives in the bank at <a href="https://tpsp.web.app">The Primary Source Project</a>, which holds audited sources for this era.</p>
-    <p><a class="btn" href="subscribe.html">Get this unit with All-Access</a> <a class="btn secondary" href="progressive-era.html">See the free sample unit</a> <a class="btn secondary" href="planner.html?unit=sc">Plan this unit</a></p>
-    <div id="sc-entitled-note" hidden><strong>Your All-Access is active.</strong> Download buttons appear next to every document below, including each lesson's slide deck (PowerPoint) and teacher notes.</div>
+    <p class="sub">The fifth unit in the course, included with All-Access. Eight lessons, a review day, and the unit test, fifty-one documents in all, plus a slide deck with full speaker notes and a teacher notes document for every lesson. Every PDF includes the teacher key, and every document follows the same print standard as the sample unit: black text, open writing space, no ink-heavy design. If you are new here, the <a href="progressive-era.html">Progressive Era unit</a> is the free sample, and it runs on the same plate and the same planner. Primary source work for this unit lives in the bank at <a href="https://tpsp.web.app">The Primary Source Project</a>, which holds audited sources for this era.</p>
+    <p><a class="btn" id="sc-get-btn" href="subscribe.html">Get this unit with All-Access</a> <a class="btn secondary" href="progressive-era.html">See the free sample unit</a> <a class="btn secondary" href="planner.html?unit=sc">Plan this unit</a></p>
+    <div id="sc-entitled-note" hidden><strong>Your All-Access is active.</strong> Download buttons appear next to every document below.</div>
 
     <div class="note rycal-note" style="max-width:820px;">
       <strong>Student vocabulary review.</strong> Post this link for students on the first day of the unit, not on the review day: <a href="https://rycal.web.app/hcg-sectional-crisis-flashcards">https://rycal.web.app/hcg-sectional-crisis-flashcards</a>. The deck holds every key term from this unit's guided notes, with the definitions word for word as the notes print them. Students need no account: they open the link, copy the deck to their own set, enter the unit test date, and Rycal paces short spaced sessions across the whole unit. HCG collects nothing about students; the link simply takes them to Rycal. Paste the address into your LMS so students have it from day one.
     </div>
 
-    <h2 style="margin-top:30px;">About this unit</h2>
-    <div style="max-width:820px;">
+    <details class="about-drop">
+      <summary>About this unit</summary>
+      <div style="max-width:820px;">
       <p>The unit opens with the Senate balanced at fifteen free states and fifteen slave and California applying for statehood free. Clay offered his last package; it failed as a whole and passed in pieces under Douglas: California free, Utah and New Mexico left to decide at statehood, the slave trade, not slavery, abolished in the District of Columbia, and the Fugitive Slave Act, the settlement's price. The Act at street level: seizure on an owner's affidavit, trial before a commissioner, the accused barred from testifying, ten dollars paid when the commissioner remanded and five when he freed, and fines and prison for anyone who fed, hid, or rescued. Northern statehouses answered with personal liberty laws, and rendition became a public spectacle, Burns marched to the cutter between lines of federal troops.</p>
       <p>The argument came at full voice. Stowe's Uncle Tom's Cabin, built out of the slave narratives and aimed at the Christian mother's conscience, sold as no American book had sold; Douglass at Rochester audited the founding's promises against the slave's present; Truth's Akron speech survives in two texts printed twelve years apart; Jacobs wrote what slavery did to women out of seven years hidden within earshot of her children. The Kansas-Nebraska Act of 1854 then repealed the Missouri line so a railroad could run west, and Kansas produced two governments, a sacked town, a caned senator, and a massacre at Pottawatomie. The Whigs died of it; the Republicans rose on the free labor creed; and the Supreme Court in Dred Scott tried to settle the question out of politics, holding Black Americans no citizens and Congress powerless to bar slavery from the territories, voiding the Republican platform itself.</p>
       <p>The debates of 1858 pressed the contradiction until the Freeport answer split the Democracy; Brown's raid made him a martyr in the North and a warning in the South; and in 1860 Lincoln was elected with 39.8 percent of the vote, unlisted on ten states' ballots. Secession answered in its own words, South Carolina's declaration and Stephens's cornerstone. That arithmetic was taught at Bull Run, Shiloh, and Antietam, 22,700 casualties in one day: the Anaconda against King Cotton, habeas corpus suspended. Emancipation, issued after Antietam, remade the war's purpose in fact: hundreds of thousands walked to the Union lines, some 180,000 Black soldiers served, Gettysburg and Vicksburg turned in one week of July, and the Address rededicated the war to equality. Grant and Sherman finished it: Atlanta, the election of 1864, Petersburg, Appomattox, the Second Inaugural naming slavery the offense and the war its woe, and Booth, who made Lincoln the war's last casualty.</p>
       <p>The unit is organized around the essential question, “How did compromise over slavery finally fail, and what did the war it caused settle about slavery and the Union, and what did it leave open?” A review day gives students a study guide and crossword before the 50-point unit test. Every test item is tagged in the key to a published 15-entry blueprint, so teachers can see what the test asks and where it was taught. The planner turns those choices into a calendar and checks the work against the blueprint, naming any gap while there is time to close it.</p>
-    </div>
+      </div>
+    </details>
 
     <div style="display:flex; gap:26px; align-items:flex-start; margin:28px 0 4px; flex-wrap:wrap;">
       <img src="assets/sectional-crisis-cover.png" alt="The Sectional Crisis and Civil War unit cover" style="width:270px; border:1px solid #c9bfa5; box-shadow:0 2px 10px rgba(31,51,80,.15); display:block;">
@@ -252,8 +254,10 @@
     function render() {
       var ent = window.HCGAuth.entitlement();
       var note = document.getElementById("sc-entitled-note");
-      if (!ent.paid) { if (note) note.hidden = true; return; }
+      var getBtn = document.getElementById("sc-get-btn");
+      if (!ent.paid) { if (note) note.hidden = true; if (getBtn) getBtn.style.display = ""; return; }
       if (note) note.hidden = false;
+      if (getBtn) getBtn.style.display = "none";
       document.querySelectorAll("li[data-file]").forEach(function (li) {
         if (li.querySelector("a.dl")) return;
         li.appendChild(document.createTextNode(" \u00b7 "));

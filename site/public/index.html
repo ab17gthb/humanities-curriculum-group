@@ -11,6 +11,7 @@
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://humanitiescurriculumgroup.web.app/">
 <link rel="stylesheet" href="styles.css">
+<script>if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) { document.documentElement.classList.add("rv-init"); }</script>
 <link rel="preload" as="image" href="assets/hero-cover-progressive-era.webp" fetchpriority="high">
 <style>
 /* Homepage: hero cover rotation */
@@ -30,35 +31,15 @@
 @media (max-width: 860px) { .unitgrid { grid-template-columns: 1fr; } }
 ul.unitplate { margin-top: 12px; }
 .courseline { font-size: 16px; color: var(--navy); margin: 6px 0 26px; }
-/* Homepage: planner illustration */
-.panim { background: #fff; border: 1px solid #ddd5c3; border-top: 3px solid var(--navy); padding: 16px 18px 14px; margin: 22px 0 8px; }
-.panim-head { display: flex; flex-wrap: wrap; gap: 4px 18px; align-items: baseline; margin-bottom: 12px; }
-.panim-title { font-family: Georgia, serif; color: var(--navy); font-size: 16.5px; }
-.panim-cov { margin-left: auto; font-size: 13.5px; color: var(--gray); }
-.panim-cov strong { color: var(--navy); }
-.panim-week { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; }
-.pday { background: var(--paper); border: 1px solid #eee7d6; border-radius: 4px; min-height: 88px; padding: 5px 6px; }
-.pday .pday-d { display: block; font-size: 11.5px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--gray); margin-bottom: 4px; }
-.pday.testday { background: var(--navy); border-color: var(--navy); }
-.pday.testday .pday-d { color: var(--powder); }
-.pday .ptest { color: var(--cream); font-weight: bold; font-size: 13.5px; }
-.pick-chip { display: block; background: #fff; border: 1px solid #d8cfb8; border-radius: 3px; padding: 3px 6px; font-size: 12.5px; line-height: 1.35; color: var(--ink); }
-.panim.live .pick-chip { opacity: 0; transform: translateY(-12px); transition: opacity 0.45s ease, transform 0.45s ease; }
-.panim.live .pick-chip.in { opacity: 1; transform: none; }
-.panim-meter { height: 14px; background: #eee7d6; border-radius: 7px; overflow: hidden; margin: 12px 0 6px; }
-.panim-meter > div { height: 100%; background: var(--rust); width: 100%; transition: width 0.6s ease; }
-.panim-note { margin: 0; font-size: 13.5px; color: var(--gray); }
-.panim-cap { font-size: 14.5px; color: var(--gray); margin: 2px 0 20px; }
-@media (max-width: 560px) {
-  .panim-week { gap: 3px; }
-  .pday { min-height: 78px; padding: 4px; }
-  .pick-chip { font-size: 11px; padding: 2px 4px; }
-}
+/* Homepage: scroll reveal */
+html.rv-init .rv { opacity: 0; transform: translateY(16px); transition: opacity 0.7s ease, transform 0.7s ease; transition-delay: var(--rvd, 0s); }
+html.rv-init .rv.in { opacity: 1; transform: none; }
 /* Homepage: pricing */
 .price-line { font-family: Georgia, serif; font-size: 24px; color: var(--navy); margin: 2px 0 8px; }
 .price-line small { font-family: Arial, sans-serif; font-size: 13.5px; color: var(--gray); }
 @media (prefers-reduced-motion: reduce) {
-  .hc-slide, .panim-meter > div { transition: none; }
+  .hc-slide { transition: none; }
+  html.rv-init .rv { opacity: 1; transform: none; transition: none; }
 }
 </style>
 <link rel="icon" type="image/svg+xml" href="assets/store-wordmark-color.svg">
@@ -82,13 +63,13 @@ ul.unitplate { margin-top: 12px; }
 
 <div class="hero">
   <div class="wrap hero-grid">
-    <div class="hero-text">
+    <div class="hero-text rv">
       <h1>A full social studies curriculum, planned around your calendar.</h1>
       <p class="lede">Every unit ships as a complete plate of readings, guided notes, activities, and a test built to a published blueprint. You pick what fits your students, and the built-in planner lays your picks onto your actual school days and checks them against everything the test covers.</p>
       <a class="btn" href="progressive-era.html">Get the free sample unit</a>
       <a class="btn secondary" href="planner.html">Try the planner</a>
     </div>
-    <figure class="hero-covers" id="hero-covers">
+    <figure class="hero-covers rv" id="hero-covers">
       <div class="hc-stack">
         <img class="hc-slide is-active" src="assets/hero-cover-progressive-era.webp" data-name="The Progressive Era" data-note="the free sample unit" alt="The Progressive Era unit cover" width="640" height="828" fetchpriority="high">
         <img class="hc-slide" data-src="assets/hero-cover-the-founding.webp" data-name="The Founding" data-note="unit 2 of 15" alt="The Founding unit cover" width="640" height="828" decoding="async">
@@ -103,16 +84,16 @@ ul.unitplate { margin-top: 12px; }
 
 <section class="block">
   <div class="wrap">
-    <h2>What Humanities Curriculum Group is</h2>
-    <p style="max-width:760px;">Humanities Curriculum Group is a US history curriculum built around complete, classroom-ready units and the planning work that surrounds them. Each unit gives teachers a full plate of lesson materials and a test tied to a published blueprint. The built-in planner then turns selected materials into a unit or year calendar and checks coverage before the test arrives. Humanities Curriculum Group is a Knoweth product. Its first course is US History, complete in fifteen units, and the complete Progressive Era unit is available free so teachers can examine the model before subscribing to the rest of the course. The aim is practical. Teachers get fewer disconnected downloads and a clearer line from daily lessons to the assessment at the end of the unit.</p>
+    <h2 class="rv">What Humanities Curriculum Group is</h2>
+    <p class="rv" style="max-width:760px;">Humanities Curriculum Group is a US history curriculum built around complete, classroom-ready units and the planning work that surrounds them. Each unit gives teachers a full plate of lesson materials and a test tied to a published blueprint. The built-in planner then turns selected materials into a unit or year calendar and checks coverage before the test arrives. Humanities Curriculum Group is a Knoweth product. Its first course is US History, complete in fifteen units, and the complete Progressive Era unit is available free so teachers can examine the model before subscribing to the rest of the course. The aim is practical. Teachers get fewer disconnected downloads and a clearer line from daily lessons to the assessment at the end of the unit.</p>
   </div>
 </section>
 
 <section class="block">
   <div class="wrap">
-    <h2>How it works</h2>
-    <p class="sub">Most curriculum sites sell you a fixed plan or a pile of files. This one sells the content and the system that turns it into your year.</p>
-    <div class="cards">
+    <h2 class="rv">How it works</h2>
+    <p class="sub rv">Most curriculum sites sell you a fixed plan or a pile of files. This one sells the content and the system that turns it into your year.</p>
+    <div class="cards rv">
       <div class="card">
         <span class="tag">Step 1</span>
         <h3>Browse the plate</h3>
@@ -134,9 +115,9 @@ ul.unitplate { margin-top: 12px; }
 
 <section class="block">
   <div class="wrap">
-    <h2>What one unit gives you</h2>
-    <p class="sub">Every unit in the course is built on the same plate, so the free sample shows exactly what every unit delivers. This is the whole of it, for one unit.</p>
-    <div class="unitgrid">
+    <h2 class="rv">What one unit gives you</h2>
+    <p class="sub rv">Every unit in the course is built on the same plate, so the free sample shows exactly what every unit delivers. This is the whole of it, for one unit.</p>
+    <div class="unitgrid rv">
       <div class="card">
         <span class="tag">Eight lessons, each with</span>
         <ul class="plate unitplate">
@@ -157,31 +138,15 @@ ul.unitplate { margin-top: 12px; }
         </ul>
       </div>
     </div>
-    <p class="courseline">Across the course: <strong>15 units, 765 documents, 120 decks</strong>, all built on this same plate.</p>
+    <p class="courseline rv">Across the course: <strong>15 units, 765 documents, 120 decks</strong>, all built on this same plate.</p>
   </div>
 </section>
 
 <section class="block">
   <div class="wrap">
-    <h2>The planner at work</h2>
-    <p class="sub">Real screens from the planner, running on the free Progressive Era sample unit.</p>
-    <div class="panim" id="panim" aria-hidden="true">
-      <div class="panim-head">
-        <span class="panim-title">Unit planner · The Progressive Era</span>
-        <span class="panim-cov">Coverage check: <strong id="panim-count">15 of 15</strong> blueprint entries</span>
-      </div>
-      <div class="panim-week">
-        <div class="pday"><span class="pday-d">Mon</span><span class="pick-chip">Lesson 3 · Reading</span></div>
-        <div class="pday"><span class="pday-d">Tue</span><span class="pick-chip">Lesson 3 · Activity</span></div>
-        <div class="pday"><span class="pday-d">Wed</span><span class="pick-chip">Lesson 4 · Notebook page</span></div>
-        <div class="pday"><span class="pday-d">Thu</span><span class="pick-chip">Lesson 5 · Writing task</span></div>
-        <div class="pday testday"><span class="pday-d">Fri</span><span class="ptest">Unit test</span></div>
-      </div>
-      <div class="panim-meter"><div id="panim-bar"></div></div>
-      <p class="panim-note" id="panim-note">Every blueprint entry covered, before the test arrives.</p>
-    </div>
-    <p class="panim-cap">How a plan comes together: your picks drop onto real school days, the test is placed at the end of the unit, and the coverage check fills against the test blueprint as you plan.</p>
-    <div class="shots">
+    <h2 class="rv">The planner at work</h2>
+    <p class="sub rv">Real screens from the planner, running on the free Progressive Era sample unit.</p>
+    <div class="shots rv">
       <figure class="shot">
         <img src="assets/shot-year-calendar.webp" width="1908" height="1938" loading="lazy" alt="Year planner calendar for September, October, and November 2026, with unit bands for the Founding, Early Republic and Expansion, Jackson and Reform, and Sectional Crisis and Civil War laid across the school days">
         <figcaption>The year planner lays the whole course across your school days. Unit bands flow around days off, and each band ends on its test day.</figcaption>
@@ -204,9 +169,9 @@ ul.unitplate { margin-top: 12px; }
 
 <section class="block">
   <div class="wrap">
-    <h2>A plan, not a pile of downloads</h2>
-    <p class="sub">Downloaded files sit in a folder until you build the calendar yourself. Here the calendar is part of the product: the same plan drives your pacing, your coverage check, your sub plans, and your morning view.</p>
-    <div class="cards">
+    <h2 class="rv">A plan, not a pile of downloads</h2>
+    <p class="sub rv">Downloaded files sit in a folder until you build the calendar yourself. Here the calendar is part of the product: the same plan drives your pacing, your coverage check, your sub plans, and your morning view.</p>
+    <div class="cards rv">
       <div class="card">
         <span class="tag">Calendar</span>
         <h3>Picks become dates</h3>
@@ -228,9 +193,9 @@ ul.unitplate { margin-top: 12px; }
 
 <section class="block">
   <div class="wrap">
-    <h2>Start free. Subscribe for the rest.</h2>
-    <p class="sub">One unit is free in full. Everything else is a single monthly subscription, with no tiers and no per-unit charges.</p>
-    <div class="cards">
+    <h2 class="rv">Start free. Subscribe for the rest.</h2>
+    <p class="sub rv">One unit is free in full. Everything else is a single subscription, monthly or annual, with no tiers and no per-unit charges.</p>
+    <div class="cards rv">
       <div class="card">
         <span class="tag">Free</span>
         <h3>The Progressive Era</h3>
@@ -242,7 +207,8 @@ ul.unitplate { margin-top: 12px; }
         <span class="tag">All-Access</span>
         <h3>The other fourteen units</h3>
         <p class="price-line">$9.99 <small>per month, cancel anytime</small></p>
-        <p>Every remaining unit with the full plate, your year and unit plans saved to your account so they are waiting on any device you sign in on, and the teacher home view.</p>
+        <p class="price-line">$59 <small>per year, cancel anytime</small></p>
+        <p>Every remaining unit with the full plate, your year and unit plans saved to your account so they are waiting on any device you sign in on, and the teacher home view. Monthly or annual, it is the same All-Access either way, and the annual plan runs about half the monthly cost across a year.</p>
         <a class="more" href="subscribe.html">See All-Access</a>
       </div>
     </div>
@@ -252,9 +218,9 @@ ul.unitplate { margin-top: 12px; }
 
 <section class="block">
   <div class="wrap">
-    <h2>Start with the sample unit</h2>
-    <p class="sub">The Progressive Era unit is complete and free: eight lessons, a review day, and a 50-point unit test with a full answer key. Download it, teach from it, and run it through the planner.</p>
-    <div class="cards">
+    <h2 class="rv">Start with the sample unit</h2>
+    <p class="sub rv">The Progressive Era unit is complete and free: eight lessons, a review day, and a 50-point unit test with a full answer key. Download it, teach from it, and run it through the planner.</p>
+    <div class="cards rv">
       <div class="card">
         <span class="tag">US History · Unit</span>
         <a href="progressive-era.html"><img src="assets/progressive-era-cover.png" alt="The Progressive Era unit cover" style="width:100%; display:block; margin-bottom:12px; border:1px solid #c9bfa5;"></a>

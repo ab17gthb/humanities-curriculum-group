@@ -263,3 +263,10 @@ section.block h1 { font-size: 27px; margin: 0 0 8px; }
 .shot img { width: 100%; height: auto; display: block; border: 1px solid #c9bfa5; }
 .shot figcaption { font-size: 14.5px; margin-top: 10px; }
 @media (max-width: 860px) { .shots { grid-template-columns: 1fr; } }
+
+/* Collapsible About block on unit and review pages */
+.about-drop { margin-top: 30px; }
+.about-drop summary { font-family: Georgia, "Times New Roman", serif; font-size: 27px; color: var(--navy); cursor: pointer; list-style: none; display: flex; align-items: baseline; gap: 10px; }
+.about-drop summary::-webkit-details-marker { display: none; }
+.about-drop summary::after { content: "\25BE"; font-size: 19px; color: var(--rust); transition: transform 0.2s ease; }
+.about-drop[open] summary::after { transform: rotate(180deg); }
