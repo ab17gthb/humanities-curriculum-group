@@ -113,11 +113,6 @@
     btns.forEach(function (btn, i) {
       btn.addEventListener("click", function () { userDrove = true; stop(); go(i); });
     });
-    var box = document.querySelector(".showcase");
-    if (box) {
-      box.addEventListener("mouseenter", stop);
-      box.addEventListener("mouseleave", start);
-    }
     var lb = document.getElementById("scLightbox");
     var lbImg = lb ? lb.querySelector("img") : null;
     slides.forEach(function (slide) {
