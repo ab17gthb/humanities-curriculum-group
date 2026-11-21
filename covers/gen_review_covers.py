@@ -144,7 +144,6 @@ def main():
   <div class="cap">{c['cap']}</div>
   <div class="inside">{c['inside']}</div>
   <div class="plan">Every document includes the teacher key. Every practice item is tagged to the course blueprint,<br>so the Humanities Curriculum Group planner can check your review against the test.</div>
-  <div class="foot">A KNOWETH PRODUCT</div>
 </body></html>"""
         hp = os.path.join(HERE, f"cover-{slug}.html")
         open(hp, "w").write(cover_html)
