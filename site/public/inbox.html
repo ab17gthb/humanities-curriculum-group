@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Inbox | Humanities Curriculum Group</title>
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="styles.css">
+<link rel="icon" type="image/svg+xml" href="assets/store-wordmark-color.svg">
+<style>
+  .msg { background: #fff; border: 1px solid #ddd3ba; border-radius: 6px; padding: 16px 20px; margin: 14px 0; max-width: 760px; }
+  .msg.unread { border-left: 4px solid var(--rust); }
+  .msg .meta { color: var(--gray); font-size: 13.5px; margin: 2px 0 8px; }
+  .msg .body { white-space: pre-wrap; margin: 0 0 10px; }
+  .msg .row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+  .msg h3 { margin: 0; font-size: 17px; }
+  .msg .mini { font-size: 13px; padding: 5px 10px; }
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap">
+    <a href="index.html"><img class="wordmark" src="assets/store-wordmark-cream.svg" alt="Humanities Curriculum Group"></a>
+    <nav class="main">
+      <a href="index.html">Home</a>
+      <a href="home.html">My Day</a>
+      <a href="us-history.html">US History</a>
+      <a href="progressive-era.html">Sample Unit</a>
+      <a href="planner-year.html">Year Planner</a>
+      <a href="planner.html">Unit Planner</a>
+      <a href="about.html">About</a>
+    </nav>
+    <div class="hcg-account" id="hcg-account"></div>
+  </div>
+</header>
+
+<section class="block">
+  <div class="wrap">
+    <h1>Inbox</h1>
+    <p class="sub" id="inbox-status">Checking your sign-in…</p>
+    <div id="inbox-list"></div>
+  </div>
+</section>
+
+<footer class="site">
+  <div class="wrap">
+    <img src="assets/store-wordmark-cream.svg" alt="Humanities Curriculum Group">
+    <div>
+      <p>Humanities Curriculum Group, built by a working social studies teacher. Sister projects: <a href="https://rycal.web.app">Rycal</a>, spaced-repetition study tools for AP courses, and <a href="https://tpsp.web.app">The Primary Source Project</a>, a primary source library and DBQ builder.</p>
+      <p>Questions about All-Access, billing, or a download that won't open? <a href="contact.html">Contact us</a>.</p>
+      <p>Materials print on standard US Letter paper with ordinary school copiers in mind.</p>
+      <p class="small"><a href="privacy.html">Privacy Policy</a> · <a href="terms.html">Terms of Use</a></p>
+    </div>
+  </div>
+</footer>
+
+<script src="firebase-config.js"></script>
+<script src="auth.js"></script>
+<script>
+  // Admin inbox: reads hcgContact (rules allow only the owner's admin
+  // accounts), newest first, with mark-read and delete. Anyone else who
+  // reaches this page sees a sign-in prompt and no message data.
+  (function () {
+    var statusEl = document.getElementById("inbox-status");
+    var listEl = document.getElementById("inbox-list");
+    function esc(s) {
+      return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+        return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+      });
+    }
+    function fmtDate(ts) {
+      try { return ts && ts.toDate ? ts.toDate().toLocaleString() : ""; } catch (e) { return ""; }
+    }
+    async function render() {
+      if (!window.HCGAuth || !HCGAuth.isResolved()) return;
+      var user = null;
+      // HCGAuth.onChange fires immediately once resolved; use it as the gate.
+    }
+    var started = false;
+    window.HCGAuth && HCGAuth.onChange(async function (user) {
+      if (started) return;
+      if (!user) { statusEl.textContent = "Sign in with an admin account to read the inbox."; return; }
+      if (!HCGAuth.isAdmin()) { statusEl.textContent = "This page is for the site owner only."; return; }
+      started = true;
+      statusEl.textContent = "Loading messages…";
+      try {
+        var db = await HCGAuth.firestore();
+        var snap = await db.collection("hcgContact").orderBy("createdAt", "desc").limit(100).get();
+        if (snap.empty) { statusEl.textContent = "No messages yet."; listEl.innerHTML = ""; return; }
+        var unread = 0;
+        listEl.innerHTML = "";
+        snap.forEach(function (doc) {
+          var m = doc.data();
+          if (!m.read) unread++;
+          var div = document.createElement("div");
+          div.className = "msg" + (m.read ? "" : " unread");
+          div.innerHTML =
+            "<div class='row'><h3>" + esc(m.topic || "Message") + "</h3>" +
+            (m.read ? "" : "<span class='small'><strong>New</strong></span>") + "</div>" +
+            "<p class='meta'>From " + esc(m.name) + " &lt;" + esc(m.email) + "&gt; · " + esc(fmtDate(m.createdAt)) + "</p>" +
+            "<p class='body'>" + esc(m.message) + "</p>" +
+            "<div class='row'>" +
+              "<a class='btn secondary mini' href='mailto:" + esc(m.email) + "'>Reply by email</a>" +
+              "<button type='button' class='btn secondary mini' data-act='toggle'>" + (m.read ? "Mark unread" : "Mark read") + "</button>" +
+              "<button type='button' class='btn secondary mini' data-act='del'>Delete</button>" +
+            "</div>";
+          div.querySelector("[data-act='toggle']").addEventListener("click", async function () {
+            await doc.ref.update({ read: !m.read });
+            window.location.reload();
+          });
+          div.querySelector("[data-act='del']").addEventListener("click", async function () {
+            if (window.confirm("Delete this message?")) { await doc.ref.delete(); window.location.reload(); }
+          });
+          listEl.appendChild(div);
+        });
+        statusEl.textContent = snap.size + (snap.size === 1 ? " message" : " messages") +
+          (unread ? " · " + unread + " unread" : "") + ". Replies go from your own mail program.";
+      } catch (e) {
+        statusEl.textContent = "The inbox could not be loaded. " + (e && e.message ? e.message : "");
+      }
+    });
+  })();
+</script>
+</body>
+</html>

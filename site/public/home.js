@@ -118,12 +118,19 @@
     slides.forEach(function (slide) {
       var frame = slide.querySelector(".sc-frame");
       if (!frame || !lb) return;
-      frame.addEventListener("click", function () {
-        var img = slide.querySelector("img");
+      var img = slide.querySelector("img");
+      function openLb() {
         lbImg.src = img.currentSrc || img.src;
         lbImg.alt = img.alt;
         lb.hidden = false;
         document.body.style.overflow = "hidden";
+      }
+      frame.setAttribute("role", "button");
+      frame.setAttribute("tabindex", "0");
+      frame.setAttribute("aria-label", "View full size: " + (img ? img.alt : "planner screenshot"));
+      frame.addEventListener("click", openLb);
+      frame.addEventListener("keydown", function (ev) {
+        if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); openLb(); }
       });
     });
     if (lb) {

@@ -1,0 +1,304 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper Functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() && 
+        (request.auth.token.admin == true || 
+         exists(/databases/$(database)/documents/admins/$(request.auth.uid)));
+    }
+
+    function isRycalAdmin() {
+      return isAuthenticated() &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    // 1. Official AP Course Curriculum (Public read, Admin write)
+    match /courses/{courseId} {
+      allow read: if true;
+      allow write: if isAdmin();
+
+      match /{allSubcollections=**} {
+        allow read: if true;
+        allow write: if isAdmin();
+      }
+    }
+
+    // 2. User Profiles, SM-2 Intervals & Personal Progress
+    // Admins can READ any profile/subcollection for the aggregate dashboard.
+    // Writes stay owner-only.
+    match /users/{userId} {
+      allow read: if isOwner(userId) || isRycalAdmin();
+      allow write: if isOwner(userId);
+
+      match /{allSubcollections=**} {
+        allow read: if isOwner(userId) || isRycalAdmin();
+        allow write: if isOwner(userId);
+      }
+    }
+
+    // 3. Custom Notecard Decks
+    match /customDecks/{deckId} {
+      // Anyone can read if public; owner can always read
+      allow read: if resource == null || resource.data.isPublic == true || isOwner(resource.data.authorId);
+      // Only logged in users can create decks under their own authorId
+      allow create: if isAuthenticated() && request.resource.data.authorId == request.auth.uid;
+      // Only creator can update or delete
+      allow update, delete: if isAuthenticated() && resource.data.authorId == request.auth.uid;
+    }
+
+    // 4. Classes — lightweight classroom system (no teacher/student account types).
+    // Any signed-in user can create a class (becoming its teacher).
+    // Members can read the class doc and assignments. Only the teacher
+    // can write assignments. Membership docs: a user can read/write only
+    // their own, except the teacher who can read all members.
+    // memberStats: students write their own summary; teacher reads all.
+    function isClassMember(classId) {
+      return isAuthenticated() &&
+        exists(/databases/$(database)/documents/classes/$(classId)/members/$(request.auth.uid));
+    }
+    function isClassTeacher(classId) {
+      return isAuthenticated() &&
+        get(/databases/$(database)/documents/classes/$(classId)/members/$(request.auth.uid)).data.role == 'teacher';
+    }
+    match /classes/{classId} {
+      allow read: if isClassMember(classId);
+      allow create: if isAuthenticated()
+        && request.resource.data.teacherId == request.auth.uid
+        && request.resource.data.code is string
+        && request.resource.data.name is string;
+      allow update, delete: if isClassTeacher(classId);
+
+      match /members/{userId} {
+        // Users can create their own membership (joining via code);
+        // read own doc; teacher reads all.
+        allow read: if isOwner(userId) || isClassTeacher(classId);
+        allow create: if isOwner(userId) || isClassTeacher(classId);
+        allow update: if isOwner(userId) || isClassTeacher(classId);
+        allow delete: if isOwner(userId) || isClassTeacher(classId);
+      }
+
+      match /assignments/{assignmentId} {
+        allow read: if isClassMember(classId);
+        allow create, update, delete: if isClassTeacher(classId);
+      }
+
+      match /memberStats/{userId} {
+        // Students sync their own mastery summary; teacher reads all.
+        allow read: if isOwner(userId) || isClassTeacher(classId);
+        allow write: if isOwner(userId);
+      }
+    }
+
+    // 5. Feedback inbox — anyone may submit with a valid email; admin may read
+    match /feedback/{feedbackId} {
+      allow read: if isAdmin();
+      allow update, delete: if false;
+      allow create: if request.resource.data.keys().hasOnly(['category','message','email','userId','displayName','page','createdAt','build'])
+        && request.resource.data.email is string
+        && request.resource.data.email.matches('^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$')
+        && request.resource.data.message is string
+        && request.resource.data.message.size() >= 5
+        && request.resource.data.message.size() <= 2000
+        && request.resource.data.category in ['Suggestion','Problem','Content correction','Accessibility','School or privacy question','Account or data request','Other'];
+    }
+
+    // Shared flashcard sets: anyone with the link can read; only the
+    // signed-in owner who published it can create/update/delete it.
+    match /sharedSets/{shareId} {
+      allow read: if true;
+      allow create: if request.auth != null
+        && request.resource.data.ownerUid == request.auth.uid
+        && request.resource.data.title is string
+        && request.resource.data.title.size() >= 1
+        && request.resource.data.title.size() <= 200
+        && request.resource.data.cards is list
+        && request.resource.data.cards.size() >= 2
+        && request.resource.data.cards.size() <= 2000;
+      allow update: if request.auth != null
+        && resource.data.ownerUid == request.auth.uid
+        && request.resource.data.ownerUid == request.auth.uid;
+      allow delete: if request.auth != null
+        && resource.data.ownerUid == request.auth.uid;
+    }
+
+    // 6. Primary Source Project (The Primary Source Project web app)
+    // Teacher DBQ assignments. The document ID is the 6-character student
+    // code, so single-document reads are public but listing is restricted to
+    // the owner's own documents (My Assignments queries ownerUid == uid).
+    // SECURITY SPLIT: the public doc never carries the answer key (or the
+    // teacher's email) — enforced below. The answer key lives in
+    // psp_assignments/{code}/private/teacher, owner-only.
+    function isPspOwner(code) {
+      return isAuthenticated()
+        && get(/databases/$(database)/documents/psp_assignments/$(code)).data.ownerUid == request.auth.uid;
+    }
+    match /psp_assignments/{code} {
+      allow get: if true;
+      allow list: if isAuthenticated() && resource.data.ownerUid == request.auth.uid;
+      allow create: if isAuthenticated()
+        && request.resource.data.ownerUid == request.auth.uid
+        && !('answerKey' in request.resource.data)
+        && !('ownerEmail' in request.resource.data);
+      allow update: if isAuthenticated()
+        && resource.data.ownerUid == request.auth.uid
+        && request.resource.data.ownerUid == request.auth.uid
+        && !('answerKey' in request.resource.data)
+        && !('ownerEmail' in request.resource.data);
+      allow delete: if isAuthenticated() && resource.data.ownerUid == request.auth.uid;
+    }
+
+    // Owner-only answer key subdocument. No listing.
+    match /psp_assignments/{code}/private/teacher {
+      allow get: if isPspOwner(code);
+      allow list: if false;
+      allow create, update: if isPspOwner(code)
+        && request.resource.data.keys().hasOnly(['answerKey', 'updatedAt'])
+        && request.resource.data.answerKey is string;
+      allow delete: if isPspOwner(code);
+    }
+
+    // Teacher's private custom sources
+    match /psp_teacher_sources/{uid}/sources/{sourceId} {
+      allow read, write: if request.auth != null && request.auth.uid == uid;
+    }
+
+    // Consortium submissions: signed-in teachers may submit; review in console
+    match /psp_submissions/{id} {
+      allow create: if request.auth != null;
+      allow read, update, delete: if false;
+    }
+
+    // Teacher DBQ gallery: public read; signed-in teachers may publish/unpublish own
+    match /psp_gallery/{id} {
+      allow read: if true;
+      allow create: if request.auth != null;
+      allow update, delete: if request.auth != null
+        && get(/databases/$(database)/documents/psp_gallery/$(id)).data.publishedBy == request.auth.uid;
+    }
+
+    // Premium DBQs (paywall). Public catalog metadata; the teacher package
+    // (answer key, exemplars, rubric notes, teacher guide) is gated behind
+    // a per-DBQ purchase or an active All-Access subscription. Entitlements
+    // are written only by the Stripe webhook backend, never by clients.
+    function pspHasPurchase(dbqId) {
+      return isAuthenticated()
+        && exists(/databases/$(database)/documents/psp_users/$(request.auth.uid)/purchases/$(dbqId));
+    }
+    function pspHasAllAccess() {
+      return isAuthenticated()
+        && exists(/databases/$(database)/documents/psp_users/$(request.auth.uid))
+        && get(/databases/$(database)/documents/psp_users/$(request.auth.uid)).data.get('allAccess', {}).get('status', '') == 'active';
+    }
+    match /psp_premium/{dbqId} {
+      allow read: if true;
+      allow write: if false;
+      match /private/teacher {
+        allow get: if pspHasPurchase(dbqId) || pspHasAllAccess();
+        allow list: if false;
+        allow write: if false;
+      }
+    }
+    match /psp_users/{uid} {
+      allow get: if isAuthenticated() && request.auth.uid == uid;
+      allow list: if false;
+      allow write: if false;
+    }
+    match /psp_users/{uid}/purchases/{pid} {
+      allow get: if isAuthenticated() && request.auth.uid == uid;
+      allow list: if isAuthenticated() && request.auth.uid == uid;
+      allow write: if false;
+    }
+    // Stripe price config: public read so the client can display prices.
+    match /psp_config/stripe {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    // 7. Humanities Curriculum Group (humanitiescurriculumgroup.web.app)
+    // A teacher's saved plans: the owner reads and writes their own doc.
+    // The entitlement field is never client-writable: plan saves merge, so
+    // an update must carry the stored entitlement unchanged, and a create
+    // may not set one at all. Entitlements are written by the backend only.
+    match /hcgUsers/{uid} {
+      allow get: if isOwner(uid);
+      allow list: if false;
+      allow create: if isOwner(uid) && !('entitlement' in request.resource.data);
+      allow update: if isOwner(uid)
+        && request.resource.data.get('entitlement', {}) == resource.data.get('entitlement', {});
+      allow delete: if isOwner(uid);
+    }
+
+    // Contact form messages: anyone may leave one (strictly shaped,
+    // size-bounded, always unread on arrival); only the owner's admin
+    // accounts may read, update, or delete them.
+    match /hcgContact/{messageId} {
+      allow create: if request.resource.data.keys().hasOnly(['name', 'email', 'topic', 'message', 'read', 'createdAt'])
+        && request.resource.data.name is string && request.resource.data.name.size() >= 1 && request.resource.data.name.size() <= 120
+        && request.resource.data.email is string && request.resource.data.email.size() >= 3 && request.resource.data.email.size() <= 200
+        && request.resource.data.topic is string && request.resource.data.topic.size() <= 60
+        && request.resource.data.message is string && request.resource.data.message.size() >= 1 && request.resource.data.message.size() <= 5000
+        && request.resource.data.read == false
+        && request.resource.data.createdAt == request.time;
+      allow read, update, delete: if isAuthenticated()
+        && request.auth.token.email in ['alexbrouhard1@gmail.com', 'alexbrouhardedu@gmail.com', 'knowethcg@gmail.com'];
+    }
+
+    // TPSP contact form messages: same shape and policy as hcgContact.
+    match /pspContact/{messageId} {
+      allow create: if request.resource.data.keys().hasOnly(['name', 'email', 'topic', 'message', 'read', 'createdAt'])
+        && request.resource.data.name is string && request.resource.data.name.size() >= 1 && request.resource.data.name.size() <= 120
+        && request.resource.data.email is string && request.resource.data.email.size() >= 3 && request.resource.data.email.size() <= 200
+        && request.resource.data.topic is string && request.resource.data.topic.size() <= 60
+        && request.resource.data.message is string && request.resource.data.message.size() >= 1 && request.resource.data.message.size() <= 5000
+        && request.resource.data.read == false
+        && request.resource.data.createdAt == request.time;
+      allow read, update, delete: if isAuthenticated()
+        && request.auth.token.email in ['alexbrouhard1@gmail.com', 'alexbrouhardedu@gmail.com', 'knowethcg@gmail.com'];
+    }
+
+    // Email list signups from the free sample unit gate: anyone may add
+    // one strictly shaped address; only the owner's admin accounts may
+    // read, update, or delete the list.
+    match /hcgLeads/{leadId} {
+      allow create: if request.resource.data.keys().hasOnly(['email', 'source', 'firstFile', 'createdAt'])
+        && request.resource.data.email is string
+        && request.resource.data.email.matches('^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$')
+        && request.resource.data.email.size() >= 3 && request.resource.data.email.size() <= 200
+        && request.resource.data.source is string && request.resource.data.source.size() >= 1 && request.resource.data.source.size() <= 60
+        && request.resource.data.firstFile is string && request.resource.data.firstFile.size() <= 120
+        && request.resource.data.createdAt == request.time;
+      allow read, update, delete: if isAuthenticated()
+        && request.auth.token.email in ['alexbrouhard1@gmail.com', 'alexbrouhardedu@gmail.com', 'knowethcg@gmail.com'];
+    }
+
+    // Site stats: daily aggregate counters (views, downloads, checkout
+    // starts, signups), written only by the logEvent function through the
+    // Admin SDK. No client may write them; only the owner's admin accounts
+    // may read them, for the stats dashboard.
+    match /hcgStats/{day} {
+      allow read: if isAuthenticated()
+        && request.auth.token.email in ['alexbrouhard1@gmail.com', 'alexbrouhardedu@gmail.com', 'knowethcg@gmail.com'];
+      allow write: if false;
+    }
+
+    // TPSP site stats: daily aggregate counters (views, downloads, checkout
+    // starts, signups), written only by the pspLogEvent function through the
+    // Admin SDK. Same access pattern as hcgStats.
+    match /pspStats/{day} {
+      allow read: if isAuthenticated()
+        && request.auth.token.email in ['alexbrouhard1@gmail.com', 'alexbrouhardedu@gmail.com', 'knowethcg@gmail.com'];
+      allow write: if false;
+    }
+
+  }
+}

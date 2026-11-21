@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Site Stats | Humanities Curriculum Group</title>
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="styles.css">
+<link rel="icon" type="image/svg+xml" href="assets/store-wordmark-color.svg">
+<style>
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; max-width: 960px; margin: 18px 0 6px; }
+  .stat { background: #fff; border: 1px solid #ddd3ba; border-top: 4px solid var(--rust); border-radius: 6px; padding: 14px 16px; }
+  .stat .n { font-size: 28px; color: var(--navy); line-height: 1.1; }
+  .stat .l { font-size: 13px; color: var(--gray); margin-top: 2px; }
+  .trend { display: flex; align-items: flex-end; gap: 3px; height: 130px; max-width: 960px; margin: 10px 0 4px; border-bottom: 2px solid #ddd3ba; }
+  .trend .col { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; height: 100%; }
+  .trend .bar { background: var(--rust); border-radius: 2px 2px 0 0; min-height: 2px; }
+  .trend .col.today .bar { background: var(--navy); }
+  .trend-labels { display: flex; gap: 3px; max-width: 960px; font-size: 11px; color: var(--gray); }
+  .trend-labels span { flex: 1; text-align: center; overflow: hidden; white-space: nowrap; }
+  table.course { max-width: 960px; }
+  .stats-sec { margin-top: 30px; }
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap">
+    <a href="index.html"><img class="wordmark" src="assets/store-wordmark-cream.svg" alt="Humanities Curriculum Group"></a>
+    <nav class="main">
+      <a href="index.html">Home</a>
+      <a href="home.html">My Day</a>
+      <a href="us-history.html">US History</a>
+      <a href="progressive-era.html">Sample Unit</a>
+      <a href="planner-year.html">Year Planner</a>
+      <a href="planner.html">Unit Planner</a>
+      <a href="about.html">About</a>
+    </nav>
+    <div class="hcg-account" id="hcg-account"></div>
+  </div>
+</header>
+
+<section class="block">
+  <div class="wrap">
+    <h1>Site stats</h1>
+    <p class="sub" id="stats-status">Checking your sign-in…</p>
+
+    <div id="stats-body" hidden>
+      <div class="cards" id="stats-cards"></div>
+
+      <div class="stats-sec">
+        <h2>Views, last 30 days</h2>
+        <div class="trend" id="stats-trend"></div>
+        <div class="trend-labels" id="stats-trend-labels"></div>
+      </div>
+
+      <div class="stats-sec">
+        <h2>Top pages, last 30 days</h2>
+        <table class="course">
+          <tr><th style="width:52%">Page</th><th>Views</th><th>Downloads</th></tr>
+          <tbody id="stats-pages"></tbody>
+        </table>
+      </div>
+
+      <div class="stats-sec">
+        <h2>Where visitors arrived from, last 30 days</h2>
+        <table class="course">
+          <tr><th style="width:52%">Source</th><th>Arrivals</th></tr>
+          <tbody id="stats-sources"></tbody>
+        </table>
+      </div>
+
+      <p class="small" style="max-width:760px; margin-top:26px;">Counts are first-party and aggregate: page views, downloads, checkout starts, and new accounts, totalled by day in our own database. No cookies, no visitor identities, nothing about individuals. They include your own visits to the site. Days are Eastern Time.</p>
+    </div>
+  </div>
+</section>
+
+<footer class="site">
+  <div class="wrap">
+    <img src="assets/store-wordmark-cream.svg" alt="Humanities Curriculum Group">
+    <div>
+      <p>Humanities Curriculum Group, built by a working social studies teacher. Sister projects: <a href="https://rycal.web.app">Rycal</a>, spaced-repetition study tools for AP courses, and <a href="https://tpsp.web.app">The Primary Source Project</a>, a primary source library and DBQ builder.</p>
+      <p>Questions about All-Access, billing, or a download that won't open? <a href="contact.html">Contact us</a>.</p>
+      <p>Materials print on standard US Letter paper with ordinary school copiers in mind.</p>
+      <p class="small"><a href="privacy.html">Privacy Policy</a> · <a href="terms.html">Terms of Use</a></p>
+    </div>
+  </div>
+</footer>
+
+<script src="firebase-config.js"></script>
+<script src="auth.js"></script>
+<script>
+  // Admin stats dashboard: reads the daily aggregate counters in hcgStats
+  // (Firestore rules allow only the owner's admin accounts) plus the active
+  // subscription count from the hcgStatsSummary function. Anyone else who
+  // reaches this page sees a sign-in prompt and no data.
+  (function () {
+    var statusEl = document.getElementById("stats-status");
+    var bodyEl = document.getElementById("stats-body");
+    var SUMMARY_URL = "https://hcgstatssummary-yh5summz4a-uc.a.run.app/";
+    var SOURCE_NAMES = {
+      direct: "Direct (typed, bookmarked, or shared link)",
+      google: "Google search",
+      facebook: "Facebook",
+      tpt: "Teachers Pay Teachers",
+      bing: "Bing",
+      duckduckgo: "DuckDuckGo"
+    };
+    function esc(s) {
+      return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+        return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+      });
+    }
+    function etToday() {
+      return new Date().toLocaleDateString("en-CA", { timeZone: "America/New_York" });
+    }
+    function lastDays(n) {
+      var base = Date.parse(etToday() + "T12:00:00Z");
+      var out = [];
+      for (var i = n - 1; i >= 0; i--) {
+        var d = new Date(base - i * 86400000);
+        out.push(d.toLocaleDateString("en-CA", { timeZone: "America/New_York" }));
+      }
+      return out;
+    }
+    function sumInto(dst, src) {
+      if (!src) return;
+      Object.keys(src).forEach(function (k) { dst[k] = (dst[k] || 0) + (src[k] || 0); });
+    }
+    function card(n, label) {
+      return "<div class='stat'><div class='n'>" + n + "</div><div class='l'>" + label + "</div></div>";
+    }
+    var started = false;
+    window.HCGAuth && HCGAuth.onChange(async function (user) {
+      if (started) return;
+      if (!user) { statusEl.textContent = "Sign in with an admin account to see site stats."; return; }
+      if (!HCGAuth.isAdmin()) { statusEl.textContent = "This page is for the site owner only."; return; }
+      started = true;
+      statusEl.textContent = "Loading stats…";
+      try {
+        var days = lastDays(30);
+        var db = await HCGAuth.firestore();
+        var snaps = await Promise.all(days.map(function (d) { return db.collection("hcgStats").doc(d).get(); }));
+        var byDay = {}, viewsByPage = {}, downloadsByPage = {}, sources = {};
+        var tot = { views: 0, downloads: 0, checkouts: 0, signups: 0 };
+        snaps.forEach(function (snap, i) {
+          var data = snap.exists ? snap.data() : {};
+          byDay[days[i]] = data.viewsTotal || 0;
+          tot.views += data.viewsTotal || 0;
+          tot.downloads += data.downloadsTotal || 0;
+          tot.checkouts += data.checkouts || 0;
+          tot.signups += data.signups || 0;
+          sumInto(viewsByPage, data.views);
+          sumInto(downloadsByPage, data.downloads);
+          sumInto(sources, data.sources);
+        });
+        var viewsToday = byDay[days[29]] || 0;
+        var views7 = days.slice(23).reduce(function (a, d) { return a + (byDay[d] || 0); }, 0);
+
+        var activeSubs = "—";
+        try {
+          var token = await user.getIdToken();
+          var res = await fetch(SUMMARY_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token },
+            body: JSON.stringify({ data: {} })
+          });
+          var json = await res.json();
+          if (json && json.result && typeof json.result.active === "number") activeSubs = json.result.active;
+        } catch (e) { /* the card keeps the dash if the count is unavailable */ }
+
+        document.getElementById("stats-cards").innerHTML =
+          card(viewsToday, "Views today") +
+          card(views7, "Views, last 7 days") +
+          card(tot.views, "Views, last 30 days") +
+          card(tot.downloads, "Downloads, last 30 days") +
+          card(tot.checkouts, "Checkout starts, last 30 days") +
+          card(tot.signups, "New accounts, last 30 days") +
+          card(activeSubs, "Active All-Access subscriptions");
+
+        var max = Math.max.apply(null, days.map(function (d) { return byDay[d] || 0; }).concat([1]));
+        document.getElementById("stats-trend").innerHTML = days.map(function (d, i) {
+          var v = byDay[d] || 0;
+          var h = Math.max(2, Math.round(v / max * 100));
+          return "<div class='col" + (i === 29 ? " today" : "") + "' title='" + d + ": " + v + " views'><div class='bar' style='height:" + h + "%'></div></div>";
+        }).join("");
+        document.getElementById("stats-trend-labels").innerHTML = days.map(function (d, i) {
+          return "<span>" + (i % 5 === 0 || i === 29 ? d.slice(5) : "") + "</span>";
+        }).join("");
+
+        var pageRows = Object.keys(viewsByPage).sort(function (a, b) { return viewsByPage[b] - viewsByPage[a]; }).slice(0, 15);
+        document.getElementById("stats-pages").innerHTML = pageRows.length ? pageRows.map(function (p) {
+          return "<tr><td>" + esc(p) + "</td><td>" + viewsByPage[p] + "</td><td>" + (downloadsByPage[p] || 0) + "</td></tr>";
+        }).join("") : "<tr><td colspan='3'>No page views counted yet.</td></tr>";
+
+        var srcRows = Object.keys(sources).sort(function (a, b) { return sources[b] - sources[a]; });
+        document.getElementById("stats-sources").innerHTML = srcRows.length ? srcRows.map(function (s) {
+          return "<tr><td>" + esc(SOURCE_NAMES[s] || s) + "</td><td>" + sources[s] + "</td></tr>";
+        }).join("") : "<tr><td colspan='2'>No arrivals counted yet.</td></tr>";
+
+        bodyEl.hidden = false;
+        statusEl.textContent = tot.views === 0
+          ? "Counting has started. No traffic yet: the numbers fill in as teachers visit."
+          : "Last 30 days, through today (Eastern Time).";
+      } catch (e) {
+        statusEl.textContent = "Stats could not be loaded. " + (e && e.message ? e.message : "");
+      }
+    });
+  })();
+</script>
+</body>
+</html>

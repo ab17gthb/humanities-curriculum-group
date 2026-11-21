@@ -238,5 +238,58 @@ service cloud.firestore {
       allow delete: if isOwner(uid);
     }
 
+    // Contact form messages: anyone may leave one (strictly shaped,
+    // size-bounded, always unread on arrival); only the owner's admin
+    // accounts may read, update, or delete them.
+    match /hcgContact/{messageId} {
+      allow create: if request.resource.data.keys().hasOnly(['name', 'email', 'topic', 'message', 'read', 'createdAt'])
+        && request.resource.data.name is string && request.resource.data.name.size() >= 1 && request.resource.data.name.size() <= 120
+        && request.resource.data.email is string && request.resource.data.email.size() >= 3 && request.resource.data.email.size() <= 200
+        && request.resource.data.topic is string && request.resource.data.topic.size() <= 60
+        && request.resource.data.message is string && request.resource.data.message.size() >= 1 && request.resource.data.message.size() <= 5000
+        && request.resource.data.read == false
+        && request.resource.data.createdAt == request.time;
+      allow read, update, delete: if isAuthenticated()
+        && request.auth.token.email in ['alexbrouhard1@gmail.com', 'alexbrouhardedu@gmail.com', 'knowethcg@gmail.com'];
+    }
+
+    // TPSP contact form messages: same shape and policy as hcgContact.
+    match /pspContact/{messageId} {
+      allow create: if request.resource.data.keys().hasOnly(['name', 'email', 'topic', 'message', 'read', 'createdAt'])
+        && request.resource.data.name is string && request.resource.data.name.size() >= 1 && request.resource.data.name.size() <= 120
+        && request.resource.data.email is string && request.resource.data.email.size() >= 3 && request.resource.data.email.size() <= 200
+        && request.resource.data.topic is string && request.resource.data.topic.size() <= 60
+        && request.resource.data.message is string && request.resource.data.message.size() >= 1 && request.resource.data.message.size() <= 5000
+        && request.resource.data.read == false
+        && request.resource.data.createdAt == request.time;
+      allow read, update, delete: if isAuthenticated()
+        && request.auth.token.email in ['alexbrouhard1@gmail.com', 'alexbrouhardedu@gmail.com', 'knowethcg@gmail.com'];
+    }
+
+    // Email list signups from the free sample unit gate: anyone may add
+    // one strictly shaped address; only the owner's admin accounts may
+    // read, update, or delete the list.
+    match /hcgLeads/{leadId} {
+      allow create: if request.resource.data.keys().hasOnly(['email', 'source', 'firstFile', 'createdAt'])
+        && request.resource.data.email is string
+        && request.resource.data.email.matches('^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$')
+        && request.resource.data.email.size() >= 3 && request.resource.data.email.size() <= 200
+        && request.resource.data.source is string && request.resource.data.source.size() >= 1 && request.resource.data.source.size() <= 60
+        && request.resource.data.firstFile is string && request.resource.data.firstFile.size() <= 120
+        && request.resource.data.createdAt == request.time;
+      allow read, update, delete: if isAuthenticated()
+        && request.auth.token.email in ['alexbrouhard1@gmail.com', 'alexbrouhardedu@gmail.com', 'knowethcg@gmail.com'];
+    }
+
+    // Site stats: daily aggregate counters (views, downloads, checkout
+    // starts, signups), written only by the logEvent function through the
+    // Admin SDK. No client may write them; only the owner's admin accounts
+    // may read them, for the stats dashboard.
+    match /hcgStats/{day} {
+      allow read: if isAuthenticated()
+        && request.auth.token.email in ['alexbrouhard1@gmail.com', 'alexbrouhardedu@gmail.com', 'knowethcg@gmail.com'];
+      allow write: if false;
+    }
+
   }
 }

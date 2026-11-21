@@ -23,8 +23,10 @@ SA_EMAIL = f"{PROJECT_NUMBER}-compute@developer.gserviceaccount.com"
 # name -> dict(entryPoint, secrets=[secret names mounted as env vars of same name], memory, timeout)
 SPEC = {
     "hcgPing":           {"entryPoint": "hcgPing", "secrets": [], "memory": "256Mi", "timeout": 60},
-    "createHcgCheckout": {"entryPoint": "createHcgCheckout", "secrets": ["STRIPE_SECRET_KEY"], "memory": "256Mi", "timeout": 60},
-    "stripeWebhook":     {"entryPoint": "stripeWebhook", "secrets": ["STRIPE_SECRET_KEY", "HCG_STRIPE_WEBHOOK_SECRET"], "memory": "256Mi", "timeout": 60},
+    "createHcgCheckout": {"entryPoint": "createHcgCheckout", "secrets": ["HCG_STRIPE_SECRET_KEY"], "memory": "256Mi", "timeout": 60},
+    "stripeWebhook":     {"entryPoint": "stripeWebhook", "secrets": ["HCG_STRIPE_SECRET_KEY", "HCG_STRIPE_WEBHOOK_SECRET"], "memory": "256Mi", "timeout": 60},
+    "logEvent":          {"entryPoint": "logEvent", "secrets": [], "memory": "256Mi", "timeout": 60},
+    "hcgStatsSummary":   {"entryPoint": "hcgStatsSummary", "secrets": [], "memory": "256Mi", "timeout": 60},
 }
 
 creds = service_account.Credentials.from_service_account_file(

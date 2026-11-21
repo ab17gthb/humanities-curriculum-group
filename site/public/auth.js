@@ -1,7 +1,8 @@
 // Humanities Curriculum Group — accounts, cloud plan sync, entitlement.
 //
-// Phase 1 (Oct 2026): teachers can sign in with Google. Their planner data
-// (the same localStorage keys the planners already use) is mirrored to
+// Phase 1 (Oct 2026): teachers can sign in with Google or with an email
+// address and password, and can create an account from the same dialog.
+// Their planner data (the same localStorage keys the planners already use) is mirrored to
 // Firestore at hcgUsers/{uid} so it follows them across devices. Everything
 // fails soft: if Firebase or Firestore is unreachable, the site behaves
 // exactly as it did before accounts existed, and plans stay on the device.
@@ -35,7 +36,9 @@
   // Owner/admin accounts: full access without a subscription, regardless of
   // the Firestore entitlement field. Firebase Storage rules enforce the
   // same list server-side, so downloads work for these accounts too.
-  var ADMIN_EMAILS = ["alexbrouhard1@gmail.com", "alexbrouhardedu@gmail.com", "knowethcg@gmail.com"];
+  // Assembled from parts so no full address appears in the served file
+  // for address harvesters (all three mailboxes are on the same domain).
+  var ADMIN_EMAILS = ["alexbrouhard1", "alexbrouhardedu", "knowethcg"].map(function (u) { return u + "@" + "gmail.com"; });
 
   var user = null;               // firebase.User or null
   var authResolved = false;      // onAuthStateChanged has fired at least once
@@ -47,6 +50,17 @@
   var uploadTimer = null;
   var sdkPromise = null;
   var auth = null, db = null, st = null, fns = null;
+  var PENDING_CHECKOUT_KEY = "hcg_pending_checkout";
+  var authUi = {
+    built: false,
+    open: false,
+    mode: "signin",
+    busy: false,
+    checkoutInterval: null,
+    trigger: null,
+    previousBodyOverflow: ""
+  };
+  var checkoutContinuing = false;
 
   // ---------------- small helpers ----------------
   function $(id) { return document.getElementById(id); }
@@ -172,8 +186,9 @@
         "<button type='button' class='hcg-acct-btn' id='hcg-acct-toggle' aria-haspopup='true' aria-expanded='false'>" +
           esc(name) + " <span class='hcg-caret'>▾</span></button>" +
         "<div class='hcg-menu' id='hcg-menu' hidden>" +
-          "<a href='home.html'>My Home</a>" +
+          "<a href='home.html'>My Day</a>" +
           "<a href='subscribe.html'>Subscribe</a>" +
+          (isAdminUser() ? "<a href='inbox.html'>Inbox</a><a href='leads.html'>Email list</a><a href='stats.html'>Stats</a>" : "") +
           "<div class='hcg-sync' id='hcg-sync-line'>" + esc(syncLabel()) + "</div>" +
           "<button type='button' class='hcg-signout' id='hcg-signout'>Sign out</button>" +
         "</div>";
@@ -199,6 +214,314 @@
   function updateSyncLine() {
     var el = $("hcg-sync-line");
     if (el) el.textContent = syncLabel();
+  }
+
+  // ---------------- sign-in / account creation dialog ----------------
+  // The dialog is injected by this file so every page gets the same account
+  // flow without duplicating markup. Teachers can use Google or an email
+  // address and password. Email passwords are handled by Firebase
+  // Authentication; this site never receives or stores them.
+  function normalizeCheckoutInterval(value) {
+    return value === "year" ? "year" : "month";
+  }
+  function getPendingCheckout() {
+    try {
+      var value = window.sessionStorage.getItem(PENDING_CHECKOUT_KEY);
+      return value === "month" || value === "year" ? value : null;
+    } catch (e) { return null; }
+  }
+  function setPendingCheckout(interval) {
+    authUi.checkoutInterval = normalizeCheckoutInterval(interval);
+    try { window.sessionStorage.setItem(PENDING_CHECKOUT_KEY, authUi.checkoutInterval); } catch (e) {}
+  }
+  function clearPendingCheckout() {
+    authUi.checkoutInterval = null;
+    try { window.sessionStorage.removeItem(PENDING_CHECKOUT_KEY); } catch (e) {}
+  }
+
+  function ensureAuthStyles() {
+    if ($("hcg-auth-style")) return;
+    var style = document.createElement("style");
+    style.id = "hcg-auth-style";
+    style.textContent =
+      ".hcg-auth-overlay[hidden]{display:none!important}" +
+      ".hcg-auth-panel [hidden]{display:none!important}" +
+      ".hcg-auth-overlay{position:fixed;inset:0;z-index:1000;background:rgba(23,32,48,.64);display:flex;align-items:center;justify-content:center;overflow-y:auto;padding:24px 16px;font-family:Arial,sans-serif}" +
+      ".hcg-auth-panel{position:relative;background:#fff;color:#26313f;width:440px;max-width:100%;max-height:calc(100vh - 48px);overflow-y:auto;border-radius:8px;padding:28px;box-shadow:0 24px 70px rgba(0,0,0,.35)}" +
+      ".hcg-auth-panel h2{font-family:Georgia,'Times New Roman',serif;font-weight:normal;font-size:27px;color:var(--navy);margin:0 38px 8px 0}" +
+      ".hcg-auth-context{font-size:15.5px;line-height:1.45;color:#4b5563;margin:0 0 20px}" +
+      ".hcg-auth-close{position:absolute;top:10px;right:12px;background:none;border:none;color:#5f6873;font-size:30px;line-height:1;padding:6px;cursor:pointer}" +
+      ".hcg-auth-close:hover{color:var(--navy)}" +
+      ".hcg-auth-google{width:100%;background:#fff;color:#26313f;border:1px solid #b9c0c9;border-radius:5px;padding:11px 14px;font:inherit;font-size:15.5px;font-weight:bold;cursor:pointer}" +
+      ".hcg-auth-google:hover{border-color:var(--navy);background:#faf8f2}" +
+      ".hcg-auth-divider{display:flex;align-items:center;gap:12px;margin:18px 0;color:#6b7280;font-size:13px}" +
+      ".hcg-auth-divider:before,.hcg-auth-divider:after{content:'';height:1px;background:#ddd6c4;flex:1}" +
+      ".hcg-auth-tabs{display:grid;grid-template-columns:1fr 1fr;background:#f3efe4;border:1px solid #ddd6c4;border-radius:5px;padding:3px;margin-bottom:18px}" +
+      ".hcg-auth-tabs button{background:transparent;border:none;border-radius:3px;color:#5f6259;font:inherit;font-size:14.5px;padding:8px 6px;cursor:pointer}" +
+      ".hcg-auth-tabs button[aria-selected='true']{background:#fff;color:var(--navy);font-weight:bold;box-shadow:0 1px 4px rgba(31,51,80,.16)}" +
+      ".hcg-auth-field{display:block;font-size:14px;font-weight:bold;color:#374151;margin:0 0 14px}" +
+      ".hcg-auth-field input{display:block;width:100%;box-sizing:border-box;margin-top:6px;border:1px solid #b9c0c9;border-radius:5px;padding:11px 12px;font:inherit;font-size:16px;font-weight:normal;color:#26313f;background:#fff}" +
+      ".hcg-auth-field input:focus{outline:2px solid rgba(48,86,140,.3);border-color:var(--navy)}" +
+      ".hcg-auth-error{background:#fdf0ec;border-left:3px solid #b5442c;color:#7c2d1d;padding:10px 12px;font-size:14.5px;line-height:1.4;margin:0 0 14px}" +
+      ".hcg-auth-success{background:#eef6ec;border-left:3px solid #39713a;color:#28512a;padding:10px 12px;font-size:14.5px;line-height:1.4;margin:0 0 14px}" +
+      ".hcg-auth-submit{width:100%;background:var(--rust);color:#fff;border:none;border-radius:5px;padding:12px 14px;font:inherit;font-size:16px;font-weight:bold;cursor:pointer}" +
+      ".hcg-auth-submit:hover{background:#9d4f2d}" +
+      ".hcg-auth-link{display:block;margin:12px auto 0;background:none;border:none;color:var(--navy);font:inherit;font-size:14.5px;text-decoration:underline;cursor:pointer;padding:4px}" +
+      ".hcg-auth-cancel{display:block;margin:8px auto 0;background:none;border:none;color:#68707a;font:inherit;font-size:14.5px;cursor:pointer;padding:4px}" +
+      ".hcg-auth-note{font-size:13px;line-height:1.45;color:#6b7280;margin:18px 0 0;text-align:center}" +
+      ".hcg-auth-panel button:disabled,.hcg-auth-panel input:disabled{opacity:.58;cursor:wait}" +
+      "@media(max-width:520px){.hcg-auth-overlay{padding:14px 10px}.hcg-auth-panel{padding:24px 20px;max-height:calc(100vh - 28px)}}";
+    document.head.appendChild(style);
+  }
+
+  function authMessage(kind, text) {
+    var error = $("hcg-auth-error"), success = $("hcg-auth-success");
+    if (error) { error.hidden = kind !== "error"; error.textContent = kind === "error" ? text : ""; }
+    if (success) { success.hidden = kind !== "success"; success.textContent = kind === "success" ? text : ""; }
+  }
+  function authErrorMessage(err) {
+    var code = err && err.code ? String(err.code) : "";
+    if (code === "auth/invalid-credential" || code === "auth/wrong-password" || code === "auth/user-not-found") {
+      return "That email address and password do not match an account. Check them and try again, or create a new account.";
+    }
+    if (code === "auth/email-already-in-use") {
+      return "An account already uses that email address. Switch to Sign in, or reset the password if you have forgotten it.";
+    }
+    if (code === "auth/weak-password") return "Choose a password with at least 6 characters.";
+    if (code === "auth/invalid-email") return "Enter a valid email address.";
+    if (code === "auth/too-many-requests") return "Too many attempts. Wait a few minutes and try again.";
+    if (code === "auth/network-request-failed") return "The connection failed. Check your internet connection and try again.";
+    if (code === "auth/popup-closed-by-user" || code === "auth/cancelled-popup-request") {
+      return "The Google sign-in window was closed before sign-in finished. Try again when you are ready.";
+    }
+    if (code === "auth/operation-not-allowed") return "Email sign-in is not available right now. Continue with Google instead.";
+    return "Sign-in could not finish. Try again in a moment." + (code ? " (" + code + ")" : "");
+  }
+  function setAuthBusy(busy) {
+    authUi.busy = !!busy;
+    var overlay = $("hcg-auth-overlay");
+    if (!overlay) return;
+    overlay.querySelectorAll("button,input").forEach(function (el) { el.disabled = authUi.busy; });
+    var submit = $("hcg-auth-submit");
+    if (submit) submit.textContent = authUi.busy ? "Please wait…" : (authUi.mode === "create" ? "Create account" : "Sign in");
+    var google = $("hcg-auth-google");
+    if (google) google.textContent = authUi.busy ? "Please wait…" : "Continue with Google";
+  }
+  function setAuthMode(mode) {
+    authUi.mode = mode === "create" ? "create" : "signin";
+    var creating = authUi.mode === "create";
+    var title = $("hcg-auth-title"), submit = $("hcg-auth-submit");
+    if (title) title.textContent = creating ? "Create your account" : "Sign in";
+    if (submit) submit.textContent = creating ? "Create account" : "Sign in";
+    var nameWrap = $("hcg-auth-name-wrap"), forgot = $("hcg-auth-forgot"), password = $("hcg-auth-password");
+    if (nameWrap) nameWrap.hidden = !creating;
+    if (forgot) forgot.hidden = creating;
+    if (password) password.setAttribute("autocomplete", creating ? "new-password" : "current-password");
+    var signinTab = $("hcg-auth-tab-signin"), createTab = $("hcg-auth-tab-create");
+    if (signinTab) signinTab.setAttribute("aria-selected", String(!creating));
+    if (createTab) createTab.setAttribute("aria-selected", String(creating));
+    authMessage("", "");
+  }
+
+  function ensureAuthUi() {
+    if (authUi.built) return;
+    ensureAuthStyles();
+    var overlay = document.createElement("div");
+    overlay.id = "hcg-auth-overlay";
+    overlay.className = "hcg-auth-overlay";
+    overlay.hidden = true;
+    overlay.innerHTML =
+      "<div class='hcg-auth-panel' role='dialog' aria-modal='true' aria-labelledby='hcg-auth-title'>" +
+        "<button type='button' class='hcg-auth-close' id='hcg-auth-close' aria-label='Close'>&times;</button>" +
+        "<h2 id='hcg-auth-title'>Sign in</h2>" +
+        "<p class='hcg-auth-context' id='hcg-auth-context'>Sign in or create an account to save your plans to your account.</p>" +
+        "<button type='button' class='hcg-auth-google' id='hcg-auth-google'>Continue with Google</button>" +
+        "<div class='hcg-auth-divider'><span>or use email</span></div>" +
+        "<div class='hcg-auth-tabs' role='tablist' aria-label='Email account options'>" +
+          "<button type='button' id='hcg-auth-tab-signin' aria-selected='true'>Sign in</button>" +
+          "<button type='button' id='hcg-auth-tab-create' aria-selected='false'>Create account</button>" +
+        "</div>" +
+        "<form id='hcg-auth-form' novalidate>" +
+          "<label class='hcg-auth-field' id='hcg-auth-name-wrap' hidden>Name <span style='font-weight:normal;color:#6b7280;'>(optional)</span>" +
+            "<input type='text' id='hcg-auth-name' autocomplete='name'></label>" +
+          "<label class='hcg-auth-field'>Email address" +
+            "<input type='email' id='hcg-auth-email' autocomplete='email' required></label>" +
+          "<label class='hcg-auth-field'>Password" +
+            "<input type='password' id='hcg-auth-password' autocomplete='current-password' required></label>" +
+          "<p class='hcg-auth-error' id='hcg-auth-error' role='alert' hidden></p>" +
+          "<p class='hcg-auth-success' id='hcg-auth-success' role='status' hidden></p>" +
+          "<button type='submit' class='hcg-auth-submit' id='hcg-auth-submit'>Sign in</button>" +
+          "<button type='button' class='hcg-auth-link' id='hcg-auth-forgot'>Forgot your password?</button>" +
+        "</form>" +
+        "<button type='button' class='hcg-auth-cancel' id='hcg-auth-cancel'>Not now</button>" +
+        "<p class='hcg-auth-note'>Your password is handled by Firebase Authentication. This site never receives or stores it.</p>" +
+      "</div>";
+    document.body.appendChild(overlay);
+    authUi.built = true;
+
+    $("hcg-auth-close").addEventListener("click", function () { closeAuth(true); });
+    $("hcg-auth-cancel").addEventListener("click", function () { closeAuth(true); });
+    overlay.addEventListener("click", function (ev) { if (ev.target === overlay) closeAuth(true); });
+    document.addEventListener("keydown", function (ev) {
+      if (ev.key === "Escape" && authUi.open) closeAuth(true);
+    });
+    $("hcg-auth-tab-signin").addEventListener("click", function () { setAuthMode("signin"); });
+    $("hcg-auth-tab-create").addEventListener("click", function () { setAuthMode("create"); });
+    $("hcg-auth-google").addEventListener("click", signInWithGoogle);
+    $("hcg-auth-form").addEventListener("submit", submitEmailAuth);
+    $("hcg-auth-forgot").addEventListener("click", sendPasswordReset);
+  }
+
+  async function openAuth(options) {
+    options = options || {};
+    if (user) return true;
+    if (options.checkoutInterval) setPendingCheckout(options.checkoutInterval);
+    else if (getPendingCheckout()) authUi.checkoutInterval = getPendingCheckout();
+    ensureAuthUi();
+    var context = $("hcg-auth-context");
+    if (context) {
+      if (authUi.checkoutInterval) {
+        context.textContent = "Sign in or create an account, then we will continue to secure checkout for the " +
+          (authUi.checkoutInterval === "year" ? "annual" : "monthly") + " plan.";
+      } else {
+        context.textContent = options.message || "Sign in or create an account to save your plans to your account and use them on any device.";
+      }
+    }
+    setAuthMode(options.mode === "create" ? "create" : "signin");
+    authUi.trigger = document.activeElement;
+    authUi.previousBodyOverflow = document.body ? document.body.style.overflow : "";
+    authUi.open = true;
+    $("hcg-auth-overlay").hidden = false;
+    if (document.body) document.body.style.overflow = "hidden";
+    var email = $("hcg-auth-email");
+    if (email) setTimeout(function () { email.focus(); }, 0);
+    try { await ensureFirebase(); }
+    catch (e) { authMessage("error", "Sign-in is temporarily unavailable. Check your connection and try again."); }
+    if (user) closeAuth(false);
+    return true;
+  }
+  function closeAuth(cancelled) {
+    if (!authUi.open) return;
+    authUi.open = false;
+    if (authUi.busy) setAuthBusy(false);
+    var overlay = $("hcg-auth-overlay");
+    if (overlay) overlay.hidden = true;
+    if (document.body) document.body.style.overflow = authUi.previousBodyOverflow || "";
+    if (cancelled) clearPendingCheckout();
+    if (authUi.trigger && typeof authUi.trigger.focus === "function") {
+      try { authUi.trigger.focus(); } catch (e) {}
+    }
+  }
+
+  async function signInWithGoogle() {
+    if (authUi.busy) return;
+    setAuthBusy(true);
+    authMessage("", "");
+    try {
+      await ensureFirebase();
+      if (!auth) throw new Error("Auth unavailable");
+      if (user) { closeAuth(false); return; }
+      var provider = new firebase.auth.GoogleAuthProvider();
+      provider.setCustomParameters({ prompt: "select_account" });
+      try {
+        var gcred = await auth.signInWithPopup(provider);
+        if (gcred && gcred.additionalUserInfo && gcred.additionalUserInfo.isNewUser && window.HCGStats) window.HCGStats.log("signup");
+      } catch (popupErr) {
+        var code = popupErr && popupErr.code ? String(popupErr.code) : "";
+        if (code === "auth/popup-closed-by-user" || code === "auth/cancelled-popup-request") throw popupErr;
+        console.warn("HCG popup sign-in failed; falling back to redirect.", code, popupErr);
+        await auth.signInWithRedirect(provider);
+        return;
+      }
+      closeAuth(false);
+    } catch (e) {
+      console.warn("HCG Google sign-in failed:", e);
+      authMessage("error", authErrorMessage(e));
+    } finally {
+      if (authUi.open) setAuthBusy(false);
+    }
+  }
+
+  async function submitEmailAuth(ev) {
+    ev.preventDefault();
+    if (authUi.busy) return;
+    var emailEl = $("hcg-auth-email"), passwordEl = $("hcg-auth-password"), nameEl = $("hcg-auth-name");
+    var email = emailEl ? emailEl.value.trim() : "";
+    var password = passwordEl ? passwordEl.value : "";
+    var name = nameEl ? nameEl.value.trim() : "";
+    authMessage("", "");
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      authMessage("error", "Enter a valid email address.");
+      if (emailEl) emailEl.focus();
+      return;
+    }
+    if (!password || (authUi.mode === "create" && password.length < 6)) {
+      authMessage("error", authUi.mode === "create" ? "Choose a password with at least 6 characters." : "Enter your password.");
+      if (passwordEl) passwordEl.focus();
+      return;
+    }
+    setAuthBusy(true);
+    try {
+      await ensureFirebase();
+      if (!auth) throw new Error("Auth unavailable");
+      if (authUi.mode === "create") {
+        var cred = await auth.createUserWithEmailAndPassword(email, password);
+        if (name && cred && cred.user) {
+          try { await cred.user.updateProfile({ displayName: name }); } catch (e) { console.warn("HCG display name update failed:", e); }
+        }
+        if (window.HCGStats) window.HCGStats.log("signup");
+      } else {
+        await auth.signInWithEmailAndPassword(email, password);
+      }
+      closeAuth(false);
+    } catch (e) {
+      console.warn("HCG email sign-in failed:", e);
+      authMessage("error", authErrorMessage(e));
+    } finally {
+      if (authUi.open) setAuthBusy(false);
+    }
+  }
+
+  async function sendPasswordReset() {
+    if (authUi.busy) return;
+    var emailEl = $("hcg-auth-email");
+    var email = emailEl ? emailEl.value.trim() : "";
+    authMessage("", "");
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      authMessage("error", "Enter your email address above, then choose Forgot your password again.");
+      if (emailEl) emailEl.focus();
+      return;
+    }
+    setAuthBusy(true);
+    try {
+      await ensureFirebase();
+      if (!auth) throw new Error("Auth unavailable");
+      await auth.sendPasswordResetEmail(email);
+      authMessage("success", "Password reset email sent to " + email + ". Follow the link in that email to choose a new password.");
+    } catch (e) {
+      console.warn("HCG password reset failed:", e);
+      authMessage("error", authErrorMessage(e));
+    } finally {
+      setAuthBusy(false);
+    }
+  }
+
+  async function continuePendingCheckout() {
+    if (!user || checkoutContinuing) return;
+    var interval = getPendingCheckout();
+    if (!interval) return;
+    clearPendingCheckout();
+    if (HCGEntitlement.current().paid) return;
+    checkoutContinuing = true;
+    try {
+      var url = await HCGAuth.startCheckout(interval);
+      window.location.href = url;
+    } catch (e) {
+      checkoutContinuing = false;
+      console.warn("HCG checkout continuation failed:", e);
+      window.alert("You are signed in, but checkout could not start. Return to the Subscribe page and choose your plan again.");
+      if (!/subscribe\.html$/.test(window.location.pathname)) window.location.href = "subscribe.html";
+    }
   }
 
   // ---------------- entitlement ----------------
@@ -368,11 +691,15 @@
     var wasSignedIn = !!user;
     user = u || null;
     authResolved = true;
+    if (user && authUi.open) closeAuth(false);
     renderControl();
     fireListeners();
     if (user && !wasSignedIn) {
       resolveOnSignIn()
-        .then(function () { fireListeners(); }) // entitlement is readable now; let gates re-render
+        .then(function () {
+          fireListeners(); // entitlement is readable now; let gates re-render
+          continuePendingCheckout();
+        })
         .catch(function (e) { console.warn("HCG sync resolution failed:", e); });
     }
     if (!user) {
@@ -392,6 +719,8 @@
     currentUser: function () { return user; },
     isResolved: function () { return authResolved; },
     entitlement: function () { return HCGEntitlement.current(); },
+    isAdmin: function () { return isAdminUser(); },
+    firestore: async function () { await ensureFirebase(); return db; },
     onChange: function (cb) {
       if (typeof cb === "function") {
         listeners.push(cb);
@@ -408,26 +737,12 @@
       if (!fns) throw new Error("Payments unavailable");
       var res = await fns.httpsCallable("createHcgCheckout")({ interval: interval === "year" ? "year" : "month" });
       if (!res || !res.data || !res.data.url) throw new Error("Checkout did not return a URL");
+      if (window.HCGStats) window.HCGStats.log("checkout");
       return res.data.url;
     },
-    signIn: async function () {
-      try {
-        await ensureFirebase();
-        if (!auth) throw new Error("Auth unavailable");
-        if (user) return;
-        var provider = new firebase.auth.GoogleAuthProvider();
-        provider.setCustomParameters({ prompt: "select_account" });
-        try {
-          await auth.signInWithPopup(provider);
-        } catch (popupErr) {
-          console.warn("HCG popup sign-in failed; falling back to redirect.", popupErr && popupErr.code, popupErr);
-          await auth.signInWithRedirect(provider);
-        }
-      } catch (e) {
-        console.warn("HCG sign-in failed:", e);
-        window.alert("Sign-in could not start (" + ((e && (e.code || e.message)) || "unknown error") + "). Check your connection and try again. Your plans are still saved on this device.");
-      }
-    },
+    signIn: function (options) { return openAuth(options); },
+    openAuth: function (options) { return openAuth(options); },
+    signInWithGoogle: function () { return signInWithGoogle(); },
     signOut: async function () {
       try {
         await ensureFirebase();

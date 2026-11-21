@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Email List | Humanities Curriculum Group</title>
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="styles.css">
+<link rel="icon" type="image/svg+xml" href="assets/store-wordmark-color.svg">
+<style>
+  .lead { background: #fff; border: 1px solid #ddd3ba; border-radius: 6px; padding: 12px 18px; margin: 10px 0; max-width: 760px; }
+  .lead .meta { color: var(--gray); font-size: 13.5px; margin: 2px 0 0; }
+  .lead .addr { font-size: 16px; margin: 0; }
+  .lead .row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+  .lead .mini { font-size: 13px; padding: 5px 10px; }
+  .lead-tools { display: flex; gap: 10px; flex-wrap: wrap; margin: 14px 0 4px; }
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap">
+    <a href="index.html"><img class="wordmark" src="assets/store-wordmark-cream.svg" alt="Humanities Curriculum Group"></a>
+    <nav class="main">
+      <a href="index.html">Home</a>
+      <a href="home.html">My Day</a>
+      <a href="us-history.html">US History</a>
+      <a href="progressive-era.html">Sample Unit</a>
+      <a href="planner-year.html">Year Planner</a>
+      <a href="planner.html">Unit Planner</a>
+      <a href="about.html">About</a>
+    </nav>
+    <div class="hcg-account" id="hcg-account"></div>
+  </div>
+</header>
+
+<section class="block">
+  <div class="wrap">
+    <h1>Email list</h1>
+    <p class="sub" id="leads-status">Checking your sign-in…</p>
+    <div class="lead-tools" id="leads-tools" hidden>
+      <button type="button" class="btn secondary" id="leads-copy">Copy all email addresses</button>
+      <button type="button" class="btn secondary" id="leads-csv">Download CSV</button>
+      <span class="small" id="leads-copied" role="status"></span>
+    </div>
+    <div id="leads-list"></div>
+  </div>
+</section>
+
+<footer class="site">
+  <div class="wrap">
+    <img src="assets/store-wordmark-cream.svg" alt="Humanities Curriculum Group">
+    <div>
+      <p>Humanities Curriculum Group, built by a working social studies teacher. Sister projects: <a href="https://rycal.web.app">Rycal</a>, spaced-repetition study tools for AP courses, and <a href="https://tpsp.web.app">The Primary Source Project</a>, a primary source library and DBQ builder.</p>
+      <p>Questions about All-Access, billing, or a download that won't open? <a href="contact.html">Contact us</a>.</p>
+      <p>Materials print on standard US Letter paper with ordinary school copiers in mind.</p>
+      <p class="small"><a href="privacy.html">Privacy Policy</a> · <a href="terms.html">Terms of Use</a></p>
+    </div>
+  </div>
+</footer>
+
+<script src="firebase-config.js"></script>
+<script src="auth.js"></script>
+<script>
+  // Admin email list: reads hcgLeads (rules allow only the owner's admin
+  // accounts), dedupes addresses for display and export, newest first.
+  // The list is the raw material for whatever email service gets set up
+  // later. Copy-all and the CSV export are the handoff.
+  (function () {
+    var statusEl = document.getElementById("leads-status");
+    var listEl = document.getElementById("leads-list");
+    var toolsEl = document.getElementById("leads-tools");
+    var uniqueEmails = [];
+    function esc(s) {
+      return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+        return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+      });
+    }
+    function fmtDate(ts) {
+      try { return ts && ts.toDate ? ts.toDate().toLocaleString() : ""; } catch (e) { return ""; }
+    }
+    var started = false;
+    window.HCGAuth && HCGAuth.onChange(async function (user) {
+      if (started) return;
+      if (!user) { statusEl.textContent = "Sign in with an admin account to see the email list."; return; }
+      if (!HCGAuth.isAdmin()) { statusEl.textContent = "This page is for the site owner only."; return; }
+      started = true;
+      statusEl.textContent = "Loading the list…";
+      try {
+        var db = await HCGAuth.firestore();
+        var snap = await db.collection("hcgLeads").orderBy("createdAt", "desc").limit(1000).get();
+        if (snap.empty) { statusEl.textContent = "No signups yet. Addresses appear here as teachers download the free unit."; return; }
+        var seen = {};
+        var rows = [];
+        snap.forEach(function (doc) {
+          var m = doc.data();
+          var email = String(m.email || "").toLowerCase();
+          if (!email || seen[email]) return;
+          seen[email] = true;
+          rows.push({ id: doc.id, email: email, source: m.source || "", firstFile: m.firstFile || "", createdAt: m.createdAt });
+        });
+        uniqueEmails = rows.map(function (r) { return r.email; });
+        listEl.innerHTML = "";
+        rows.forEach(function (r) {
+          var div = document.createElement("div");
+          div.className = "lead";
+          div.innerHTML =
+            "<p class='addr'>" + esc(r.email) + "</p>" +
+            "<p class='meta'>Joined " + esc(fmtDate(r.createdAt)) +
+            (r.source ? " · from " + esc(r.source) : "") +
+            (r.firstFile ? " · first download " + esc(r.firstFile) : "") + "</p>" +
+            "<div class='row' style='margin-top:8px;'>" +
+              "<button type='button' class='btn secondary mini' data-act='del'>Remove</button>" +
+            "</div>";
+          div.querySelector("[data-act='del']").addEventListener("click", async function () {
+            if (!window.confirm("Remove " + r.email + " from the list?")) return;
+            // Delete every stored signup for this address, not just the newest.
+            var all = await db.collection("hcgLeads").where("email", "==", r.email).get();
+            var batch = db.batch();
+            all.forEach(function (d) { batch.delete(d.ref); });
+            await batch.commit();
+            window.location.reload();
+          });
+          listEl.appendChild(div);
+        });
+        toolsEl.hidden = false;
+        statusEl.textContent = rows.length + (rows.length === 1 ? " address" : " addresses") +
+          " on the list" + (snap.size !== rows.length ? " (" + snap.size + " signups in all, repeats counted once)" : "") + ".";
+      } catch (e) {
+        statusEl.textContent = "The email list could not be loaded. " + (e && e.message ? e.message : "");
+      }
+    });
+
+    document.getElementById("leads-copy").addEventListener("click", async function () {
+      var note = document.getElementById("leads-copied");
+      try {
+        await navigator.clipboard.writeText(uniqueEmails.join(", "));
+        note.textContent = "Copied " + uniqueEmails.length + " addresses.";
+      } catch (e) {
+        note.textContent = "Copy failed in this browser. Use the CSV instead.";
+      }
+    });
+    document.getElementById("leads-csv").addEventListener("click", function () {
+      var lines = ["email"];
+      uniqueEmails.forEach(function (e) { lines.push(e); });
+      var blob = new Blob([lines.join("\n") + "\n"], { type: "text/csv" });
+      var a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "hcg-email-list.csv";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(function () { URL.revokeObjectURL(a.href); }, 2000);
+    });
+  })();
+</script>
+</body>
+</html>

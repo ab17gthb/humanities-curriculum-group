@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Contact | Humanities Curriculum Group</title>
+<meta name="description" content="Send Humanities Curriculum Group a message about All-Access, billing, a download, or the curriculum itself.">
+<link rel="canonical" href="https://humanitiescurriculumgroup.web.app/contact">
+<meta property="og:title" content="Contact | Humanities Curriculum Group">
+<meta property="og:description" content="Send Humanities Curriculum Group a message about All-Access, billing, a download, or the curriculum itself.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://humanitiescurriculumgroup.web.app/contact">
+<meta property="og:image" content="https://humanitiescurriculumgroup.web.app/assets/store-badge-navy.png">
+<link rel="stylesheet" href="styles.css">
+<link rel="icon" type="image/svg+xml" href="assets/store-wordmark-color.svg">
+<style>
+  .cform { max-width: 560px; margin-top: 18px; }
+  .cform label { display: block; font-weight: 600; margin: 16px 0 6px; }
+  .cform input[type="text"], .cform input[type="email"], .cform select, .cform textarea {
+    width: 100%; padding: 9px 10px; border: 1px solid #d8cfb8; border-radius: 4px;
+    font: inherit; background: #fff; box-sizing: border-box;
+  }
+  .cform textarea { min-height: 150px; resize: vertical; }
+  .cform .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+  .cform .note { margin-top: 16px; }
+  #cf-done { background: var(--cream); border-left: 3px solid var(--rust); padding: 14px 18px; max-width: 560px; margin-top: 18px; }
+</style>
+<meta name="p:domain_verify" content="614ffbb856f10570ff98c83e7d06967a"/>
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap">
+    <a href="index.html"><img class="wordmark" src="assets/store-wordmark-cream.svg" alt="Humanities Curriculum Group"></a>
+    <nav class="main">
+      <a href="index.html">Home</a>
+      <a href="home.html">My Day</a>
+      <a href="us-history.html">US History</a>
+      <a href="progressive-era.html">Sample Unit</a>
+      <a href="planner-year.html">Year Planner</a>
+      <a href="planner.html">Unit Planner</a>
+      <a href="about.html">About</a>
+    </nav>
+    <div class="hcg-account" id="hcg-account"></div>
+  </div>
+</header>
+
+<section class="block">
+  <div class="wrap">
+    <h1>Contact</h1>
+    <p class="sub">Questions about All-Access, billing, a download that won't open, or the curriculum itself — send a message here. It lands in the site's inbox and is read by the teacher who builds the curriculum. Include your email address so we can write back.</p>
+
+    <form class="cform" id="cf" novalidate>
+      <label for="cf-name">Your name</label>
+      <input type="text" id="cf-name" maxlength="120" autocomplete="name" required>
+      <label for="cf-email">Your email</label>
+      <input type="email" id="cf-email" maxlength="200" autocomplete="email" required>
+      <label for="cf-topic">What's it about?</label>
+      <select id="cf-topic">
+        <option value="Billing or subscription">Billing or subscription</option>
+        <option value="A download or file problem">A download or file problem</option>
+        <option value="The curriculum">The curriculum</option>
+        <option value="The planners">The planners</option>
+        <option value="Something else">Something else</option>
+      </select>
+      <label for="cf-message">Message</label>
+      <textarea id="cf-message" maxlength="5000" required></textarea>
+      <div class="hp" aria-hidden="true"><label>Leave this blank<input type="text" id="cf-website" tabindex="-1" autocomplete="off"></label></div>
+      <p style="margin-top:18px;"><button class="btn" type="submit" id="cf-send">Send message</button></p>
+      <p class="small" id="cf-status" role="status"></p>
+    </form>
+
+    <div id="cf-done" hidden>
+      <p style="margin:0;"><strong>Message sent.</strong> Thanks for writing — replies go to the email address you gave, usually within a couple of school days.</p>
+    </div>
+  </div>
+</section>
+
+<footer class="site">
+  <div class="wrap">
+    <img src="assets/store-wordmark-cream.svg" alt="Humanities Curriculum Group">
+    <div>
+      <p>Humanities Curriculum Group, built by a working social studies teacher. Sister projects: <a href="https://rycal.web.app">Rycal</a>, spaced-repetition study tools for AP courses, and <a href="https://tpsp.web.app">The Primary Source Project</a>, a primary source library and DBQ builder.</p>
+      <p>Questions about All-Access, billing, or a download that won't open? <a href="contact.html">Contact us</a>.</p>
+      <p>Materials print on standard US Letter paper with ordinary school copiers in mind.</p>
+      <p class="small"><a href="privacy.html">Privacy Policy</a> · <a href="terms.html">Terms of Use</a></p>
+    </div>
+  </div>
+</footer>
+
+<script src="firebase-config.js"></script>
+<script src="auth.js"></script>
+<script src="stats.js"></script>
+<script>
+  // Contact form: writes one strictly-shaped document to the hcgContact
+  // collection. Firestore rules bound the fields and sizes, force
+  // read=false and the server timestamp, and limit reading to the owner's
+  // admin accounts. The honeypot field silently drops bot submissions.
+  (function () {
+    var form = document.getElementById("cf");
+    var status = document.getElementById("cf-status");
+    var sendBtn = document.getElementById("cf-send");
+    function loadScript(src) {
+      return new Promise(function (resolve, reject) {
+        var s = document.createElement("script");
+        s.src = src; s.async = true; s.onload = resolve; s.onerror = reject;
+        document.head.appendChild(s);
+      });
+    }
+    form.addEventListener("submit", function (ev) {
+      ev.preventDefault();
+      if (document.getElementById("cf-website").value) { // honeypot: pretend success
+        form.hidden = true; document.getElementById("cf-done").hidden = false; return;
+      }
+      var name = document.getElementById("cf-name").value.trim();
+      var email = document.getElementById("cf-email").value.trim();
+      var topic = document.getElementById("cf-topic").value;
+      var message = document.getElementById("cf-message").value.trim();
+      if (!name || !email || !message) { status.textContent = "Please fill in your name, email, and a message."; return; }
+      if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { status.textContent = "That email address doesn't look complete — check it so we can write back."; return; }
+      sendBtn.disabled = true; status.textContent = "Sending…";
+      (async function () {
+        try {
+          if (!window.firebase) {
+            await loadScript("/vendor/firebase/firebase-app-compat.js");
+            await loadScript("/vendor/firebase/firebase-firestore-compat.js");
+          }
+          if (!firebase.apps.length) firebase.initializeApp(window.HCG_FIREBASE_CONFIG);
+          await firebase.firestore().collection("hcgContact").add({
+            name: name, email: email, topic: topic, message: message,
+            read: false, createdAt: firebase.firestore.FieldValue.serverTimestamp()
+          });
+          form.hidden = true;
+          document.getElementById("cf-done").hidden = false;
+        } catch (e) {
+          sendBtn.disabled = false;
+          status.textContent = "The message could not be sent just now. Please try again in a moment.";
+        }
+      })();
+    });
+  })();
+</script>
+</body>
+</html>

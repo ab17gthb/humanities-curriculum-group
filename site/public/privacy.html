@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Privacy Policy | Humanities Curriculum Group</title>
+<meta name="description" content="What Humanities Curriculum Group collects, what it never collects, and how teacher account and plan data is stored.">
+<link rel="canonical" href="https://humanitiescurriculumgroup.web.app/privacy">
+<meta property="og:title" content="Privacy Policy | Humanities Curriculum Group">
+<meta property="og:description" content="What Humanities Curriculum Group collects, what it never collects, and how teacher account and plan data is stored.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://humanitiescurriculumgroup.web.app/privacy">
+<meta property="og:image" content="https://humanitiescurriculumgroup.web.app/assets/store-badge-navy.png">
+<link rel="stylesheet" href="styles.css">
+<link rel="icon" type="image/svg+xml" href="assets/store-wordmark-color.svg">
+<meta name="p:domain_verify" content="614ffbb856f10570ff98c83e7d06967a"/>
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap">
+    <a href="index.html"><img class="wordmark" src="assets/store-wordmark-cream.svg" alt="Humanities Curriculum Group"></a>
+    <nav class="main">
+      <a href="index.html">Home</a>
+      <a href="home.html">My Day</a>
+      <a href="us-history.html">US History</a>
+      <a href="progressive-era.html">Sample Unit</a>
+      <a href="planner-year.html">Year Planner</a>
+      <a href="planner.html">Unit Planner</a>
+      <a href="about.html">About</a>
+    </nav>
+    <div class="hcg-account" id="hcg-account"></div>
+  </div>
+</header>
+
+<section class="block">
+  <div class="wrap">
+    <h1>Privacy Policy</h1>
+    <p class="sub">Last updated: November 4, 2026. This page says, in plain language, what the site collects, what it never collects, and what you can ask us to delete.</p>
+
+    <h3>No student data, ever</h3>
+    <p>This is a product for teachers. There are no student accounts, and nothing on the site asks for a student's name, work, grades, or any other student information. Planning happens in the teacher's own browser and account. Anything a teacher types into a plan (dates, notes, homework lines) is the teacher's own planning text, stored as part of that plan.</p>
+
+    <h3>What we collect, and why</h3>
+    <p><strong>Account information.</strong> Signing in is optional. You can sign in with Google or with an email address and password, both handled by Firebase Authentication. Firebase gives us your name and email address so the site can show you signed in and attach your plans and subscription to you. We do not receive or store your Google password or email-account password; Firebase Authentication stores the credential used to sign you in.</p>
+    <p><strong>Your plans.</strong> If you plan without an account, your plans are stored only in your own browser on that device, and we never see them. If you sign in, your year and unit plans are saved to your account (in Google Firestore) so they are waiting on any device you sign in on.</p>
+    <p><strong>Subscription status.</strong> Payments are processed by Stripe. Your card number goes to Stripe and never reaches us. Stripe tells us whether your subscription is active so the site can switch All-Access on or off for your account; we store that status, the plan you chose, and the Stripe customer reference.</p>
+    <p><strong>Downloads.</strong> Paid documents are served through Firebase Storage, which checks your subscription status each time you download. This is how the site enforces All-Access; it is not used to build a profile of what you teach.</p>
+    <p><strong>Contact messages.</strong> If you use the contact form, the name, email address, and message you write are stored in the site's inbox so we can read and answer them. They are not used for anything else and are deleted once a conversation is finished.</p>
+    <p><strong>Free downloads and the email list.</strong> The first time you download a file from the free sample unit, the site asks for your email address and your download starts right away. We store that address on our own email list so we can send updates about new units and free resources once email sending is set up. Entering the address once unlocks the rest of the unit in that browser, and the site remembers it there so you are not asked again on that device. We do not sell this list or share it with anyone else, and any teacher can leave it at any time by sending a message through the contact form. We will remove the address and confirm by reply.</p>
+
+    <h3>What we do not do</h3>
+    <p>The site runs no advertising and no third-party analytics or tracking cookies. We do count page views and downloads ourselves, in aggregate, to see which pages and units teachers use: daily totals only, with no names, no accounts, and nothing about individual visitors attached, kept in our own database. We do not sell personal information, and we do not share it with anyone except the services named on this page (Google Firebase and Stripe), which process it only to run the site and your subscription.</p>
+
+    <h3>Cookies and browser storage</h3>
+    <p>The site uses your browser's local storage to keep your plans and sign-in state on your device, and Firebase and Stripe may set cookies needed for sign-in security and checkout. Clearing your browser storage signs you out and removes device-only plans; plans saved to your account are not affected.</p>
+
+    <h3>Your choices</h3>
+    <p>You can use the free sample unit and both planners without an account. You can delete plans from inside the planners at any time. To delete your account and everything saved to it, or to ask what we hold for your email address, send a message through the contact form linked in the footer and we will delete it and confirm by reply. Deleting your account also cancels any active subscription attached to it.</p>
+
+    <h3>Changes to this policy</h3>
+    <p>If this policy changes in a way that matters, the new version will be posted here with a new date, and the change will not apply retroactively to data collected under the old one.</p>
+  </div>
+</section>
+
+<footer class="site">
+  <div class="wrap">
+    <img src="assets/store-wordmark-cream.svg" alt="Humanities Curriculum Group">
+    <div>
+      <p>Humanities Curriculum Group, built by a working social studies teacher. Sister projects: <a href="https://rycal.web.app">Rycal</a>, spaced-repetition study tools for AP courses, and <a href="https://tpsp.web.app">The Primary Source Project</a>, a primary source library and DBQ builder.</p>
+      <p>Questions about All-Access, billing, or a download that won't open? <a href="contact.html">Contact us</a>.</p>
+      <p>Materials print on standard US Letter paper with ordinary school copiers in mind.</p>
+      <p class="small"><a href="privacy.html">Privacy Policy</a> · <a href="terms.html">Terms of Use</a></p>
+    </div>
+  </div>
+</footer>
+
+<script src="firebase-config.js"></script>
+<script src="auth.js"></script>
+<script src="stats.js"></script>
+</body>
+</html>
