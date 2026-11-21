@@ -14,6 +14,17 @@
 <link rel="stylesheet" href="styles.css">
 <link rel="icon" type="image/svg+xml" href="assets/store-wordmark-color.svg">
 <meta name="p:domain_verify" content="614ffbb856f10570ff98c83e7d06967a"/>
+<style>
+  .planner-sample [data-full-planner], .planner-sample [hidden] { display:none !important; }
+  .planner-sample .planner-grid > div { min-width:0; }
+  #sample-tools { border-left:4px solid #9d582e; }
+  #sample-copy-status:empty { display:none; }
+  .planner-sample #sample-actions { display:flex; align-items:center; flex-wrap:wrap; gap:8px 12px; }
+  .planner-sample #sample-copy { cursor:pointer; }
+  .planner-sample #weekview { overflow-x:auto; }
+  .planner-sample #weekview .wgrid { min-width:610px; }
+  .planner-sample #sample-swap { max-width:100%; }
+</style>
 </head>
 <body class="planner-print">
 
@@ -35,15 +46,24 @@
 
 <section class="block">
   <div class="wrap">
-    <h1>The Planner</h1>
-    <p class="sub">Set the first day of the unit and your test date, and the planner proposes pacing from the test blueprint. Pick assignments from the plate and it lays them on your school days, lands the test at the end, and checks your picks against all fifteen blueprint entries. If a day gets eaten by an assembly or a field trip, mark it in the schedule and that day's work bumps forward on its own. Days off from your <a href="planner-year.html">year plan</a> are honored here automatically. Your picks and dates save as you go.</p>
-    <p class="small" id="save-note" style="margin:6px 0 0;"></p>
+    <h1 id="planner-heading">The Planner</h1>
+    <p class="sub" data-full-planner>Set the first day of the unit and your test date, and the planner proposes pacing from the test blueprint. Pick assignments from the plate and it lays them on your school days, lands the test at the end, and checks your picks against all fifteen blueprint entries. If a day gets eaten by an assembly or a field trip, mark it in the schedule and that day's work bumps forward on its own. Days off from your <a href="planner-year.html">year plan</a> are honored here automatically. Your picks and dates save as you go.</p>
+    <div class="panel" id="sample-tools" hidden>
+      <p id="sample-description" style="margin:0 0 10px;">Four days on working conditions and muckraking lead to a fifth day on government reform. Change the start date or swap the last lesson to see what moves and which unit test objectives your picks cover.</p>
+      <div id="sample-actions">
+        <button type="button" class="mini" id="sample-copy">Save a copy on this device</button>
+        <a href="planner.html" class="small">Open the regular unit planner</a>
+        <a href="planner.html?sample=progressive-era-week" class="small" id="sample-fresh" hidden>Open a fresh sample</a>
+      </div>
+      <p id="sample-copy-status" role="status" class="small" style="margin:8px 0 0;"></p>
+    </div>
+    <p class="small" id="save-note" role="status" style="margin:6px 0 0;"></p>
 
     <div class="panel" id="shared-note" style="display:none;border-color:#b4552d;">
       <p style="margin:0;"><strong>A shared plan was loaded from the link you opened.</strong> It is saved in this browser now, sections, dates, pins, and picks included. <button type="button" class="mini" onclick="this.parentElement.parentElement.style.display='none'">Dismiss</button></p>
     </div>
 
-    <div class="panel">
+    <div class="panel" data-full-planner>
       <div class="ptoolbar" id="unit-switch" style="margin-bottom:8px;"></div>
       <h2 id="unit-name" style="margin:0 0 2px;">The Progressive Era</h2>
       <p class="small" id="unit-eq" style="margin:0;">Essential question: How did Americans respond to the problems created by industrialization, urbanization, and political corruption?</p>
@@ -53,7 +73,7 @@
 
     <div class="planner-grid">
       <div>
-        <div class="panel">
+        <div class="panel" data-full-planner>
           <h3>Your sections</h3>
           <p class="small">Teach the unit to more than one class? Each section keeps its own calendar: start date, test date, marked days, pins, rotation, and period length. Your picks, order, and splits are shared across sections.</p>
           <div class="ptoolbar" id="sections"></div>
@@ -61,10 +81,19 @@
 
         <div class="panel">
           <h3>1 · Your dates</h3>
-          <label class="f" for="start">First day of the unit</label>
+          <label class="f" for="start" id="start-label">First day of the unit</label>
           <input type="date" id="start">
-          <label class="f" for="test">Unit test date</label>
-          <input type="date" id="test">
+          <label class="f" for="test" data-full-planner>Unit test date</label>
+          <input type="date" id="test" data-full-planner>
+          <div id="sample-lesson-controls" hidden>
+            <label class="f" for="sample-swap">Reforming government lesson</label>
+            <select id="sample-swap">
+              <option value="" disabled>Custom picks below</option>
+              <option value="l3-reading">Reforming Government (reading + notes)</option>
+              <option value="l3-activity">Ballot simulation: a 1908 mill town</option>
+            </select>
+          </div>
+          <div data-full-planner>
           <label class="f" for="rotation">This section meets</label>
           <select id="rotation" style="width:100%;padding:7px;border:1px solid #d8cfb8;border-radius:4px;">
             <option value="daily">Every school day</option>
@@ -76,15 +105,19 @@
             <option value="90">About 90 minutes (block)</option>
           </select>
           <p class="small" style="margin-top:6px;">Content is paced in lesson-days, one lesson-day per period of about 45 minutes. A block of about 90 minutes fits about two lessons per meeting, so entries pair up on one date and the unit takes about half as many meetings. Period length is set per section.</p>
-          <p class="small" id="daycount" style="margin-top:12px;"></p>
+          </div>
+          <p class="small" id="daycount" style="margin-top:12px;" aria-live="polite"></p>
+          <div data-full-planner>
           <h3 style="margin-top:20px;">Proposed pacing</h3>
           <p class="small">Instructional days divided across the lessons in proportion to how much of the test blueprint each lesson carries, with the last day held for review.</p>
           <table class="pacing" id="pacing"></table>
+          </div>
         </div>
 
-        <div class="panel">
-          <h3>2 · Pick from the plate</h3>
-          <p class="small">Core items start checked. Guided notes run the same day as their reading and take no extra time. Half-day items pair up on one day.</p>
+        <div class="panel" id="picker-panel">
+          <h3 id="picker-heading">2 · Pick from the plate</h3>
+          <p class="small" data-full-planner>Core items start checked. Guided notes run the same day as their reading and take no extra time. Half-day items pair up on one day.</p>
+          <p class="small" id="sample-picker-intro" hidden>Check or uncheck activities. Reading notes take no extra time, and two half-day activities can share a date.</p>
           <button type="button" id="covstrip"></button>
           <div id="picker"></div>
           <p class="small" id="own-teaser" style="margin:10px 0 0;">Teaching something of your own instead? <a href="#" id="own-teaser-link">Add it below and tag what it covers</a>, and it counts toward coverage like any other pick.</p>
@@ -129,23 +162,24 @@
           </div>
         </div>
 
-        <div class="panel">
-          <h3>3 · Your schedule</h3>
-          <p class="small">Drag any item to another day and everything after it reflows. Pin an item (📍) to lock it to its date; pinned items hold their date while the rest of the plan moves around them. Split in the picker divides a one-day lesson into two half days. Use the menu on any day to mark it assembly, substitute, field trip, testing, or no class; marked days hold no lessons and the work bumps forward. If you will be out but your class still meets, use Mark sub day on that day instead: the date and the test day hold, the day teaches nothing from the plan, its work moves later, and you can leave the substitute a note right on the day.</p>
+        <div class="panel" id="schedule-panel">
+          <h3 id="schedule-heading">3 · Your schedule</h3>
+          <p class="small" data-full-planner>Drag any item to another day and everything after it reflows. Pin an item (📍) to lock it to its date; pinned items hold their date while the rest of the plan moves around them. Split in the picker divides a one-day lesson into two half days. Use the menu on any day to mark it assembly, substitute, field trip, testing, or no class; marked days hold no lessons and the work bumps forward. If you will be out but your class still meets, use Mark sub day on that day instead: the date and the test day hold, the day teaches nothing from the plan, its work moves later, and you can leave the substitute a note right on the day.</p>
+          <p class="small" id="sample-schedule-intro" hidden>Mark a date as no class to see the work move. The sample uses five weekdays and does not schedule the full unit test.</p>
           <div class="ptoolbar">
             <button type="button" class="mini viewbtn" data-view="list">List view</button>
             <button type="button" class="mini viewbtn" data-view="week">Week view</button>
             <span class="tsep"></span>
             <button type="button" class="mini" id="print-week">Print plan</button>
-            <button type="button" class="mini" id="print-sub">Sub plan</button>
+            <button type="button" class="mini" id="print-sub" data-full-planner>Sub plan</button>
             <span class="tsep"></span>
-            <button type="button" class="mini" id="export-ics">Add to calendar (.ics)</button>
-            <button type="button" class="mini" id="share-plan">Share link</button>
+            <button type="button" class="mini" id="export-ics" data-full-planner>Add to calendar (.ics)</button>
+            <button type="button" class="mini" id="share-plan" data-full-planner>Share link</button>
             <span class="tsep"></span>
-            <button type="button" class="mini" id="export-plan">Export plan</button>
-            <label class="mini filebtn">Import plan<input type="file" id="import-plan" accept="application/json" style="display:none;"></label>
+            <button type="button" class="mini" id="export-plan" data-full-planner>Export plan</button>
+            <label class="mini filebtn" data-full-planner>Import plan<input type="file" id="import-plan" accept="application/json" style="display:none;"></label>
           </div>
-          <p class="small" style="margin:2px 0 4px;">To reuse a plan next year: export it, import it here, then set the new first day and test date. Everything reflows onto the new calendar, pins included.</p>
+          <p class="small" data-full-planner style="margin:2px 0 4px;">To reuse a plan next year: export it, import it here, then set the new first day and test date. Everything reflows onto the new calendar, pins included.</p>
           <p class="small" id="share-note" style="margin:0 0 10px;"></p>
           <table class="sched" id="schedule"></table>
           <div id="weekview"></div>
@@ -158,7 +192,7 @@
           <h3>Coverage check</h3>
           <p class="small" style="margin:0;">Share of the fifteen blueprint entries your picks teach or assess.</p>
           <div class="meter"><div id="meterfill"></div></div>
-          <p style="margin:4px 0;"><strong id="covtext"></strong></p>
+          <p style="margin:4px 0;"><strong id="covtext" aria-live="polite"></strong></p>
           <p style="margin:2px 0;"><strong id="covplaced"></strong></p>
           <p class="small" id="dayuse"></p>
           <div id="gaps"></div>
@@ -167,7 +201,7 @@
           <h3>Topic coverage</h3>
           <div id="standards"></div>
         </div>
-        <div class="panel">
+        <div class="panel" data-full-planner>
           <h3>The test</h3>
           <p class="small">The 50-point unit test lands on your test date automatically. Every item on it is tagged to the blueprint in the answer key.</p>
           <p style="margin-bottom:0;" id="test-action"><a href="files/unit-test.pdf">Download the unit test (PDF)</a></p>
@@ -192,13 +226,26 @@
 <div id="printArea"></div>
 <script src="planner-data.js"></script>
 <script src="planner.js"></script>
-<script src="firebase-config.js"></script>
-<script src="auth.js"></script>
-<script src="stats.js"></script>
 <script>
-  // Once sign-in resolves, let the planner re-render so entitled accounts
-  // see the Gilded Age download controls.
-  if (window.HCGAuth && window.HCGPlannerRefresh) window.HCGAuth.onChange(window.HCGPlannerRefresh);
+  // Do not even initialize storage/cloud integrations on either sample route.
+  // Preserve Firebase config -> auth -> stats ordering on the regular planner.
+  if (new URLSearchParams(location.search).get("sample") !== "progressive-era-week") {
+    var configScript = document.createElement("script");
+    configScript.src = "firebase-config.js";
+    configScript.async = false;
+    document.head.appendChild(configScript);
+    var authScript = document.createElement("script");
+    authScript.src = "auth.js";
+    authScript.async = false;
+    authScript.onload = function () {
+      if (window.HCGAuth && window.HCGPlannerRefresh) window.HCGAuth.onChange(window.HCGPlannerRefresh);
+    };
+    document.head.appendChild(authScript);
+    var statsScript = document.createElement("script");
+    statsScript.src = "stats.js";
+    statsScript.async = false;
+    document.head.appendChild(statsScript);
+  }
 </script>
 </body>
 </html>

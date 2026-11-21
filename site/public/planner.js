@@ -6,15 +6,30 @@
   // active unit comes from a shared link's payload first, then ?unit=,
   // then the Progressive Era default.
   var UNITS = window.HCG_UNITS || {};
+  var params = new URLSearchParams(location.search);
+  var isSample = params.get("sample") === "progressive-era-week";
+  var draftId = params.get("draft");
+  var draftPrefix = "hcg_sample_progressive_week_v1:";
+  var draftKey = isSample && /^[a-z0-9-]{16,60}$/.test(draftId || "") ? draftPrefix + draftId : null;
+  var savedSample = null;
+  if (draftKey) {
+    try { savedSample = JSON.parse(localStorage.getItem(draftKey)); } catch (e) {}
+    if (!savedSample || !savedSample.selected || !Array.isArray(savedSample.sections) || !savedSample.sections.length) {
+      draftKey = null;
+      savedSample = null;
+    }
+  }
+  var sampleStart = "2026-11-30";
+  var sampleOrder = ["l1-reading", "l1-notes", "l1-activity", "l2-reading", "l2-notes", "l2-activity", "l3-reading", "l3-notes"];
   var sharedPayload = null;
   try {
-    if (location.hash.indexOf("#plan=") === 0) {
+    if (!isSample && location.hash.indexOf("#plan=") === 0) {
       sharedPayload = JSON.parse(decodeURIComponent(escape(atob(location.hash.slice(6).replace(/-/g, "+").replace(/_/g, "/")))));
     }
   } catch (e) {}
   var unitId = "pe";
   if (sharedPayload && sharedPayload.unit && UNITS[sharedPayload.unit]) unitId = sharedPayload.unit;
-  else {
+  else if (!isSample) {
     var wantUnit = null;
     try { wantUnit = new URLSearchParams(location.search).get("unit"); } catch (e) {}
     if (wantUnit && UNITS[wantUnit]) unitId = wantUnit;
@@ -130,9 +145,16 @@
 
   // ---------------- state: v4 sections; v2/v3 saves migrate in place ----------------
   var state = { selected: {}, order: null, splits: {}, view: "list", active: 0, sections: [newSection()], customItems: [] };
-  ITEMS.forEach(function (it) { if (it.core) state.selected[it.id] = true; });
+  if (isSample) {
+    state.order = sampleOrder.slice();
+    sampleOrder.forEach(function (id) { state.selected[id] = true; });
+    state.sections = [newSection("Sample week", { start: sampleStart, test: sampleEnd(sampleStart) })];
+    state.view = "week";
+  } else {
+    ITEMS.forEach(function (it) { if (it.core) state.selected[it.id] = true; });
+  }
   try {
-    var saved = JSON.parse(localStorage.getItem(KEY));
+    var saved = isSample ? savedSample : JSON.parse(localStorage.getItem(KEY));
     if (saved && saved.selected) {
       state.selected = saved.selected;
       state.order = saved.order || null;
@@ -239,8 +261,20 @@
   }
   function fmt(d) { return d.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" }); }
 
+  function sampleEnd(start) {
+    var end = P(start);
+    var count = 0;
+    while (count < 5 && Number.isFinite(end.getTime())) {
+      var day = end.getDay();
+      if (day > 0 && day < 6) count++;
+      end.setDate(end.getDate() + 1);
+    }
+    return Number.isFinite(end.getTime()) ? ISO(end) : null;
+  }
+
   function yearOffs() {
     var set = {};
+    if (isSample) return set;
     try {
       var y = JSON.parse(localStorage.getItem("hcg_year_v1"));
       if (y && y.daysOff) y.daysOff.forEach(function (o) {
@@ -433,6 +467,10 @@
     var el = document.getElementById("pacing");
     var dc = document.getElementById("daycount");
     var usable = cand.days.filter(function (c) { return c.meet && !sec.dayTypes[c.iso] && !isSubDay(sec, c.iso); }).length;
+    if (isSample) {
+      dc.textContent = usable + " of " + cand.days.length + " weekdays available for instruction.";
+      return;
+    }
     if (!cand.days.length) {
       dc.innerHTML = "<span class='warn'>The test date must fall after the first day, with at least one weekday between.</span>";
       el.innerHTML = "";
@@ -923,7 +961,7 @@
         rows.push("<tr data-dropday='" + c.iso + "'><td style='white-space:nowrap;'>" + fmt(c.date) + "</td><td>" + cell + hwRowHTML(c.iso) + "</td><td>" + sel + " " + subMarkBtn(c.iso) + "</td></tr>");
       }
     });
-    rows.push("<tr><td style='white-space:nowrap;'><strong>" + fmt(P(sec.test)) + "</strong></td><td><strong>Unit test</strong> (50 points, tagged key)</td><td></td></tr>");
+    if (!isSample) rows.push("<tr><td style='white-space:nowrap;'><strong>" + fmt(P(sec.test)) + "</strong></td><td><strong>Unit test</strong> (50 points, tagged key)</td><td></td></tr>");
     el.innerHTML = rows.join("");
     wireDayTypes(el); wireSubDays(el); wireHomework(el); wireChips(el); wireDropZones(el); wireDownloads(el);
   }
@@ -940,7 +978,7 @@
     var test = P(sec.test);
     var html = "<div class='wgrid'><div class='whead'>Mon</div><div class='whead'>Tue</div><div class='whead'>Wed</div><div class='whead'>Thu</div><div class='whead'>Fri</div>";
     var d = new Date(monday);
-    while (d <= test) {
+    while (isSample ? d < test : d <= test) {
       var dow = d.getDay();
       if (dow >= 1 && dow <= 5) {
         var iso = ISO(d);
@@ -948,7 +986,10 @@
         var kind = sec.dayTypes[iso];
         var cls = "wday", inner = "<div class='wdate'>" + fmt(d) + "</div>";
         if (iso === sec.test) { cls += " testday"; inner += "<div class='wtest'>Unit test</div>"; }
-        else if (!c) { cls += " offday"; inner += "<div class='woff'>Day off (year plan)</div>"; }
+        else if (!c) {
+          cls += " offday";
+          if (!isSample) inner += "<div class='woff'>Day off (year plan)</div>";
+        }
         else if (!c.meet) { cls += " offday"; inner += "<div class='woff'>Does not meet (rotation)</div>"; }
         else if (kind) { cls += " marked"; inner += "<div class='wkind'>" + kind + "</div>" + dayTypeSelect(iso); }
         else if (isSubDay(sec, iso)) {
@@ -975,9 +1016,9 @@
   function renderOverflowNote() {
     var ov = document.getElementById("overflow");
     if (L.overflow.length) {
-      ov.innerHTML = "<span class='warn'>These picks do not fit before the test for " + SEC().name + ": " +
+      ov.innerHTML = "<span class='warn'>" + (isSample ? "These picks do not fit in the sample week" : "These picks do not fit before the test for " + SEC().name) + ": " +
         L.overflow.map(function (e) { return e.item.custom ? esc(e.name) : e.name; }).join("; ") +
-        ". Uncheck something, unmark a day, split a lesson across two days, or move the test date.</span>";
+        (isSample ? ". Uncheck an activity or restore a class day.</span>" : ". Uncheck something, unmark a day, split a lesson across two days, or move the test date.</span>");
     } else ov.textContent = "";
   }
 
@@ -1014,7 +1055,7 @@
     document.getElementById("meterfill").style.width = (100 * (over ? placedN : n) / total) + "%";
     document.getElementById("covtext").textContent = n + " of " + total + " blueprint entries covered by your picks";
     document.getElementById("covplaced").textContent = over ?
-      "Scheduled before the test: " + placedN + " of " + total + " entries" : "";
+      (isSample ? "Scheduled this week: " : "Scheduled before the test: ") + placedN + " of " + total + " entries" : "";
     var strip = document.getElementById("covstrip");
     if (strip) strip.textContent = "Coverage: " + (over ? placedN : n) + " of " + total + " entries" +
       (over ? " scheduled · tap for the check" : " · tap for the check");
@@ -1117,7 +1158,8 @@
   // above all) mistakes a partial plan for the whole plan.
   function unplacedBanner() {
     if (!L || !L.overflow.length) return "";
-    return "<p style='border:2px solid #000;padding:8px 10px;margin:0 0 12px;'><strong>Not scheduled before the test:</strong> " +
+    return "<p style='border:2px solid #000;padding:8px 10px;margin:0 0 12px;'><strong>" +
+      (isSample ? "Not scheduled this week" : "Not scheduled before the test") + ":</strong> " +
       L.overflow.map(function (e) { return e.item.custom ? esc(e.name) : e.name; }).join("; ") +
       ". These picks did not fit in the days available, so they do not appear in the plan below.</p>";
   }
@@ -1140,7 +1182,8 @@
       if (hwp) cell += "<br>Homework: " + esc(hwp);
       rows.push("<tr><td>" + fmt(c.date) + "</td><td>" + cell + "</td></tr>");
     });
-    rows.push("<tr><td><strong>" + fmt(P(sec.test)) + "</strong></td><td><strong>Unit test</strong> (50 points)</td></tr></table>");
+    if (!isSample) rows.push("<tr><td><strong>" + fmt(P(sec.test)) + "</strong></td><td><strong>Unit test</strong> (50 points)</td></tr>");
+    rows.push("</table>");
     return unplacedBanner() + rows.join("");
   }
   function buildSubPlan() {
@@ -1333,21 +1376,30 @@
   function paintSaveNote() {
     var note = document.getElementById("save-note");
     if (!note) return;
+    if (isSample) {
+      note.textContent = !draftKey ? "Changes here don’t touch your saved plans or sync online."
+        : (deviceSaved ? "Sample copy saved in this browser only. Bookmark this page to return."
+          : "This browser couldn't save your latest changes. Keep this tab open or print your plan.");
+      return;
+    }
     note.textContent = deviceSaved
       ? (window.HCGAuth && window.HCGAuth.plannerSaveStatus ? window.HCGAuth.plannerSaveStatus() : "Saved in this browser. Sign in to sync across devices.")
       : "This browser couldn't save your latest changes. Export the plan before leaving.";
   }
   window.addEventListener("hcgplansync", paintSaveNote);
 
-  function save() {
+  function savePayload() {
     // totalDays stays in lesson-days (content plus the test day): the year
     // planner and the home page read it that way. totalMeetings is the
     // number of meeting dates the content occupies in the active section,
     // which is smaller than the lesson-day count on a block schedule.
-    var out = { selected: state.selected, order: state.order, splits: state.splits, view: state.view,
-                active: state.active, sections: state.sections, customItems: state.customItems,
-                totalDays: L.lessonDays + 1, totalMeetings: L.usedDays };
-    try { localStorage.setItem(KEY, JSON.stringify(out)); deviceSaved = true; }
+    return { selected: state.selected, order: state.order, splits: state.splits, view: state.view,
+             active: state.active, sections: state.sections, customItems: state.customItems,
+             totalDays: L.lessonDays + (isSample ? 0 : 1), totalMeetings: L.usedDays };
+  }
+  function save() {
+    if (isSample && !draftKey) { paintSaveNote(); return; }
+    try { localStorage.setItem(isSample ? draftKey : KEY, JSON.stringify(savePayload())); deviceSaved = true; }
     catch (e) { deviceSaved = false; }
     paintSaveNote();
   }
@@ -1375,7 +1427,11 @@
     }
     renderOverflowNote();
     renderCoverage();
-    renderTest();
+    if (isSample) {
+      document.getElementById("sample-swap").value =
+        state.selected["l3-reading"] && state.selected["l3-notes"] && !state.selected["l3-activity"] ? "l3-reading" :
+        state.selected["l3-activity"] && !state.selected["l3-reading"] && !state.selected["l3-notes"] ? "l3-activity" : "";
+    } else renderTest();
     if (holdSave !== true) save();
     else paintSaveNote();
     document.querySelectorAll("[data-view]").forEach(function (b) {
@@ -1392,7 +1448,14 @@
     periodEl.value = String(SEC().period);
   }
 
-  startEl.addEventListener("change", render);
+  startEl.addEventListener("change", function () {
+    if (isSample && startEl.value && startEl.value !== SEC().start) {
+      var nextEnd = /^(19[0-9]{2}|20[0-9]{2}|2100)-/.test(startEl.value) && sampleEnd(startEl.value);
+      if (nextEnd) testEl.value = nextEnd;
+      else startEl.value = SEC().start;
+    }
+    render();
+  });
   testEl.addEventListener("change", render);
   rotEl.addEventListener("change", function () { SEC().rotation = rotEl.value; render(); });
   periodEl.addEventListener("change", function () { SEC().period = +periodEl.value === 90 ? 90 : 45; render(); });
@@ -1400,7 +1463,7 @@
     b.addEventListener("click", function () { state.view = b.getAttribute("data-view"); render(); });
   });
   document.getElementById("print-week").addEventListener("click", function () {
-    printHTML(U.name + " · " + SEC().name, buildWeekPrint());
+    printHTML(U.name + " · " + esc(SEC().name), buildWeekPrint());
   });
   document.getElementById("covstrip").addEventListener("click", function () {
     var panel = document.getElementById("covpanel");
@@ -1439,7 +1502,64 @@
     var sn = document.getElementById("shared-note");
     if (sn) { sn.style.display = ""; }
   }
-  renderUnitSwitch();
+  if (isSample) {
+    document.documentElement.classList.add("planner-sample");
+    document.title = (draftKey ? "Saved Progressive Era Sample Week" : "Progressive Era Sample Week") + " | Humanities Curriculum Group";
+    document.getElementById("planner-heading").textContent = draftKey ? "Your Progressive Era sample copy" : "Try the Progressive Era sample week";
+    document.getElementById("start-label").textContent = "First day of the sample";
+    startEl.min = "1900-01-01";
+    startEl.max = "2100-12-31";
+    document.getElementById("sample-tools").hidden = false;
+    document.getElementById("sample-lesson-controls").hidden = false;
+    document.getElementById("sample-schedule-intro").hidden = false;
+    document.getElementById("sample-picker-intro").hidden = false;
+    document.getElementById("picker-heading").textContent = "Choose activities";
+    document.getElementById("schedule-heading").textContent = "Sample calendar";
+    var pickerPanel = document.getElementById("picker-panel");
+    pickerPanel.parentNode.insertBefore(document.getElementById("schedule-panel"), pickerPanel);
+    var copyButton = document.getElementById("sample-copy");
+    if (draftKey) {
+      copyButton.hidden = true;
+      document.getElementById("sample-fresh").hidden = false;
+      document.getElementById("sample-description").textContent = "Edit this copy or print it. It is separate from your regular unit plans and is never synced.";
+    } else {
+      copyButton.addEventListener("click", function () {
+        try {
+          var id = typeof crypto.randomUUID === "function" ? crypto.randomUUID() :
+            Date.now().toString(36) + "-" + Math.random().toString(36).slice(2) + "-" + Math.random().toString(36).slice(2);
+          var key = draftPrefix + id;
+          if (localStorage.getItem(key) !== null) throw new Error("A copy key already exists");
+          var json = JSON.stringify(savePayload());
+          localStorage.setItem(key, json);
+          if (localStorage.getItem(key) !== json) throw new Error("Could not verify sample copy");
+          location.assign(location.pathname + "?sample=progressive-era-week&draft=" + encodeURIComponent(id));
+        } catch (e) {
+          document.getElementById("sample-copy-status").textContent = "This browser couldn’t save a copy. Your edits remain here; you can print the plan.";
+        }
+      });
+    }
+    document.getElementById("sample-swap").addEventListener("change", function () {
+      if (this.value !== "l3-reading" && this.value !== "l3-activity") return;
+      var reading = this.value === "l3-reading";
+      var previous = ["l3-reading", "l3-notes", "l3-activity"];
+      var index = state.order.findIndex(function (key) { return previous.indexOf(baseId(key)) !== -1; });
+      state.order = state.order.filter(function (key) { return previous.indexOf(baseId(key)) === -1; });
+      if (index < 0) index = state.order.length;
+      var replacements = reading ? ["l3-reading", "l3-notes"] : ["l3-activity"];
+      state.order.splice.apply(state.order, [index, 0].concat(replacements));
+      previous.forEach(function (id) {
+        state.selected[id] = replacements.indexOf(id) !== -1;
+        delete state.splits[id];
+        state.sections.forEach(function (sec) {
+          delete sec.pins[id];
+          delete sec.pins[id + "#a"];
+          delete sec.pins[id + "#b"];
+        });
+      });
+      renderPicker();
+      render();
+    });
+  } else renderUnitSwitch();
   // auth.js loads after this script; the hook lets it re-render the
   // Storage download controls once an account's entitlement is known.
   window.HCGPlannerRefresh = function () { renderPicker(); render(true); };
