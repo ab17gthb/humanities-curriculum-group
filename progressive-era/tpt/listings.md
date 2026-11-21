@@ -19,7 +19,7 @@
 > This [reading / activity / notebook page / quick check / writing task] is part of Lesson [N], [lesson title], in the Progressive Era unit from Humanities Curriculum Group. The unit has eight lessons, a review day, and a unit test. Every test item is tied to a published blueprint that sorts the unit into fifteen topics, and this material teaches [topic names] on that blueprint.
 >
 > **The same unit, planned for you**
-> This file is also on our website, and the Progressive Era unit is free there in full. The site is humanitiescurriculumgroup.web.app. It carries the full US History course, fourteen units built on this same plate, and a planner that lays the materials you pick onto a dated calendar for your school year, checks your picks against the topics the unit test covers, and holds review days before your exam. A subscription unlocks the units beyond the free sample.
+> This file is also on our website, and the Progressive Era unit is free there in full. The site is humanitiescurriculumgroup.web.app. It carries the full US History course, fifteen units built on this same plate, and a planner that lays the materials you pick onto a dated calendar for your school year, checks your picks against the topics the unit test covers, and holds review days before your exam. A subscription unlocks the units beyond the free sample.
 
 ## Unit bundle | full listing
 
@@ -44,7 +44,7 @@ What is included:
 - Review day. A study guide with the term list, a table of the four amendments, questions for every lesson, and a full key, plus a 22-answer crossword with its filled key.
 - Unit test. 50 points: 15 matching, 21 multiple choice, 14 source-based, working from Roosevelt's muck-rake speech, the 1912 election results, and the text of the Nineteenth Amendment. Every item is tagged in the key to the unit's published blueprint of fifteen topics, and every topic is assessed at least twice.
 
-The same unit, planned for you. This bundle is also on our website, and the Progressive Era unit is free there in full. The site is humanitiescurriculumgroup.web.app. It carries the full US History course, fourteen units built on this same plate, and a planner that lays the materials you pick onto a dated calendar for your school year, checks your picks against the topics the unit test covers, holds review days before your exam date, and shows today, tomorrow, and the week on one printable page when you sign in. A subscription unlocks the units beyond the free sample.
+The same unit, planned for you. This bundle is also on our website, and the Progressive Era unit is free there in full. The site is humanitiescurriculumgroup.web.app. It carries the full US History course, fifteen units built on this same plate, and a planner that lays the materials you pick onto a dated calendar for your school year, checks your picks against the topics the unit test covers, holds review days before your exam date, and shows today, tomorrow, and the week on one printable page when you sign in. A subscription unlocks the units beyond the free sample.
 
 ## Individual products | titles and one-line descriptions
 
