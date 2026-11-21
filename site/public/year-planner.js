@@ -21,16 +21,28 @@
     { id: "u17", name: "Modern Course Review", days: 7, color: "#33526b", planKey: "hcg_unit_rm_v1", planHref: "planner.html?unit=rm" }
   ];
 
-  // US History runs three ways: the full survey in one year, or two parts
-  // split at 1877 (the end of Reconstruction). Part 1 ends with Reconstruction;
-  // Part 2 opens with the Gilded Age.
+  // US History may run as the full survey in one year or in two parts.
+  // Many two-part courses divide around 1877 (near the end of
+  // Reconstruction), so the default Part 1 shape ends with Reconstruction
+  // and the default Part 2 shape opens with the Gilded Age. A Part 2 plan
+  // may instead open with exactly one instructional unit from Part 1.
   var COURSES = {
     full: ["u1", "u2", "u3", "u4", "u5", "u6", "u7", "pe", "wwi", "u9", "u10", "u11", "u12", "u13", "u14", "u15"],
     early: ["u1", "u2", "u3", "u4", "u5", "u6", "u16"],
     modern: ["u7", "pe", "wwi", "u9", "u10", "u11", "u12", "u13", "u14", "u17"]
   };
+  var OPENING_UNIT_IDS = ["u1", "u2", "u3", "u4", "u5", "u6"];
+  function normOpeningUnit(s) {
+    if (!s) return;
+    if (OPENING_UNIT_IDS.indexOf(s.openingUnit) === -1) s.openingUnit = "";
+  }
   function activeUnits() {
-    var ids = COURSES[S.course] || COURSES.full;
+    var ids = (COURSES[S.course] || COURSES.full).slice();
+    if (S.course === "modern" && OPENING_UNIT_IDS.indexOf(S.openingUnit) !== -1) {
+      ids = [S.openingUnit].concat(ids);
+    }
+    // UNITS is in canonical course order: an optional Part 1 opener sorts
+    // before the modern units, and Modern Course Review remains last.
     return UNITS.filter(function (u) { return ids.indexOf(u.id) !== -1; });
   }
 
@@ -41,6 +53,7 @@
       // year holds, so a first run starts with a year that fits and a
       // banner saying plainly that these are example dates.
       course: "early",
+      openingUnit: "",
       starter: true,
       schedule: { period: 45, pattern: "daily" },
       start: "2026-08-24", end: "2027-05-28", exam: "", reviewDays: 5,
@@ -86,6 +99,7 @@
   if (!S.unitDays) S.unitDays = {};
   if (!S.pinnedStarts) S.pinnedStarts = {};
   normSchedule(S);
+  normOpeningUnit(S);
 
   // ---------- v4: a library of named plans (preps); hcg_year_v1 stays the active plan ----------
   var LIBKEY = "hcg_year_plans_v1";
@@ -100,6 +114,7 @@
     if (!S.unitDays) S.unitDays = {};
     if (!S.pinnedStarts) S.pinnedStarts = {};
     normSchedule(S);
+    normOpeningUnit(S);
   }
 
   // A shared plan link loads as its own plan; the teacher's other plans are untouched.
@@ -111,6 +126,7 @@
         if (!payload.unitDays) payload.unitDays = {};
         if (!payload.pinnedStarts) payload.pinnedStarts = {};
         normSchedule(payload);
+        normOpeningUnit(payload);
         planName = "Shared plan";
         lib.plans[planName] = payload;
         S = payload;
@@ -261,6 +277,8 @@
   // ---------- editors ----------
   function renderEditors() {
     document.getElementById("y-course").value = S.course || "full";
+    document.getElementById("y-opening-unit").value = S.openingUnit || "";
+    document.getElementById("opening-unit-wrap").style.display = S.course === "modern" ? "" : "none";
     document.getElementById("y-schedule").value = S.schedule.period + "-" + S.schedule.pattern;
     document.getElementById("y-start").value = S.start;
     document.getElementById("y-end").value = S.end;
@@ -474,6 +492,7 @@
     if (!S.unitDays) S.unitDays = {};
     if (!S.pinnedStarts) S.pinnedStarts = {};
     normSchedule(S);
+    normOpeningUnit(S);
     var starterNote = document.getElementById("starter-note");
     if (starterNote) starterNote.style.display = S.starter ? "" : "none";
     renderSwitcher();
@@ -490,6 +509,10 @@
   // ---------- wiring ----------
   document.getElementById("y-course").addEventListener("change", function () {
     S.course = this.value;
+    render();
+  });
+  document.getElementById("y-opening-unit").addEventListener("change", function () {
+    S.openingUnit = this.value;
     render();
   });
   document.getElementById("y-schedule").addEventListener("change", function () {
@@ -558,6 +581,7 @@
       if (!S.unitDays) S.unitDays = {};
       if (!S.pinnedStarts) S.pinnedStarts = {};
       normSchedule(S);
+      normOpeningUnit(S);
       render();
       var shortCourse = { full: "full survey", early: "early course (to 1877)", modern: "modern course (from 1877)" }[S.course] || "full survey";
       note.textContent = "Imported: " + shortCourse + ", " + fmtLong(S.start) + " – " + fmtLong(S.end) +

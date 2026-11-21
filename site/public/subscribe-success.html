@@ -4,14 +4,16 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Checkout Complete | Humanities Curriculum Group</title>
-<meta name="description" content="Your Humanities Curriculum Group checkout is complete. Stripe is in test mode, so no real charge was made. Signed-in subscriptions switch on automatically.">
+<meta name="description" content="Your Humanities Curriculum Group checkout is complete. Signed-in subscriptions switch All-Access on automatically.">
 <link rel="canonical" href="https://humanitiescurriculumgroup.web.app/subscribe-success">
 <meta property="og:title" content="Checkout Complete | Humanities Curriculum Group">
-<meta property="og:description" content="Your Humanities Curriculum Group checkout is complete. Stripe is in test mode, so no real charge was made. Signed-in subscriptions switch on automatically.">
+<meta property="og:description" content="Your Humanities Curriculum Group checkout is complete. Signed-in subscriptions switch All-Access on automatically.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://humanitiescurriculumgroup.web.app/subscribe-success">
+<meta property="og:image" content="https://humanitiescurriculumgroup.web.app/assets/store-badge-navy.png">
 <link rel="stylesheet" href="styles.css">
 <link rel="icon" type="image/svg+xml" href="assets/store-wordmark-color.svg">
+<meta name="p:domain_verify" content="614ffbb856f10570ff98c83e7d06967a"/>
 </head>
 <body>
 
@@ -20,6 +22,7 @@
     <a href="index.html"><img class="wordmark" src="assets/store-wordmark-cream.svg" alt="Humanities Curriculum Group"></a>
     <nav class="main">
       <a href="index.html">Home</a>
+      <a href="home.html">My Day</a>
       <a href="us-history.html">US History</a>
       <a href="progressive-era.html">Sample Unit</a>
       <a href="planner-year.html">Year Planner</a>
@@ -37,13 +40,13 @@
 
     <div class="note">
       <p style="margin-top:0;" id="access-status"><strong>Checking your account…</strong></p>
-      <p><strong>Checkout is currently running in Stripe test mode.</strong> No real charge was made. A checkout completed while signed in switches All-Access on for that account automatically, usually within a few seconds.</p>
+      <p>A checkout completed while signed in switches All-Access on for that account automatically, usually within a few seconds. The charge appears on your card statement as HUMANITIES CURRICULUM.</p>
       <p style="margin-bottom:0;">Everything that is free stays free either way: the full Progressive Era sample unit and both planners work without an account, and signing in saves your plans to your account on any device.</p>
     </div>
 
     <p>
       <a class="btn" href="gilded-era.html">Open the Gilded Age unit</a>
-      <a class="btn" href="home.html" style="background:var(--navy);">Go to My Home</a>
+      <a class="btn" href="home.html" style="background:var(--navy);">Go to My Day</a>
       <a class="btn" href="progressive-era.html" style="background:var(--navy);">Open the free sample unit</a>
     </p>
   </div>
@@ -53,14 +56,17 @@
   <div class="wrap">
     <img src="assets/store-wordmark-cream.svg" alt="Humanities Curriculum Group">
     <div>
-      <p>Humanities Curriculum Group is a Knoweth product, built by a working social studies teacher. Sister projects: <a href="https://rycal.web.app">Rycal</a>, spaced-repetition study tools for AP courses, and <a href="https://tpsp.web.app">The Primary Source Project</a>, a primary source library and DBQ builder.</p>
+      <p>Humanities Curriculum Group, built by a working social studies teacher. Sister projects: <a href="https://rycal.web.app">Rycal</a>, spaced-repetition study tools for AP courses, and <a href="https://tpsp.web.app">The Primary Source Project</a>, a primary source library and DBQ builder.</p>
+      <p>Questions about All-Access, billing, or a download that won't open? <a href="contact.html">Contact us</a>.</p>
       <p>Materials print on standard US Letter paper with ordinary school copiers in mind.</p>
+      <p class="small"><a href="privacy.html">Privacy Policy</a> · <a href="terms.html">Terms of Use</a></p>
     </div>
   </div>
 </footer>
 
 <script src="firebase-config.js"></script>
 <script src="auth.js"></script>
+<script src="stats.js"></script>
 <script>
   // Poll the account entitlement for up to ~30 seconds and report honestly.
   (function () {

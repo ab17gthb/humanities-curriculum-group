@@ -57,6 +57,19 @@ def main():
     finally:
         os.unlink(tmp)
     print("PDF written:", out_path)
+    # HCG footer (2026-10-28): stamp "<Lesson> · <Type>" + brand/page line on
+    # every page. Runs via the fs venv python (has pypdf/reportlab); a failure
+    # warns loudly but does not fail the build.
+    helper = os.path.expanduser("~/workspace/curriculum-planner/footer-project/stamp_one.py")
+    venv_py = os.path.expanduser("~/workspace/.venvs/fs/bin/python")
+    if os.path.exists(helper) and os.path.exists(venv_py):
+        r = subprocess.run([venv_py, helper, src_path, out_path],
+                           capture_output=True, text=True, timeout=120)
+        sys.stdout.write(r.stdout)
+        if r.returncode != 0:
+            print("WARNING: footer stamp failed for", out_path, (r.stderr or "")[-200:])
+    else:
+        print("WARNING: footer stamp skipped (helper or venv python missing) for", out_path)
 
 if __name__ == "__main__":
     main()

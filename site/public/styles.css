@@ -219,8 +219,8 @@ tr.dropok td, .wday.dropok { outline: 2px dashed var(--rust); outline-offset: -2
 #printArea .ptable { border-collapse: collapse; width: 100%; }
 #printArea .ptable th, #printArea .ptable td { border: 1px solid #bbb; padding: 5px 8px; font-size: 13px; text-align: left; vertical-align: top; }
 @media print {
-  body > * { display: none !important; }
-  body > #printArea { display: block !important; font-family: Arial, sans-serif; color: #000; }
+  body.planner-print > * { display: none !important; }
+  body.planner-print > #printArea { display: block !important; font-family: Arial, sans-serif; color: #000; }
 }
 /* year planner v3: draggable unit days */
 .cal.day[data-unit] { cursor: grab; }
@@ -296,3 +296,40 @@ section.block h1 { font-size: 27px; margin: 0 0 8px; }
 .about-drop summary::-webkit-details-marker { display: none; }
 .about-drop summary::after { content: "\25BE"; font-size: 19px; color: var(--rust); transition: transform 0.2s ease; }
 .about-drop[open] summary::after { transform: rotate(180deg); }
+
+/* Blog */
+.post-body { max-width: 720px; }
+.post-body p { font-size: 16.5px; line-height: 1.65; margin: 0 0 16px; }
+.post-body h2 { font-size: 24px; margin: 30px 0 10px; }
+.post-body ol, .post-body ul { font-size: 16.5px; line-height: 1.6; margin: 0 0 16px; padding-left: 24px; }
+.post-body li { margin-bottom: 8px; }
+.post-meta { color: var(--gray); font-size: 13.5px; letter-spacing: 1px; text-transform: uppercase; margin: 0 0 6px; }
+.post-body blockquote { margin: 20px 0; padding: 14px 20px; background: #fff; border-left: 3px solid var(--rust); font-size: 16.5px; line-height: 1.65; }
+.post-body blockquote p { margin: 0 0 10px; }
+.post-body blockquote p:last-child { margin-bottom: 0; }
+.post-body figure { margin: 24px 0; }
+.post-body figure img { max-width: 100%; height: auto; border: 1px solid #ddd5c3; }
+.post-body figcaption { font-size: 13px; color: var(--gray); margin-top: 6px; }
+.door { background: var(--cream); border: 1px solid #ddd5c3; border-top: 3px solid var(--rust); border-radius: 3px; padding: 18px 20px; margin: 30px 0 10px; }
+.door h3 { margin: 0 0 8px; font-size: 19px; }
+.door p { font-size: 15px; margin: 0 0 12px; }
+
+/* Year planner polish */
+.wrap.widep { max-width: 1280px; }
+@media (min-width: 861px) { .widep .planner-grid { grid-template-columns: 1fr 360px; } }
+.formrow.yr-a { margin-bottom: 2px; }
+.formrow.yr-a > div { flex: 1 1 200px; }
+.formrow.yr-a > div.wide { flex: 2 1 290px; }
+.formrow.yr-b > div { flex: 1 1 150px; }
+.formrow label.f { margin-top: 6px; }
+input[type="text"], input[type="number"], input[type="date"], select { padding: 8px 10px; border-radius: 4px; }
+input[type="text"]:focus, input[type="number"]:focus, input[type="date"]:focus, select:focus { border-color: var(--rust); outline: 2px solid rgba(180, 85, 45, 0.25); outline-offset: 0; }
+.counts-drop { margin-top: 12px; border-top: 1px solid #f0ead9; padding-top: 10px; }
+.counts-drop summary { font-family: Georgia, "Times New Roman", serif; font-size: 15.5px; color: var(--navy); cursor: pointer; list-style: none; display: flex; align-items: baseline; gap: 8px; }
+.counts-drop summary::-webkit-details-marker { display: none; }
+.counts-drop summary::after { content: "\25BE"; font-size: 13px; color: var(--rust); transition: transform 0.2s ease; }
+.counts-drop[open] summary::after { transform: rotate(180deg); }
+.counts-drop p { margin: 8px 0 2px; }
+#units td { padding: 9px 8px; }
+#units td:last-child { white-space: nowrap; }
+#units td:last-child .small { white-space: normal; }

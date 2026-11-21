@@ -10,6 +10,7 @@
 <meta property="og:description" content="Get Humanities Curriculum Group All-Access for US history units as they are published, cloud-saved plans, and a teacher home view. The sample unit stays free.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://humanitiescurriculumgroup.web.app/subscribe">
+<meta property="og:image" content="https://humanitiescurriculumgroup.web.app/assets/store-badge-navy.png">
 <link rel="stylesheet" href="styles.css">
 <link rel="icon" type="image/svg+xml" href="assets/store-wordmark-color.svg">
 <style>
@@ -23,6 +24,7 @@
   .plan-option + .plan-option { border-top: 1px solid #eee2c4; margin-top: 18px; padding-top: 16px; }
   .testnote { background: var(--cream); border-left: 3px solid var(--rust); padding: 12px 16px; font-size: 14.5px; max-width: 560px; }
 </style>
+<meta name="p:domain_verify" content="614ffbb856f10570ff98c83e7d06967a"/>
 </head>
 <body>
 
@@ -31,6 +33,7 @@
     <a href="index.html"><img class="wordmark" src="assets/store-wordmark-cream.svg" alt="Humanities Curriculum Group"></a>
     <nav class="main">
       <a href="index.html">Home</a>
+      <a href="home.html">My Day</a>
       <a href="us-history.html">US History</a>
       <a href="progressive-era.html">Sample Unit</a>
       <a href="planner-year.html">Year Planner</a>
@@ -50,7 +53,7 @@
       <h3>All-Access</h3>
       <p style="margin-bottom:4px;"><strong>All-Access unlocks:</strong></p>
       <ul>
-        <li>Every US History unit beyond the free sample, the day each one is published, with the full plate: readings, guided notes, activities, review day, and the tagged unit test</li>
+        <li>Every US History unit beyond the free sample, each with the full plate: readings, guided notes, activities, review day, and the tagged unit test</li>
         <li>Your year and unit plans saved to your account, so they are waiting on any device you sign in on</li>
         <li>The <a href="home.html">teacher home view</a>: today, tomorrow, and the week at a glance, ready to print</li>
       </ul>
@@ -62,21 +65,22 @@
       <p style="margin-bottom:4px;"><strong>Monthly or annual, the same All-Access either way:</strong></p>
       <div class="plan-option">
         <p class="price">$9.99 <small>per month, cancel anytime</small></p>
-        <p style="margin-bottom:0;"><a class="btn" id="checkout-btn" href="https://buy.stripe.com/test_9B6cN69KXa7h3iobFScV200">Subscribe monthly with Stripe</a></p>
+        <p style="margin-bottom:0;"><a class="btn" id="checkout-btn" href="#">Subscribe monthly</a></p>
       </div>
       <div class="plan-option" id="annual-option">
         <p class="price">$59 <small>per year, cancel anytime</small></p>
-        <p>One charge a year and one receipt for the year. If your school pays you back for classroom materials, that single receipt is the paperwork it asks for.</p>
-        <p style="margin-bottom:0;"><a class="btn" id="checkout-btn-annual" href="#">Subscribe annually with Stripe</a></p>
+        <p>One charge a year and one receipt for the year. If your school pays you back for classroom materials, that single receipt is the paperwork it asks for. At $59 it also costs about half what twelve monthly payments come to.</p>
+        <p style="margin-bottom:0;"><a class="btn" id="checkout-btn-annual" href="#">Subscribe annually</a></p>
       </div>
       <p class="small" id="checkout-status" style="margin-top:8px;"></p>
     </div>
 
-    <div class="testnote">
-      <strong>Checkout is running in Stripe test mode for now.</strong> The buttons above take test cards only and no real charge is made. If you are signed in when you check out, All-Access switches on for your account automatically, usually within a few seconds. When live billing opens, this page will say so plainly.
-    </div>
+    <p class="small" style="max-width:560px;">Choose a plan and sign in or create an account when asked. We will continue to checkout afterward, so the subscription attaches to your account and All-Access can switch on by itself, usually within a few seconds.</p>
 
-    <p class="small" style="max-width:560px;">Sign in before you subscribe, so the subscription is attached to your account at checkout and can switch on by itself. A guest checkout cannot be attached to an account afterward.</p>
+    <div style="max-width:560px;">
+      <p class="small"><strong>Buying for a school or district?</strong> We can take a purchase order for the annual plan and invoice your school. <a href="contact.html">Contact us</a> and we will set it up.</p>
+      <p class="small"><strong>Heading into summer?</strong> Monthly subscribers can ask us to pause billing over the break instead of cancelling. Your plans stay saved, and billing resumes when school does. <a href="contact.html">Contact us</a> to set a pause.</p>
+    </div>
   </div>
 </section>
 
@@ -84,31 +88,30 @@
   <div class="wrap">
     <img src="assets/store-wordmark-cream.svg" alt="Humanities Curriculum Group">
     <div>
-      <p>Humanities Curriculum Group is a Knoweth product, built by a working social studies teacher. Sister projects: <a href="https://rycal.web.app">Rycal</a>, spaced-repetition study tools for AP courses, and <a href="https://tpsp.web.app">The Primary Source Project</a>, a primary source library and DBQ builder.</p>
+      <p>Humanities Curriculum Group, built by a working social studies teacher. Sister projects: <a href="https://rycal.web.app">Rycal</a>, spaced-repetition study tools for AP courses, and <a href="https://tpsp.web.app">The Primary Source Project</a>, a primary source library and DBQ builder.</p>
+      <p>Questions about All-Access, billing, or a download that won't open? <a href="contact.html">Contact us</a>.</p>
       <p>Materials print on standard US Letter paper with ordinary school copiers in mind.</p>
+      <p class="small"><a href="privacy.html">Privacy Policy</a> · <a href="terms.html">Terms of Use</a></p>
     </div>
   </div>
 </footer>
 
 <script src="firebase-config.js"></script>
 <script src="auth.js"></script>
+<script src="stats.js"></script>
 <script>
   // Signed in: each plan button starts an account-bound checkout through the
   // createHcgCheckout function with that plan's interval, so the webhook can
-  // switch All-Access on. Signed out: the monthly button keeps the plain
-  // payment-link fallback from firebase-config.js (a guest checkout cannot be
-  // attached to an account); the annual button has no guest link, so it
-  // points the visitor at signing in first instead.
+  // switch All-Access on. Signed out: the button opens sign-in/account
+  // creation and records the chosen plan, so checkout continues afterward.
   (function () {
     var btn = document.getElementById("checkout-btn");
     var annualBtn = document.getElementById("checkout-btn-annual");
     var annualOption = document.getElementById("annual-option");
     var status = document.getElementById("checkout-status");
-    var link = window.HCG_STRIPE && window.HCG_STRIPE.monthlyLink;
-    if (link && btn) btn.href = link;
     if (!btn || !window.HCGAuth) return;
-    var MONTHLY_LABEL = "Subscribe monthly with Stripe";
-    var ANNUAL_LABEL = "Subscribe annually with Stripe";
+    var MONTHLY_LABEL = "Subscribe monthly";
+    var ANNUAL_LABEL = "Subscribe annually";
     function checkoutHandler(button, interval, label) {
       return function (ev) {
         ev.preventDefault();
@@ -128,7 +131,12 @@
         btn.setAttribute("aria-disabled", "true");
         btn.href = "gilded-era.html";
         btn.onclick = null;
-        if (annualOption) annualOption.style.display = "none";
+        if (annualBtn) {
+          annualBtn.textContent = "All-Access is active on your account";
+          annualBtn.setAttribute("aria-disabled", "true");
+          annualBtn.href = "gilded-era.html";
+          annualBtn.onclick = null;
+        }
         status.textContent = "Your subscription is on. Paid unit pages show their download buttons while you are signed in.";
         return;
       }
@@ -138,14 +146,16 @@
         btn.onclick = checkoutHandler(btn, "month", MONTHLY_LABEL);
         if (annualBtn) annualBtn.onclick = checkoutHandler(annualBtn, "year", ANNUAL_LABEL);
       } else {
-        btn.onclick = null;
-        if (annualBtn) {
-          annualBtn.onclick = function (ev) {
+        var signInForCheckout = function (interval) {
+          return function (ev) {
             ev.preventDefault();
-            status.textContent = "You are not signed in. Sign in first so the subscription attaches to your account.";
+            status.textContent = "Sign in or create an account. We will continue to checkout afterward.";
+            window.HCGAuth.signIn({ checkoutInterval: interval });
           };
-        }
-        status.textContent = "You are not signed in. Sign in first so the subscription attaches to your account.";
+        };
+        btn.onclick = signInForCheckout("month");
+        if (annualBtn) annualBtn.onclick = signInForCheckout("year");
+        status.textContent = "You are not signed in. Choose a plan and we will ask you to sign in or create an account before checkout.";
       }
     });
   })();

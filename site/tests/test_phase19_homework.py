@@ -4121,6 +4121,88 @@ def main():
                   held_days() == 7, str(held_days()))
             ctx.close()
 
+            # ---------------- Year planner: optional Part 1 opener ----------------
+            S = "Year planner opening unit"
+            ctx = browser.new_context()
+            pg = ctx.new_page(); attach_errors(pg, [])
+            pg.add_init_script(year_seed("modern", {}))
+            pg.goto(BASE + "/planner-year.html"); settle(pg)
+
+            def opener_order():
+                return pg.eval_on_selector_all(
+                    "#units tr",
+                    "els => els.map(e => { const a = e.querySelector('a[href]'); "
+                    "if (!a) return ''; const h = a.getAttribute('href') || ''; "
+                    "return h.split('unit=')[1] || 'pe'; })")
+
+            def legend_names():
+                return pg.eval_on_selector_all("#legend .legitem",
+                                               "els => els.map(e => e.textContent)")
+
+            modern_default = ["ga", "pe", "wwi", "tw", "dp", "ww2", "cw", "cr", "ma", "rm"]
+            check(S, "modern default has no early instructional units",
+                  opener_order() == modern_default, str(opener_order()))
+            check(S, "opening control shows only for modern and starts empty",
+                  pg.is_visible("#opening-unit-wrap") and pg.input_value("#y-opening-unit") == "")
+            check(S, "opening options are none plus u1-u6 only",
+                  pg.eval_on_selector_all("#y-opening-unit option", "els => els.map(e => e.value)") ==
+                  ["", "u1", "u2", "u3", "u4", "u5", "u6"],
+                  str(pg.eval_on_selector_all("#y-opening-unit option", "els => els.map(e => e.value)")))
+            pg.select_option("#y-opening-unit", "u6"); settle(pg)
+            opened = ["rc"] + modern_default
+            check(S, "selecting Reconstruction puts it first and Gilded Age second",
+                  opener_order() == opened, str(opener_order()))
+            check(S, "only the selected early unit is added",
+                  [u for u in opener_order() if u in ["ca", "fd", "er", "jr", "sc", "rc"]] == ["rc"],
+                  str(opener_order()))
+            check(S, "opening choice saves as openingUnit=u6",
+                  (ls_json(pg, "hcg_year_v1") or {}).get("openingUnit") == "u6",
+                  json.dumps(ls_json(pg, "hcg_year_v1") or {})[:180])
+            check(S, "totals include the opening unit",
+                  "187 lesson-days" in pg.text_content("#demand-line"), pg.text_content("#demand-line"))
+            names = legend_names()
+            check(S, "legend follows the opened order and keeps Modern Course Review last",
+                  len(names) == 11 and names[0].startswith("Reconstruction") and
+                  names[1].startswith("The Gilded Age") and names[-1].startswith("Modern Course Review"),
+                  str(names)[:240])
+            labels = pg.eval_on_selector_all("#calendar .ulab:not(.test)",
+                                             "els => els.map(e => e.textContent)")
+            check(S, "calendar labels Reconstruction before Gilded Age",
+                  labels and labels[0] == "Reconstruction" and "Gilded Age" in labels[1:], str(labels)[:200])
+            pg.reload(); settle(pg)
+            check(S, "opening choice survives reload",
+                  pg.input_value("#y-opening-unit") == "u6" and opener_order() == opened,
+                  str(opener_order()))
+            pg.select_option("#y-opening-unit", ""); settle(pg)
+            check(S, "clearing restores Gilded Age first and removes Reconstruction",
+                  opener_order() == modern_default and
+                  (ls_json(pg, "hcg_year_v1") or {}).get("openingUnit") == "", str(opener_order()))
+            pg.select_option("#y-opening-unit", "u6"); settle(pg)
+            pg.select_option("#y-course", "early"); settle(pg)
+            check(S, "switching to early hides the opener but preserves it",
+                  not pg.is_visible("#opening-unit-wrap") and
+                  (ls_json(pg, "hcg_year_v1") or {}).get("openingUnit") == "u6")
+            pg.select_option("#y-course", "full"); settle(pg)
+            check(S, "switching to full hides the opener but preserves it",
+                  not pg.is_visible("#opening-unit-wrap") and
+                  (ls_json(pg, "hcg_year_v1") or {}).get("openingUnit") == "u6")
+            pg.select_option("#y-course", "modern"); settle(pg)
+            check(S, "switching back to modern restores the preserved opener",
+                  pg.is_visible("#opening-unit-wrap") and pg.input_value("#y-opening-unit") == "u6" and
+                  opener_order() == opened, str(opener_order()))
+            ctx.close()
+
+            ctx = browser.new_context()
+            pg = ctx.new_page(); attach_errors(pg, [])
+            bad_seed = year_seed("modern", {}).replace(
+                "starter: false,", "starter: false, openingUnit: 'u16',")
+            pg.add_init_script(bad_seed)
+            pg.goto(BASE + "/planner-year.html"); settle(pg)
+            check(S, "Early Course Review cannot seed as an opening unit",
+                  pg.input_value("#y-opening-unit") == "" and opener_order() == modern_default and
+                  (ls_json(pg, "hcg_year_v1") or {}).get("openingUnit") == "", str(opener_order()))
+            ctx.close()
+
             # ---------------- Review home ----------------
             S = "Review home"
             ctx = browser.new_context()
@@ -4222,6 +4304,81 @@ def main():
                   "Vocab Review" in ma_html and ma_html.count("hcg-modern-america-flashcards") >= 2)
             ctx.close()
 
+            # ---------------- Account dialog and subscribe flow ----------------
+            S = "Account dialog / subscribe"
+            ctx = browser.new_context()
+            pg = ctx.new_page(); attach_errors(pg, [])
+            pg.goto(BASE + "/subscribe.html"); settle(pg)
+            pg.wait_for_function(
+                "document.querySelector('#checkout-status').textContent.includes('You are not signed in')")
+            check(S, "monthly button has no processor name",
+                  (pg.text_content("#checkout-btn") or "").strip() == "Subscribe monthly",
+                  pg.text_content("#checkout-btn") or "")
+            check(S, "annual button has no processor name",
+                  (pg.text_content("#checkout-btn-annual") or "").strip() == "Subscribe annually",
+                  pg.text_content("#checkout-btn-annual") or "")
+            pg.click("#checkout-btn")
+            pg.wait_for_selector("#hcg-auth-overlay:not([hidden])")
+            check(S, "signed-out monthly click opens the account dialog",
+                  pg.is_visible("#hcg-auth-overlay"))
+            check(S, "checkout dialog explains the continuation",
+                  "continue to secure checkout for the monthly plan" in
+                  (pg.text_content("#hcg-auth-context") or ""),
+                  pg.text_content("#hcg-auth-context") or "")
+            check(S, "monthly checkout intent is remembered",
+                  pg.evaluate("sessionStorage.getItem('hcg_pending_checkout')") == "month")
+            check(S, "dialog offers Google and email sign-in",
+                  pg.is_visible("#hcg-auth-google") and pg.is_visible("#hcg-auth-email") and
+                  pg.is_visible("#hcg-auth-password"))
+            check(S, "sign-in mode hides the create-only name field",
+                  not pg.is_visible("#hcg-auth-name-wrap"))
+            pg.click("#hcg-auth-tab-create")
+            check(S, "create-account mode shows the name field and create action",
+                  pg.is_visible("#hcg-auth-name-wrap") and
+                  (pg.text_content("#hcg-auth-submit") or "").strip() == "Create account")
+            check(S, "create-account mode hides password reset",
+                  not pg.is_visible("#hcg-auth-forgot"))
+            pg.fill("#hcg-auth-email", "not-an-email")
+            pg.fill("#hcg-auth-password", "123")
+            pg.click("#hcg-auth-submit")
+            check(S, "invalid email is stopped before Firebase",
+                  "Enter a valid email address" in (pg.text_content("#hcg-auth-error") or ""),
+                  pg.text_content("#hcg-auth-error") or "")
+            pg.click("#hcg-auth-cancel")
+            check(S, "cancelling closes the dialog and clears checkout intent",
+                  not pg.is_visible("#hcg-auth-overlay") and
+                  pg.evaluate("sessionStorage.getItem('hcg_pending_checkout')") is None)
+            pg.click("#checkout-btn-annual")
+            pg.wait_for_selector("#hcg-auth-overlay:not([hidden])")
+            check(S, "annual checkout intent is remembered",
+                  pg.evaluate("sessionStorage.getItem('hcg_pending_checkout')") == "year" and
+                  "annual plan" in (pg.text_content("#hcg-auth-context") or ""))
+            pg.keyboard.press("Escape")
+            check(S, "Escape closes the dialog and clears annual intent",
+                  not pg.is_visible("#hcg-auth-overlay") and
+                  pg.evaluate("sessionStorage.getItem('hcg_pending_checkout')") is None)
+            pg.click("#hcg-signin")
+            pg.wait_for_selector("#hcg-auth-overlay:not([hidden])")
+            check(S, "header Sign in opens the same account dialog",
+                  pg.is_visible("#hcg-auth-google") and pg.is_visible("#hcg-auth-email"))
+            pg.click("#hcg-auth-close")
+            ctx.close()
+
+            subscribe_src = open(os.path.join(PUBLIC, "subscribe.html")).read()
+            auth_src = open(os.path.join(PUBLIC, "auth.js")).read()
+            privacy_src = open(os.path.join(PUBLIC, "privacy.html")).read()
+            terms_src = open(os.path.join(PUBLIC, "terms.html")).read()
+            check(S, "subscribe source has no 'with Stripe' plan labels",
+                  "Subscribe monthly with Stripe" not in subscribe_src and
+                  "Subscribe annually with Stripe" not in subscribe_src)
+            check(S, "auth supports email sign-in, account creation, and password reset",
+                  "signInWithEmailAndPassword" in auth_src and
+                  "createUserWithEmailAndPassword" in auth_src and
+                  "sendPasswordResetEmail" in auth_src)
+            check(S, "legal pages describe email sign-in accurately",
+                  "email address and password" in privacy_src and
+                  "email address and password" in terms_src)
+
             # ---------------- Homework ----------------
             S = "Homework"
             ctx = browser.new_context()
@@ -4260,6 +4417,141 @@ def main():
             sec0 = secs[saved.get("active", 0)] if secs else {}
             check(S, "clearing the input removes the homework",
                   iso0 not in (sec0.get("homework") or {}), str(sec0.get("homework"))[:120])
+            ctx.close()
+
+            # ---------------- Teacher home downloads ----------------
+            S = "Teacher home downloads"
+            home_src = open(os.path.join(PUBLIC, "home.html")).read()
+            engine_src = open(os.path.join(PUBLIC, "teacher-home.js")).read()
+            check(S, "teacher home knows the All-Access download path",
+                  "HCGFiles" in engine_src and "data-storage" in engine_src and "testStorage" in engine_src)
+            check(S, "teacher home loads the shared engine and re-renders when entitlement lands",
+                  'src="teacher-home.js"' in home_src and "HCGTeacherHome" in engine_src and
+                  "HCGAuth.onChange(renderAll)" in home_src and "window.HCGHomeRender" in home_src)
+            check(S, "auth loads before the My Day render script so the re-render can register",
+                  home_src.index('src="auth.js"') < home_src.index('src="teacher-home.js"'))
+            styles_src = open(os.path.join(PUBLIC, "styles.css")).read()
+            check(S, "the printArea print rule is scoped to the planner page only",
+                  "body.planner-print > #printArea" in styles_src and
+                  "body > #printArea" not in styles_src and "body > * {" not in styles_src and
+                  '<body class="planner-print">' in open(os.path.join(PUBLIC, "planner.html")).read())
+            ctx = browser.new_context()
+            pg = ctx.new_page(); attach_errors(pg, [])
+            pg.add_init_script(seed_plan_script("hcg_unit_ga_v1", ga_core))
+            pg.add_init_script("""(function () {
+              window.__authRegs = [];
+              var stored;
+              Object.defineProperty(window, 'HCGAuth', {
+                configurable: true,
+                get: function () { return stored; },
+                set: function (v) {
+                  stored = v;
+                  var orig = v.onChange;
+                  v.onChange = function (fn) { window.__authRegs.push(fn); return orig(fn); };
+                }
+              });
+            })();""")
+            pg.goto(BASE + "/home.html"); settle(pg)
+            today_txt = pg.text_content("#block-today") or ""
+            check(S, "signed-out teacher home lists today's files as plain names",
+                  ".pdf" in today_txt and pg.query_selector("#block-today a.dl") is None, today_txt[:160])
+            check(S, "the page registered its re-render with auth on load",
+                  pg.evaluate("window.__authRegs.length") >= 1)
+            pg.evaluate("""() => {
+              window.HCGAuth.entitlement = function () { return { paid: true }; };
+              window.__dlPath = null;
+              window.HCGFiles = { url: function (p) { window.__dlPath = p; return Promise.resolve(null); } };
+              window.__authRegs.forEach(function (fn) { fn(); });
+            }""")
+            first_dl = pg.query_selector("#block-today a.dl[data-storage^='hcg/gilded-age/']")
+            check(S, "entitled teacher home links today's Gilded Age files", first_dl is not None)
+            if first_dl:
+                want_path = first_dl.get_attribute("data-storage")
+                dialogs = []
+                pg.on("dialog", lambda d: (dialogs.append(d.message), d.dismiss()))
+                first_dl.click(); pg.wait_for_timeout(400)
+                got_path = pg.evaluate("window.__dlPath")
+                check(S, "clicking mints the URL for that exact file", got_path == want_path, str(got_path))
+                check(S, "an unavailable download explains itself",
+                      any("not available on this account" in m for m in dialogs), str(dialogs)[:120])
+            pg.pdf(path="/tmp/myday-print-test.pdf", format="Letter")
+            pdf_txt = subprocess.run(["pdftotext", "/tmp/myday-print-test.pdf", "-"],
+                                     capture_output=True, text=True).stdout
+            check(S, "printing My Day yields the day and week, not a blank page",
+                  "This week" in pdf_txt and "Engines of Industry" in pdf_txt and len(pdf_txt.strip()) > 200,
+                  pdf_txt[:160].replace("\n", " "))
+            ctx.close()
+
+            # ---------------- My Day tab ----------------
+            S = "My Day tab"
+            index_src = open(os.path.join(PUBLIC, "index.html")).read()
+            check(S, "the Today panel is gone from the homepage",
+                  "today-panel" not in index_src and "HCGTeacherHome" not in index_src)
+            for page_name in ["index.html", "us-history.html", "subscribe.html", "planner.html",
+                              "planner-year.html", "about.html", "contact.html", "pacing-guide.html",
+                              "progressive-era.html", "gilded-era.html", "privacy.html", "terms.html"]:
+                src_p = open(os.path.join(PUBLIC, page_name)).read()
+                check(S, f"{page_name} nav carries the My Day tab",
+                      '<a href="home.html">My Day</a>' in src_p)
+            check(S, "the My Day page marks its own tab current",
+                  '<a href="home.html" class="here">My Day</a>' in home_src)
+            check(S, "the My Day page is renamed in title and heading",
+                  "<title>My Day |" in home_src and "<h1>My Day</h1>" in home_src)
+            check(S, "the account menu and subscribe success use the new name",
+                  "<a href='home.html'>My Day</a>" in auth_src and
+                  "Go to My Day" in open(os.path.join(PUBLIC, "subscribe-success.html")).read())
+            ctx = browser.new_context()
+            pg = ctx.new_page(); attach_errors(pg, [])
+            pg.goto(BASE + "/us-history.html"); settle(pg)
+            tab = pg.query_selector("nav.main a[href='home.html']")
+            check(S, "the tab is a real nav link on live pages",
+                  tab is not None and (tab.text_content() or "").strip() == "My Day")
+            ctx.close()
+
+            # ---------------- Site stats (first-party dashboard) ----------------
+            S = "Site stats"
+            stats_src = open(os.path.join(PUBLIC, "stats.js")).read()
+            check(S, "stats beacon is production-host only and uses sendBeacon",
+                  'location.hostname !== "humanitiescurriculumgroup.web.app"' in stats_src and
+                  "sendBeacon" in stats_src and "a.run.app" in stats_src)
+            check(S, "stats beacon counts views and downloads and exposes the event hook",
+                  '"view"' in stats_src and '"download"' in stats_src and "window.HCGStats" in stats_src)
+            for page_name in ["index.html", "us-history.html", "pacing-guide.html", "subscribe.html",
+                              "about.html", "contact.html", "privacy.html", "terms.html", "planner.html",
+                              "planner-year.html", "home.html", "progressive-era.html", "gilded-era.html",
+                              "course-review.html"]:
+                src_p = open(os.path.join(PUBLIC, page_name)).read()
+                check(S, f"{page_name} loads the stats beacon", 'src="stats.js"' in src_p)
+            for page_name in ["inbox.html", "stats.html", "404.html"]:
+                src_p = open(os.path.join(PUBLIC, page_name)).read()
+                check(S, f"{page_name} does not count itself", 'src="stats.js"' not in src_p)
+            check(S, "admin menu links the stats page and auth logs checkout + signup events",
+                  "stats.html" in auth_src and 'HCGStats.log("checkout")' in auth_src and
+                  'HCGStats.log("signup")' in auth_src)
+            dash_src = open(os.path.join(PUBLIC, "stats.html")).read()
+            check(S, "stats dashboard has cards, trend, pages, and sources bound to hcgStats",
+                  all(x in dash_src for x in ["stats-cards", "stats-trend", "stats-pages",
+                                              "stats-sources", "hcgStats", "isAdmin"]))
+            fns_src = open(os.path.join(PUBLIC, "..", "functions", "index.js")).read()
+            check(S, "functions validate and store the daily counters",
+                  "exports.logEvent" in fns_src and "exports.hcgStatsSummary" in fns_src and
+                  "STAT_EVENTS" in fns_src and "hcgStats/" in fns_src)
+            spec_src = open(os.path.join(PUBLIC, "..", "ops", "deploy-functions.py")).read()
+            check(S, "deploy spec covers both stats functions",
+                  '"logEvent"' in spec_src and '"hcgStatsSummary"' in spec_src)
+            rules_src = open(os.path.join(PUBLIC, "..", "firestore.rules")).read()
+            check(S, "rules make hcgStats admin-read-only with no client writes",
+                  "match /hcgStats/{day}" in rules_src and "allow write: if false" in rules_src)
+            check(S, "privacy policy discloses the first-party counting",
+                  "count page views and downloads ourselves" in privacy_src)
+            ctx = browser.new_context()
+            pg = ctx.new_page(); attach_errors(pg, [])
+            pg.goto(BASE + "/index.html"); settle(pg)
+            check(S, "beacon stays inert off the production host",
+                  pg.evaluate("typeof window.HCGStats === 'undefined'"))
+            pg.goto(BASE + "/stats.html"); settle(pg)
+            gate_txt = pg.text_content("#stats-status") or ""
+            check(S, "stats page gates signed-out visitors", "Sign in with an admin account" in gate_txt, gate_txt[:120])
             ctx.close()
 
             # ---------------- Zero errors, two widths ----------------

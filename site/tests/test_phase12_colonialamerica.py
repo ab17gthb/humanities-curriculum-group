@@ -104,9 +104,33 @@ def seed_plan_script(key, ids):
       var p = {js_payload};
       function ISO(d) {{ function z(n) {{ return (n < 10 ? "0" : "") + n; }}
         return d.getFullYear() + "-" + z(d.getMonth() + 1) + "-" + z(d.getDate()); }}
+      // Anchor the fixture on the most recent Thursday and pin the page
+      // clock to it. The Home checks read the literal tomorrow block, and
+      // the product (correctly) renders a weekend tomorrow as "No school",
+      // so a seed that follows the real calendar fails any run whose
+      // tomorrow is a Saturday or Sunday. Anchored on a Thursday, the
+      // seeded test date below is the next school day (Friday), the
+      // Mon-Fri convention the product uses, on every run day.
+      var RealDate = window.Date;
+      var anchor = new RealDate(); anchor.setHours(12, 0, 0, 0);
+      while (anchor.getDay() !== 4) anchor.setDate(anchor.getDate() - 1);
+      var fixedMs = anchor.getTime();
+      function FakeDate() {{
+        if (!(this instanceof FakeDate)) return new RealDate(fixedMs).toString();
+        if (arguments.length === 0) return new RealDate(fixedMs);
+        var a = [null];
+        for (var i = 0; i < arguments.length; i++) a.push(arguments[i]);
+        return new (Function.prototype.bind.apply(RealDate, a))();
+      }}
+      FakeDate.now = function () {{ return fixedMs; }};
+      FakeDate.parse = RealDate.parse;
+      FakeDate.UTC = RealDate.UTC;
+      FakeDate.prototype = RealDate.prototype;
+      window.Date = FakeDate;
       var now = new Date();
       var mon = new Date(now); mon.setDate(now.getDate() - ((now.getDay() + 6) % 7));
-      var test = new Date(now); test.setDate(now.getDate() + 1);
+      var test = new Date(now);
+      do {{ test.setDate(test.getDate() + 1); }} while (test.getDay() === 0 || test.getDay() === 6);
       p.sections = [{{ name: "Period 1", start: ISO(mon), test: ISO(test),
         dayTypes: {{}}, pins: {{}}, rotation: "daily", period: 45 }}];
       localStorage.setItem({json.dumps(key)}, JSON.stringify(p));
@@ -149,8 +173,8 @@ def main():
             pg.goto(BASE + "/planner.html"); settle(pg)
             check(S, "unit name PE", pg.text_content("#unit-name").strip() == "The Progressive Era",
                   pg.text_content("#unit-name"))
-            check(S, "switcher offers 10 units",
-                  pg.eval_on_selector_all("#unit-switch button", "els => els.length") == 10)
+            check(S, "switcher offers 15 units + 3 reviews",
+                  pg.eval_on_selector_all("#unit-switch button", "els => els.length") == 18)
             n_items = pg.evaluate("window.HCG_ITEMS.length")
             n_boxes = pg.eval_on_selector_all("#picker input[type=checkbox]", "els => els.length")
             check(S, "picker count = PE items", n_boxes == n_items, f"{n_boxes} vs {n_items}")
@@ -481,6 +505,10 @@ def main():
             ctx = browser.new_context()
             pg = ctx.new_page(); attach_errors(pg, [])
             pg.goto(BASE + "/planner-year.html"); settle(pg)
+            # The band checks below span the whole course; the starter year
+            # now defaults to Part 1 (early), so select the full survey first
+            # (the early-shape block at the end of this section re-selects).
+            pg.select_option("#y-course", "full"); pg.wait_for_timeout(400)
             def year_row(name):
                 return pg.eval_on_selector_all("#units tr",
                     "els => els.map(e => e.textContent).find(t => t.includes(" + json.dumps(name) + ")) || ''")
