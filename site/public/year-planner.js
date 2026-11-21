@@ -247,29 +247,37 @@
   }
 
   // ---------- save ----------
-  // One save line that tells the truth about sign-in state: signed out,
-  // the plan lives in this browser; signed in, it syncs to the account.
-  function signedIn() {
-    try { return !!(window.HCGAuth && window.HCGAuth.currentUser()); } catch (e) { return false; }
+  var deviceSaved = false;
+  function paintSaveNote() {
+    var note = document.getElementById("saved-note");
+    if (!note) return;
+    note.textContent = deviceSaved
+      ? (window.HCGAuth && window.HCGAuth.plannerSaveStatus ? window.HCGAuth.plannerSaveStatus() : "Saved in this browser. Sign in to sync across devices.")
+      : "This browser couldn't save your latest changes. Export the plan before leaving.";
   }
-  function saveNoteText() {
-    var t = new Date().toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
-    return signedIn() ? "Saved and synced to your account · " + t
-                      : "Saved in this browser · " + t + ". Sign in to sync it across devices.";
-  }
+  window.addEventListener("hcgplansync", paintSaveNote);
 
   function save() {
-    localStorage.setItem(KEY, JSON.stringify(S));
     lib.plans[planName] = S;
     lib.active = planName;
-    try { localStorage.setItem(LIBKEY, JSON.stringify(lib)); } catch (e) {}
-    document.getElementById("saved-note").textContent = saveNoteText();
+    try {
+      localStorage.setItem(KEY, JSON.stringify(S));
+      localStorage.setItem(LIBKEY, JSON.stringify(lib));
+      deviceSaved = true;
+    } catch (e) { deviceSaved = false; }
+    paintSaveNote();
+  }
+
+  function escapePlanLabel(value) {
+    return String(value == null ? "" : value).replace(/[&<>"']/g, function (ch) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[ch];
+    });
   }
 
   function renderSwitcher() {
     var sel = document.getElementById("plan-select");
     sel.innerHTML = Object.keys(lib.plans).map(function (n) {
-      return "<option" + (n === planName ? " selected" : "") + ">" + n + "</option>";
+      return "<option" + (n === planName ? " selected" : "") + ">" + escapePlanLabel(n) + "</option>";
     }).join("");
     document.getElementById("plan-del").disabled = Object.keys(lib.plans).length <= 1;
   }
@@ -288,7 +296,7 @@
     var pe = document.getElementById("periods");
     pe.innerHTML = S.periods.slice().sort(function (a, b) { return a.end < b.end ? -1 : 1; }).map(function (p) {
       var i = S.periods.indexOf(p);
-      return "<div class='editrow'><span><strong>" + p.name + "</strong></span><span class='small'>ends " + fmtLong(p.end) +
+      return "<div class='editrow'><span><strong>" + escapePlanLabel(p.name) + "</strong></span><span class='small'>ends " + fmtLong(p.end) +
         "</span><button type='button' class='mini' data-del-period='" + i + "'>Remove</button></div>";
     }).join("") || "<p class='small'>No grading periods yet.</p>";
 
@@ -296,7 +304,7 @@
     oe.innerHTML = S.daysOff.slice().sort(function (a, b) { return a.from < b.from ? -1 : 1; }).map(function (o) {
       var i = S.daysOff.indexOf(o);
       var when = o.from === o.to ? fmtLong(o.from) : fmt(o.from) + " – " + fmtLong(o.to);
-      return "<div class='editrow'><span><strong>" + o.label + "</strong> <span class='kindchip'>" + o.kind + "</span></span><span class='small'>" +
+      return "<div class='editrow'><span><strong>" + escapePlanLabel(o.label) + "</strong> <span class='kindchip'>" + escapePlanLabel(o.kind) + "</span></span><span class='small'>" +
         when + "</span><button type='button' class='mini' data-del-off='" + i + "'>Remove</button></div>";
     }).join("") || "<p class='small'>No days off yet.</p>";
 
@@ -412,12 +420,12 @@
         var r = A.ranges[u.id] || [];
         return r.length && r[r.length - 1] <= p.end && (prev === null || r[r.length - 1] > prev);
       }).map(function (u) { return u.name.replace("The ", ""); });
-      prows.push("<tr><td>" + p.name + "<br><span class='small'>ends " + fmt(p.end) + (tests.length ? " · tests: " + tests.join(", ") : "") +
+      prows.push("<tr><td>" + escapePlanLabel(p.name) + "<br><span class='small'>ends " + fmt(p.end) + (tests.length ? " · tests: " + tests.join(", ") : "") +
         "</span></td><td style='text-align:right;'>" + inP.length + " days</td></tr>");
       prev = p.end;
     });
     var rest = days.filter(function (d) { return prev === null || d > prev; });
-    if (sorted.length && rest.length) prows.push("<tr><td>After " + sorted[sorted.length - 1].name + "</td><td style='text-align:right;'>" + rest.length + " days</td></tr>");
+    if (sorted.length && rest.length) prows.push("<tr><td>After " + escapePlanLabel(sorted[sorted.length - 1].name) + "</td><td style='text-align:right;'>" + rest.length + " days</td></tr>");
     ps.innerHTML = prows.join("") || "<tr><td class='small'>Add a grading period to see the year broken down by period.</td></tr>";
   }
 
@@ -456,7 +464,7 @@
         if (periodEnds[iso]) { cls += " pend"; title = (title ? title + " · " : "") + periodEnds[iso] + " ends"; }
         if (S.exam && iso === S.exam) { cls += " exam"; title = "Exam"; }
         var dragAttrs = (u && daysSet[iso]) ? " data-unit='" + u.id + "' draggable='true'" : "";
-        cells += "<div class='" + cls + "' data-iso='" + iso + "'" + dragAttrs + " title='" + title + "'><div class='dnum'>" + dnum + "</div>" + label + bar + "</div>";
+        cells += "<div class='" + cls + "' data-iso='" + iso + "'" + dragAttrs + " title='" + escapePlanLabel(title) + "'><div class='dnum'>" + dnum + "</div>" + label + bar + "</div>";
       }
       return "<div class='month'><h4>" + m.toLocaleDateString("en-US", { month: "long", year: "numeric" }) + "</h4><div class='mgrid'>" + cells + "</div></div>";
     }).join("");
@@ -790,8 +798,7 @@
     if (sn) sn.style.display = "";
   }
 
-  // Auth state changes refresh the save line through save().
-  window.HCGYearRefresh = function () { save(); };
+  window.HCGYearRefresh = paintSaveNote;
 
   render();
 })();

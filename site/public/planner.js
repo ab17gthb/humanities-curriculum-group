@@ -1329,16 +1329,15 @@
   }
 
   // ---------------- render root ----------------
-  // One save line that tells the truth about sign-in state: signed out,
-  // the plan lives in this browser; signed in, it syncs to the account.
-  function signedIn() {
-    try { return !!(window.HCGAuth && window.HCGAuth.currentUser()); } catch (e) { return false; }
+  var deviceSaved = false;
+  function paintSaveNote() {
+    var note = document.getElementById("save-note");
+    if (!note) return;
+    note.textContent = deviceSaved
+      ? (window.HCGAuth && window.HCGAuth.plannerSaveStatus ? window.HCGAuth.plannerSaveStatus() : "Saved in this browser. Sign in to sync across devices.")
+      : "This browser couldn't save your latest changes. Export the plan before leaving.";
   }
-  function saveNoteText() {
-    var t = new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
-    return signedIn() ? "Saved and synced to your account · " + t
-                      : "Saved in this browser · " + t + ". Sign in to sync it across devices.";
-  }
+  window.addEventListener("hcgplansync", paintSaveNote);
 
   function save() {
     // totalDays stays in lesson-days (content plus the test day): the year
@@ -1348,12 +1347,12 @@
     var out = { selected: state.selected, order: state.order, splits: state.splits, view: state.view,
                 active: state.active, sections: state.sections, customItems: state.customItems,
                 totalDays: L.lessonDays + 1, totalMeetings: L.usedDays };
-    localStorage.setItem(KEY, JSON.stringify(out));
-    var note = document.getElementById("save-note");
-    if (note) note.textContent = saveNoteText();
+    try { localStorage.setItem(KEY, JSON.stringify(out)); deviceSaved = true; }
+    catch (e) { deviceSaved = false; }
+    paintSaveNote();
   }
   var inputsBound = -1; // which section the date inputs currently belong to
-  function render() {
+  function render(holdSave) {
     var sec = SEC();
     if (inputsBound === state.active) {
       sec.start = startEl.value || sec.start;
@@ -1377,7 +1376,8 @@
     renderOverflowNote();
     renderCoverage();
     renderTest();
-    save();
+    if (holdSave !== true) save();
+    else paintSaveNote();
     document.querySelectorAll("[data-view]").forEach(function (b) {
       b.classList.toggle("on", b.getAttribute("data-view") === state.view);
     });
@@ -1442,7 +1442,7 @@
   renderUnitSwitch();
   // auth.js loads after this script; the hook lets it re-render the
   // Storage download controls once an account's entitlement is known.
-  window.HCGPlannerRefresh = function () { renderPicker(); render(); };
+  window.HCGPlannerRefresh = function () { renderPicker(); render(true); };
   syncInputs();
   renderPicker();
   render();

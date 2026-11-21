@@ -12,8 +12,7 @@
 //    plans on this device are uploaded. If the device has no plans and the
 //    account does, the account plans are applied here and the page reloads
 //    once so the planners boot from them. If both have plans and they
-//    differ, confirm() asks which copy to keep, describing each by its
-//    saved date.
+//    differ, you can download backups, keep both unchanged, or select a copy.
 //  - While signed in, writes to the plan keys are debounce-uploaded
 //    (localStorage.setItem is wrapped; the wrapper also stamps a local
 //    last-saved date used by the conflict prompt).
@@ -44,7 +43,10 @@
   var authResolved = false;      // onAuthStateChanged has fired at least once
   var listeners = [];
   var entitlementCache = { paid: false };
-  var syncState = { status: "idle", at: null }; // idle | ok | error
+  var syncState = { status: "idle", at: null };
+  var syncGeneration = 0, localRevision = 0;
+  var uploading = false, resolving = false;
+  var confirmedCloud = null;
   var syncReady = false;         // true after the sign-in resolution finishes
   var applyingCloud = false;     // true while we write cloud plans locally
   var uploadTimer = null;
@@ -110,6 +112,9 @@
     try { rawSetItem(META_KEY, JSON.stringify({ updatedAt: iso || new Date().toISOString() })); } catch (e) {}
   }
   function applyPlansToLocal(plans, savedAt) {
+    var previous = {};
+    try { PLAN_KEYS.forEach(function (k) { previous[k] = localStorage.getItem(k); }); }
+    catch (e) { return false; }
     applyingCloud = true;
     try {
       PLAN_KEYS.forEach(function (k) {
@@ -117,16 +122,30 @@
         else rawSetItem(k, JSON.stringify(plans[k]));
       });
       stampLocal(savedAt);
-    } catch (e) { console.warn("HCG sync: could not apply account plans locally.", e); }
-    applyingCloud = false;
+      return true;
+    } catch (e) {
+      // Best effort rollback. Conflict and restore paths also have a stored backup.
+      PLAN_KEYS.forEach(function (k) {
+        try {
+          if (previous[k] == null) rawRemoveItem(k);
+          else rawSetItem(k, previous[k]);
+        } catch (ignored) {}
+      });
+      console.warn("HCG sync: could not apply account plans locally.", e);
+      return false;
+    } finally { applyingCloud = false; }
   }
 
-  // Watch plan writes: stamp the local saved-date always; upload while signed in.
+  // Identical renders are not new saves and should not queue a cloud write.
   localStorage.setItem = function (key, value) {
+    var plan = PLAN_KEYS.indexOf(key) !== -1;
+    var changed = !plan || localStorage.getItem(key) !== String(value);
+    if (!changed) return;
     rawSetItem(key, value);
-    if (PLAN_KEYS.indexOf(key) !== -1 && !applyingCloud) {
+    if (plan && !applyingCloud) {
+      localRevision++;
       stampLocal(new Date().toISOString());
-      if (user && syncReady) scheduleUpload();
+      if (user && syncReady && !syncIsPaused()) scheduleUpload();
     }
   };
 
@@ -172,10 +191,16 @@
 
   // ---------------- account control UI ----------------
   function syncLabel() {
-    if (!user) return "";
-    if (syncState.status === "ok") return "Synced " + (syncState.at ? fmtDate(syncState.at) : "just now");
-    if (syncState.status === "error") return "Saved on this device only";
-    return "Syncing…";
+    if (!user) return "Saved in this browser. Sign in to sync across devices.";
+    if (syncState.status === "ok") return "Saved in this browser and synced to your account.";
+    if (syncState.status === "empty") return "No plans to sync yet.";
+    if (syncState.status === "paused") return "Saved in this browser. Account sync is paused.";
+    if (syncState.status === "changed") return "Plans changed on another device or in another tab. Nothing was overwritten. Open Planner backups to resume sync.";
+    if (syncState.status === "conflict") return "Saved in this browser. Choose which copy to use.";
+    if (syncState.status === "waiting") return "Saved in this browser. Waiting for the account to confirm.";
+    if (syncState.status === "error") return "Saved in this browser. Account sync could not finish.";
+    if (syncState.status === "device-error") return "This browser couldn't load the account plans. Check Planner backups.";
+    return "Saved in this browser. Syncing to your account…";
   }
   function renderControl() {
     var host = $("hcg-account");
@@ -594,44 +619,294 @@
   };
   window.HCGFiles = HCGFiles;
 
+  // ---------------- planner backups ----------------
+  var BACKUPS_KEY = "hcg_plan_backups_v1";
+  var PAUSED_KEY = "hcg_plan_sync_paused_v1";
+  var pauseInMemory = false;
+  function planObject(v) { return !!v && typeof v === "object" && !Array.isArray(v); }
+  function projectPlans(plans) {
+    var out = {};
+    PLAN_KEYS.forEach(function (k) { out[k] = plans && plans[k] != null ? plans[k] : null; });
+    return out;
+  }
+  function pauseSync(persist) {
+    pauseInMemory = true;
+    syncReady = false;
+    if (uploadTimer) { clearTimeout(uploadTimer); uploadTimer = null; }
+    if (!persist) return true;
+    try { window.sessionStorage.setItem(PAUSED_KEY, "1"); return true; }
+    catch (e) { return false; }
+  }
+  function syncIsPaused() {
+    if (pauseInMemory) return true;
+    try { return window.sessionStorage.getItem(PAUSED_KEY) === "1"; }
+    catch (e) { return false; }
+  }
+  function resumeSync() {
+    if (!user || uploading || resolving) return;
+    try { window.sessionStorage.removeItem(PAUSED_KEY); } catch (e) {}
+    pauseInMemory = false;
+    startPlanResolution();
+  }
+  function readBackups() {
+    try {
+      var stored = JSON.parse(localStorage.getItem(BACKUPS_KEY));
+      return Array.isArray(stored) ? stored.filter(function (entry) { return entry && entry.device && entry.at; }) : [];
+    } catch (e) { return []; }
+  }
+  function saveBackup(device, deviceAt, account, accountAt) {
+    var backup = { at: new Date().toISOString(), owner: account && user ? user.uid : null,
+      device: { savedAt: deviceAt, plans: projectPlans(device) },
+      account: account ? { savedAt: accountAt, plans: projectPlans(account) } : null };
+    var list = readBackups().slice(0, 2);
+    list.unshift(backup);
+    try { rawSetItem(BACKUPS_KEY, JSON.stringify(list)); return true; }
+    catch (e) { return false; }
+  }
+  function downloadBackup(copy, side) {
+    var data = { format: "hcg-planner-backup", version: 1, savedAt: copy.savedAt || null, plans: projectPlans(copy.plans) };
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob([JSON.stringify(data, null, 2)], { type: "application/json" }));
+    a.download = "hcg-plans-" + side + "-" + new Date().toISOString().slice(0, 10) + ".json";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);
+  }
+  function validatePortable(data) {
+    if (!planObject(data) || data.format !== "hcg-planner-backup" || data.version !== 1 || !planObject(data.plans)) return null;
+    if (Object.keys(data.plans).length !== PLAN_KEYS.length ||
+        !PLAN_KEYS.every(function (k) { return Object.prototype.hasOwnProperty.call(data.plans, k); })) return null;
+    var seen = 0;
+    function safe(v, depth) {
+      if (++seen > 100000 || depth > 20) return false;
+      if (typeof v === "string") return v.length <= 16000 && !/[<>]/.test(v) && !/^\s*(javascript|data|vbscript):/i.test(v);
+      if (v === null || typeof v === "boolean") return true;
+      if (typeof v === "number") return isFinite(v);
+      if (!v || typeof v !== "object") return false;
+      return Object.keys(v).every(function (k) {
+        return k !== "__proto__" && k !== "prototype" && k !== "constructor" && !/[<>]/.test(k) && safe(v[k], depth + 1);
+      });
+    }
+    function date(v) {
+      if (typeof v !== "string" || !/^(19\d{2}|20\d{2}|21\d{2})-\d{2}-\d{2}$/.test(v)) return false;
+      var d = new Date(v + "T00:00:00Z");
+      return !isNaN(d.getTime()) && d.toISOString().slice(0, 10) === v;
+    }
+    function datePair(from, to) {
+      return date(from) && date(to) && Math.abs(Date.parse(to) - Date.parse(from)) <= 732 * 86400000;
+    }
+    function year(v) {
+      return planObject(v) && datePair(v.start, v.end) && Array.isArray(v.periods) &&
+        Array.isArray(v.daysOff) && v.periods.every(function (p) {
+          return planObject(p) && typeof p.name === "string" && date(p.end);
+        }) && v.daysOff.every(function (d) {
+          return planObject(d) && typeof d.label === "string" && typeof d.kind === "string" && datePair(d.from, d.to);
+        });
+    }
+    function unit(v) {
+      return planObject(v) && planObject(v.selected) &&
+        (v.order == null || Array.isArray(v.order)) &&
+        (v.customItems == null || (Array.isArray(v.customItems) && v.customItems.every(function (item) {
+          return planObject(item) && typeof item.id === "string" && /^[a-zA-Z0-9_:-]{1,180}$/.test(item.id) &&
+            (item.bp == null || Array.isArray(item.bp)) &&
+            (item.link == null || item.link === "" || (typeof item.link === "string" && /^https?:\/\//i.test(item.link)));
+        }))) &&
+        (v.sections == null || (Array.isArray(v.sections) && v.sections.every(function (sec) {
+          return planObject(sec) && datePair(sec.start, sec.test) &&
+            ["dayTypes", "subDays", "homework", "pins"].every(function (field) { return sec[field] == null || planObject(sec[field]); });
+        }))) && (v.active == null || (Number.isInteger(v.active) && v.active >= 0));
+    }
+    if (!safe(data.plans, 0) || !PLAN_KEYS.every(function (k) {
+      var v = data.plans[k];
+      if (v === null) return true;
+      if (k === "hcg_year_v1") return year(v);
+      if (k === "hcg_year_plans_v1") return planObject(v) && planObject(v.plans) && Object.values(v.plans).every(year);
+      return unit(v);
+    }) || localIsEmpty(data.plans)) return null;
+    return { plans: projectPlans(data.plans), savedAt: typeof data.savedAt === "string" ? data.savedAt : null };
+  }
+  function modal(title) {
+    var d = document.createElement("dialog");
+    d.setAttribute("aria-label", title);
+    d.style.cssText = "box-sizing:border-box;width:min(540px, calc(100% - 32px));max-height:calc(100% - 32px);overflow:auto;border:1px solid #b9c0c9;border-radius:8px;padding:22px;color:#26313f;background:#fff";
+    var head = document.createElement("h2");
+    head.textContent = title;
+    d.appendChild(head);
+    document.body.appendChild(d);
+    d.addEventListener("close", function () { d.remove(); });
+    return d;
+  }
+  function modalText(parent, value) {
+    var p = document.createElement("p");
+    p.textContent = value;
+    parent.appendChild(p);
+    return p;
+  }
+  function modalButton(parent, label, fn) {
+    var b = document.createElement("button");
+    b.className = "btn ghost";
+    b.type = "button";
+    b.style.margin = "0 6px 6px 0";
+    b.textContent = label;
+    b.addEventListener("click", fn);
+    parent.appendChild(b);
+    return b;
+  }
+  function presentModal(d) {
+    if (typeof d.showModal !== "function") { d.remove(); return false; }
+    d.showModal();
+    return true;
+  }
+  function choosePlanCopy(local, localAt, cloud, cloudAt, backedUp) {
+    return new Promise(function (resolve) {
+      var d = modal("Two copies of your plans");
+      modalText(d, "This browser and your account have different plans. Choose a copy to use, or keep both unchanged for now.");
+      modalText(d, "This browser: " + fmtDate(localAt) + ". Account: " + fmtDate(cloudAt) + ".");
+      modalText(d, backedUp ? "Both copies were saved in Planner backups on this browser. You can also download either copy now."
+        : "This browser couldn't save a backup. Download either copy if you need it. Neither copy will be replaced.");
+      modalButton(d, "Download browser copy", function () { downloadBackup({ plans: local, savedAt: localAt }, "browser"); });
+      modalButton(d, "Download account copy", function () { downloadBackup({ plans: cloud, savedAt: cloudAt }, "account"); });
+      var choices = document.createElement("p");
+      d.appendChild(choices);
+      function choose(value) { d.close(value); }
+      modalButton(choices, "Keep both for now", function () { choose("pause"); }).autofocus = true;
+      if (backedUp) {
+        modalButton(choices, "Use browser copy in account", function () { choose("device"); });
+        modalButton(choices, "Use account copy in browser", function () { choose("account"); });
+      }
+      d.addEventListener("close", function () { resolve(d.returnValue || "pause"); });
+      if (!presentModal(d)) resolve("pause");
+    });
+  }
+  function restoreCopy(copy, message) {
+    if (uploading || resolving) { message.textContent = "Wait for the current sync check to finish, then try again."; return; }
+    if (!window.confirm("Replace the plans in this browser with this backup? Your account copy will not be changed.")) return;
+    if (!saveBackup(readLocalPlans(), localSavedAt(), null, null)) {
+      message.textContent = "This browser couldn't back up your current plans. Nothing was replaced.";
+      return;
+    }
+    if (!pauseSync(true)) {
+      message.textContent = "This browser couldn't pause account sync across a reload. Nothing was replaced.";
+      return;
+    }
+    setSyncState("paused");
+    if (!applyPlansToLocal(copy.plans, copy.savedAt)) {
+      message.textContent = "The browser couldn't finish the restore. Your prior plans are in Planner backups.";
+      return;
+    }
+    location.reload();
+  }
+  function openPlannerBackups() {
+    var d = modal("Planner backups");
+    var message = modalText(d, "Backups stay on this browser unless you download a copy. Avoid putting student information in backup files.");
+    message.setAttribute("role", "status");
+    var local = readLocalPlans();
+    if (!localIsEmpty(local)) modalButton(d, "Download current browser plans", function () {
+      downloadBackup({ plans: readLocalPlans(), savedAt: localSavedAt() }, "browser");
+    });
+    if (user && !resolving && !uploading && (syncIsPaused() || syncState.status === "error")) {
+      modalButton(d, syncIsPaused() ? "Resume account sync" : "Retry account sync", function () { d.close(); resumeSync(); });
+    }
+    readBackups().forEach(function (entry) {
+      modalText(d, "Backup saved " + fmtDate(entry.at) + ".");
+      [[entry.device, "browser"], [entry.owner && user && entry.owner === user.uid ? entry.account : null, "account"]]
+        .forEach(function (pair) {
+          if (!pair[0] || localIsEmpty(pair[0].plans)) return;
+          modalButton(d, "Download " + pair[1] + " backup", function () { downloadBackup(pair[0], pair[1]); });
+          modalButton(d, "Restore " + pair[1] + " backup here", function () { restoreCopy(pair[0], message); });
+        });
+    });
+    var picker = document.createElement("input");
+    picker.type = "file";
+    picker.accept = ".json,application/json";
+    picker.hidden = true;
+    d.appendChild(picker);
+    modalButton(d, "Open a backup file", function () { picker.click(); });
+    picker.addEventListener("change", async function () {
+      var file = picker.files[0];
+      picker.value = "";
+      if (!file) return;
+      var copy = null;
+      if (file.size <= 1500000) {
+        try { copy = validatePortable(JSON.parse(await file.text())); } catch (e) {}
+      }
+      if (!copy) { message.textContent = "This file couldn't be restored. Choose a Planner backups JSON file with supported plan content."; return; }
+      restoreCopy(copy, message);
+    });
+    modalButton(d, "Close", function () { d.close(); });
+    if (!presentModal(d)) window.alert("Planner backups need a browser that supports dialogs. You can still use the existing plan export controls.");
+  }
+
   // ---------------- cloud sync ----------------
   function docRef() { return db.collection("hcgUsers").doc(user.uid); }
+  function setSyncState(status, at) {
+    syncState = { status: status, at: at || null };
+    updateSyncLine();
+    window.dispatchEvent(new CustomEvent("hcgplansync"));
+  }
 
-  async function uploadPlans(savedAtIso) {
-    if (!user || !db) return false;
-    var plans = readLocalPlans();
+  async function uploadPlans(savedAtIso, expectedCloud) {
+    if (!user || !db || uploading || syncIsPaused() || !confirmedCloud) return false;
+    var baseline = expectedCloud || confirmedCloud;
+    var activeUser = user, generation = syncGeneration, revision = localRevision, plans = readLocalPlans();
     var at = savedAtIso || new Date().toISOString();
+    uploading = true;
+    setSyncState("pending");
+    var warning = setTimeout(function () {
+      if (generation === syncGeneration && uploading) setSyncState("waiting");
+    }, 8000);
     try {
-      await docRef().set({
-        email: user.email || null,
-        displayName: user.displayName || null,
-        plans: plans,
-        plansUpdatedAt: at
-      }, { merge: true });
-      syncState = { status: "ok", at: at };
-      updateSyncLine();
+      var ref = docRef();
+      var payload = { email: activeUser.email || null, displayName: activeUser.displayName || null,
+        plans: plans, plansUpdatedAt: at };
+      // Guard every upload, including an account that was empty on sign-in.
+      // Other tabs or devices may have saved since our last server read/write.
+      var replaced = await db.runTransaction(async function (tx) {
+        var latest = await tx.get(ref);
+        var current = latest.exists ? (latest.data() || {}) : {};
+        if (generation !== syncGeneration || (expectedCloud && revision !== localRevision) ||
+            canonical(projectPlans(current.plans)) !== canonical(projectPlans(baseline.plans)) ||
+            (current.plansUpdatedAt || null) !== (baseline.savedAt || null)) return false;
+        tx.set(ref, payload, { merge: true });
+        return true;
+      });
+      if (!replaced) {
+        if (generation === syncGeneration) { pauseSync(true); setSyncState("changed"); }
+        return false;
+      }
+      if (generation !== syncGeneration) return false;
+      confirmedCloud = { plans: plans, savedAt: at };
+      if (revision === localRevision) setSyncState("ok", at);
       return true;
     } catch (e) {
+      if (generation === syncGeneration) setSyncState("error");
       console.warn("HCG sync upload failed; plans remain on this device.", e);
-      syncState = { status: "error", at: null };
-      updateSyncLine();
       return false;
+    } finally {
+      clearTimeout(warning);
+      if (generation === syncGeneration) {
+        uploading = false;
+        if (revision !== localRevision && syncReady && !syncIsPaused()) scheduleUpload();
+      }
     }
   }
   function scheduleUpload() {
     if (uploadTimer) clearTimeout(uploadTimer);
+    setSyncState("pending");
+    if (uploading) return;
     uploadTimer = setTimeout(function () {
       uploadTimer = null;
-      if (user && syncReady) uploadPlans(localSavedAt());
+      if (user && syncReady && !syncIsPaused()) uploadPlans(localSavedAt());
     }, 1500);
   }
 
-  async function resolveOnSignIn() {
+  async function resolveOnSignIn(generation) {
     syncReady = false;
-    var local = readLocalPlans();
     var cloud = null, cloudAt = null;
     try {
-      var snap = await docRef().get();
+      var snap = await docRef().get({ source: "server" });
+      if (generation !== syncGeneration) return;
       if (snap.exists) {
         var data = snap.data() || {};
         cloud = data.plans || null;
@@ -639,74 +914,97 @@
         entitlementCache = normalizeEntitlement(data.entitlement);
       }
     } catch (e) {
-      console.warn("HCG sync: could not read account plans; staying device-only for this session.", e);
-      syncState = { status: "error", at: null };
-      updateSyncLine();
-      return; // syncReady stays false: no uploads over unread cloud state
+      if (generation !== syncGeneration) return;
+      // Keep the existing entitlement read path on an offline device without
+      // treating a cached plan as confirmation or replacing either copy.
+      try {
+        var cached = await docRef().get({ source: "cache" });
+        if (generation === syncGeneration && cached.exists) entitlementCache = normalizeEntitlement((cached.data() || {}).entitlement);
+      } catch (ignored) {}
+      if (generation === syncGeneration) setSyncState(syncIsPaused() ? "paused" : "error");
+      return;
     }
+    confirmedCloud = { plans: projectPlans(cloud), savedAt: cloudAt };
+    if (syncIsPaused()) { setSyncState("paused"); return; }
 
-    var cloudEmpty = !cloud || PLAN_KEYS.every(function (k) { return cloud[k] == null; });
-
+    var local = readLocalPlans(), localAt = localSavedAt();
+    var cloudEmpty = !cloud || localIsEmpty(cloud);
     if (cloudEmpty) {
-      // First sign-in (or empty account): push this device's plans up.
-      if (!localIsEmpty(local)) await uploadPlans(localSavedAt() || new Date().toISOString());
-      else { syncState = { status: "ok", at: new Date().toISOString() }; updateSyncLine(); }
       syncReady = true;
+      if (!localIsEmpty(local)) await uploadPlans(localAt);
+      else setSyncState("empty");
       return;
     }
     if (localIsEmpty(local)) {
-      // Nothing on this device to lose: take the account plans and reboot.
-      applyPlansToLocal(cloud, cloudAt);
-      syncReady = true;
+      if (!applyPlansToLocal(cloud, cloudAt)) { setSyncState("device-error"); return; }
       location.reload();
       return;
     }
-    var cloudSet = {};
-    PLAN_KEYS.forEach(function (k) { cloudSet[k] = cloud[k] != null ? cloud[k] : null; });
-    if (canonical(local) === canonical(cloudSet)) {
-      syncState = { status: "ok", at: cloudAt || new Date().toISOString() };
-      updateSyncLine();
+    if (canonical(local) === canonical(projectPlans(cloud))) {
       syncReady = true;
+      setSyncState("ok", cloudAt);
       return;
     }
-    // Both sides have plans and they differ: the teacher chooses.
-    var keepLocal = window.confirm(
-      "Your plans on this device differ from the plans saved to your account.\n\n" +
-      "On this device: saved " + fmtDate(localSavedAt()) + ".\n" +
-      "In your account: saved " + fmtDate(cloudAt) + ".\n\n" +
-      "OK: keep the plans on THIS DEVICE and replace the account copy.\n" +
-      "Cancel: use the ACCOUNT plans and replace this device's copy."
-    );
-    if (keepLocal) {
-      await uploadPlans(localSavedAt() || new Date().toISOString());
+
+    // No replacement is possible without a stored snapshot of both copies.
+    var backedUp = saveBackup(local, localAt, cloud, cloudAt);
+    setSyncState("conflict");
+    var choice = await choosePlanCopy(local, localAt, cloud, cloudAt, backedUp);
+    if (generation !== syncGeneration) return;
+    if (!backedUp || choice === "pause") { pauseSync(true); setSyncState("paused"); return; }
+    if (canonical(local) !== canonical(readLocalPlans())) {
+      // Another tab changed this browser's plan. Do not resolve an old choice.
+      pauseSync(true); setSyncState("paused"); return;
+    }
+    if (choice === "device") {
       syncReady = true;
+      if (!await uploadPlans(localAt, { plans: cloud, savedAt: cloudAt }) && generation === syncGeneration) {
+        // A failed conflict upload must not make the next edit overwrite an
+        // account copy that we have not matched to the backup on this device.
+        if (!syncIsPaused()) pauseSync(true);
+      }
     } else {
-      applyPlansToLocal(cloud, cloudAt);
-      syncReady = true;
+      if (!applyPlansToLocal(cloud, cloudAt)) { setSyncState("device-error"); return; }
       location.reload();
     }
   }
 
+  function startPlanResolution() {
+    if (!user || !db) return;
+    var generation = syncGeneration;
+    resolving = true;
+    setSyncState(syncIsPaused() ? "paused" : "pending");
+    resolveOnSignIn(generation).catch(function (e) {
+      if (generation === syncGeneration) setSyncState("error");
+      console.warn("HCG sync resolution failed:", e);
+    }).finally(function () {
+      if (generation !== syncGeneration) return;
+      resolving = false;
+      fireListeners(); // Entitlement is readable now; let download gates re-render.
+      continuePendingCheckout();
+    });
+  }
   function onAuthChanged(u) {
-    var wasSignedIn = !!user;
+    var previousUid = user && user.uid;
+    var nextUid = u && u.uid;
+    if (previousUid !== nextUid || !authResolved) {
+      syncGeneration++;
+      if (uploadTimer) clearTimeout(uploadTimer);
+      uploadTimer = null;
+      uploading = false;
+      resolving = false;
+      syncReady = false;
+      confirmedCloud = null;
+      entitlementCache = { paid: false };
+      syncState = { status: "idle", at: null };
+    }
     user = u || null;
     authResolved = true;
     if (user && authUi.open) closeAuth(false);
     renderControl();
     fireListeners();
-    if (user && !wasSignedIn) {
-      resolveOnSignIn()
-        .then(function () {
-          fireListeners(); // entitlement is readable now; let gates re-render
-          continuePendingCheckout();
-        })
-        .catch(function (e) { console.warn("HCG sync resolution failed:", e); });
-    }
-    if (!user) {
-      syncReady = false;
-      entitlementCache = { paid: false };
-      syncState = { status: "idle", at: null };
-    }
+    if (user && previousUid !== nextUid) startPlanResolution();
+    else window.dispatchEvent(new CustomEvent("hcgplansync"));
   }
   function fireListeners() {
     listeners.slice().forEach(function (cb) {
@@ -718,6 +1016,8 @@
   var HCGAuth = {
     currentUser: function () { return user; },
     isResolved: function () { return authResolved; },
+    plannerSaveStatus: syncLabel,
+    openPlannerBackups: openPlannerBackups,
     entitlement: function () { return HCGEntitlement.current(); },
     isAdmin: function () { return isAdminUser(); },
     firestore: async function () { await ensureFirebase(); return db; },
@@ -755,6 +1055,16 @@
   // ---------------- boot ----------------
   function boot() {
     renderControl(); // immediate device-only control; updates when auth resolves
+    var saveLine = $("save-note") || $("saved-note");
+    if (saveLine) {
+      saveLine.setAttribute("aria-live", "polite");
+      var backups = document.createElement("button");
+      backups.type = "button";
+      backups.className = "mini";
+      backups.textContent = "Planner backups";
+      backups.addEventListener("click", openPlannerBackups);
+      saveLine.insertAdjacentElement("afterend", backups);
+    }
     ensureFirebase().catch(function () { /* already logged; site stays device-only */ });
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot);
