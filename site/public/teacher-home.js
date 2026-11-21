@@ -384,34 +384,36 @@
     }
     function upcomingHTML(today) {
       var dates = new Set();
+      var detailedUnits = new Set(layouts.map(function (L) { return L.id; }));
       layouts.forEach(function (L) {
         Object.keys(L.byDate).forEach(function (iso) { if (iso >= today) dates.add(iso); });
         if (L.testIso && L.testIso >= today) dates.add(L.testIso);
       });
+      Object.keys(yearByDate).forEach(function (iso) {
+        if (iso >= today && !detailedUnits.has(yearUnitMap[yearByDate[iso].id])) dates.add(iso);
+      });
       var nextLesson = null, nextAssessment = null;
       Array.from(dates).sort().some(function (iso) {
         var day = dayInfo(iso);
-        if (day.kind !== "unit-day") return false;
-        var teaching = day.blocks.filter(function (b) { return b.entries.length; });
-        if (!nextLesson && teaching.length) nextLesson = "<p class='when'>" + dateLabel(iso) + "</p>" + teaching.map(lessonBit).join("");
-        if (!nextAssessment && day.tests.length) nextAssessment = "<p class='when'>" + dateLabel(iso) + "</p>" + day.tests.map(assessmentBit).join("");
-        return nextLesson && nextAssessment;
-      });
-      if (!nextLesson || !nextAssessment) {
-        Object.keys(yearByDate).sort().some(function (iso) {
-          if (iso < today) return false;
-          var u = yearByDate[iso];
-          // Detailed unit plans supersede the year estimate for that unit.
-          if (layouts.some(function (L) { return L.id === yearUnitMap[u.id]; })) return false;
+        var when = "<p class='when'>" + dateLabel(iso) + "</p>";
+        // The nearest date wins independently for each card. For a tie,
+        // show detailed entries before considering a different unit's projection.
+        if (day.kind === "unit-day") {
+          var teaching = day.blocks.filter(function (b) { return b.entries.length; });
+          if (!nextLesson && teaching.length) nextLesson = when + teaching.map(lessonBit).join("");
+          if (!nextAssessment && day.tests.length) nextAssessment = when + day.tests.map(assessmentBit).join("");
+        }
+        var u = yearByDate[iso], unitId = u && yearUnitMap[u.id];
+        if (u && !detailedUnits.has(unitId)) {
           var projectedTest = yearTestByUnit[u.id] === iso;
-          var preview = "<p class='when'>" + dateLabel(iso) + "</p><p class='unitname'>" + esc(u.name) + "</p>";
+          var preview = when + "<p class='unitname'>" + esc(u.name) + "</p>";
           if (!nextLesson && !projectedTest) nextLesson = preview +
             "<p>Year Planner only. Choose lessons in the <a href='planner.html" +
-            (yearUnitMap[u.id] === "pe" ? "" : "?unit=" + encodeURIComponent(yearUnitMap[u.id])) + "'>Unit Planner</a> to see materials here.</p>";
+            (unitId === "pe" ? "" : "?unit=" + encodeURIComponent(unitId)) + "'>Unit Planner</a> to see materials here.</p>";
           if (!nextAssessment && projectedTest) nextAssessment = preview + "<p>Projected by the Year Planner. Set a test date in the Unit Planner to confirm it.</p>";
-          return nextLesson && nextAssessment;
-        });
-      }
+        }
+        return nextLesson && nextAssessment;
+      });
       return {
         lesson: nextLesson || "<p>No upcoming lessons in your saved plans. <a href='planner.html'>Open Unit Planner</a></p>",
         assessment: nextAssessment || "<p>No upcoming assessments in your saved plans.</p>"

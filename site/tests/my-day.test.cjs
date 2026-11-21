@@ -99,12 +99,48 @@ test('year-only schedule labels projected dates; a different tab’s new local p
   assert.match(next.assessment,/Projected by the Year Planner/);
   let reRendered = 0;
   f.window.HCGHomeRender = () => { reRendered++; };
-  f.plans.hcg_unit_v1 = unit('2026-11-25', '2026-12-01', 'l1-reading');
+  f.plans.hcg_unit_v1 = unit('2026-11-25', '2026-11-27', 'l1-reading');
   f.events.storage({key:'hcg_unit_v1'});
   assert.equal(reRendered, 1);
-  next = f.window.HCGTeacherHome.upcomingHTML('2026-11-22');
+  next = f.window.HCGTeacherHome.upcomingHTML('2026-11-25');
   assert.match(next.lesson,/The Problems Progressives Faced/);
-  assert.match(next.assessment,/2026-12-01/);
+  assert.match(next.assessment,/2026-11-27.*Progressive Era/);
   f.events.storage({key:'hcg_sample_progressive_week_v1:isolated'});
   assert.equal(reRendered, 1);
+});
+
+test('earlier year projections are not hidden by a later detailed plan for a different unit', () => {
+  const f = fixture({
+    hcg_year_v1: {start:'2026-11-23', end:'2026-11-25', course:'early', unitDays:{u1:3}, daysOff:[]},
+    hcg_unit_v1: unit('2026-12-07', '2026-12-10', 'l1-reading')
+  });
+  const next = f.window.HCGTeacherHome.upcomingHTML('2026-11-23');
+  assert.match(next.lesson, /2026-11-23.*Colonial America.*Year Planner only/);
+  assert.match(next.assessment, /2026-11-25.*Colonial America.*Projected by the Year Planner/);
+});
+
+test('cards pick dates independently and prefer detailed materials and assessment on ties', () => {
+  const f = fixture({
+    hcg_year_v1: {start:'2026-11-23', end:'2026-11-25', course:'early', unitDays:{u1:3}, daysOff:[]},
+    hcg_unit_v1: unit('2026-11-24', '2026-11-25', 'l1-reading')
+  });
+  let next = f.window.HCGTeacherHome.upcomingHTML('2026-11-23');
+  assert.match(next.lesson, /2026-11-23.*Colonial America/);
+  assert.match(next.assessment, /2026-11-25.*Progressive Era.*files\/unit-test.pdf/);
+  next = f.window.HCGTeacherHome.upcomingHTML('2026-11-24');
+  assert.match(next.lesson, /2026-11-24.*Progressive Era.*files\/lesson-01-reading.pdf/);
+  assert.doesNotMatch(next.lesson + next.assessment, /Colonial America|Projected/);
+});
+
+test('a detailed plan replaces earlier Year Planner estimates for that same unit', () => {
+  const ca = fixture().window.HCG_UNITS.ca;
+  const pick = ca.items.find(i => i.storage && i.days === 1);
+  const f = fixture({
+    hcg_year_v1: {start:'2026-11-23', end:'2026-11-25', course:'early', unitDays:{u1:3}, daysOff:[]},
+    hcg_unit_ca_v1: unit('2026-12-07', '2026-12-10', pick.id)
+  });
+  const next = f.window.HCGTeacherHome.upcomingHTML('2026-11-23');
+  assert.match(next.lesson, /2026-12-07.*Colonial America/);
+  assert.match(next.assessment, /2026-12-10.*Colonial America/);
+  assert.doesNotMatch(next.lesson + next.assessment, /Year Planner only|Projected/);
 });
