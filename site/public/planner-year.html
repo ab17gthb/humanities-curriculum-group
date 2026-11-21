@@ -16,30 +16,30 @@
 <meta name="p:domain_verify" content="614ffbb856f10570ff98c83e7d06967a"/>
 </head>
 <body>
+<a class="hcg-skip" href="#main-content">Skip to content</a>
 
 <header class="site">
   <div class="wrap">
     <a href="index.html"><img class="wordmark" src="assets/store-wordmark-cream.svg" alt="Humanities Curriculum Group"></a>
-    <nav class="main">
-      <a href="index.html">Home</a>
-      <a href="home.html">My Day</a>
-      <a href="us-history.html">US History</a>
-      <a href="progressive-era.html">Sample Unit</a>
-      <a href="planner-year.html" class="here">Year Planner</a>
+    <nav class="main hcg-main-nav" aria-label="Main navigation">
+      <a href="us-history.html">U.S. History</a>
+      <a href="reading-companions.html">Reading Companions</a>
+      <a href="planner-year.html" class="here" aria-current="page">Year Planner</a>
       <a href="planner.html">Unit Planner</a>
-      <a href="about.html">About</a>
+      <a href="home.html">My Day</a>
+      <a href="subscribe.html">All-Access</a>
     </nav>
     <div class="hcg-account" id="hcg-account"></div>
   </div>
 </header>
 
-<section class="block">
+<main id="main-content" tabindex="-1"><section class="block">
   <div class="wrap widep">
     <h1>The Year Planner</h1>
-    <p class="sub">Set up your school year once: the first and last day, when each grading period ends, and every day school is out or you are in PD. The calendar lays the US History units across your real instructional days, in course order, and keeps a running count of days committed and buffer left. Change anything and the whole year reflows. Your plan saves automatically as you work.</p>
+    <p class="sub">Set your school dates and days off to see where your U.S. History units fit. Changes update the calendar as you work.</p>
 
     <div class="panel" id="starter-note" style="display:none;border-color:#b4552d;">
-      <p style="margin:0;"><strong>This is a starter year.</strong> The dates, breaks, and course shape below are a typical starting point, not your school's calendar. Set your first and last day above and delete any days off that are not yours; everything reflows, and this note goes away once the dates are yours. The starter runs Part 1 (to 1877) because the full survey at full unit lengths asks for more days than a typical year holds. Switch the course to the full survey when you are ready, and use Fit to year in the totals panel to trim units to your calendar. <button type="button" class="mini" id="starter-dismiss">Dismiss</button></p>
+      <p style="margin:0;"><strong>This is a starter year.</strong> Replace the example dates and days off with yours. This starter ends in 1877. For the full survey, change the course and use Fit to year if you need to shorten units. <button type="button" class="mini" id="starter-dismiss">Dismiss</button></p>
     </div>
 
     <div class="panel" id="shared-note" style="display:none;border-color:#b4552d;">
@@ -48,9 +48,9 @@
 
     <div class="panel">
       <h3>Your plans</h3>
-      <p class="small">Teaching more than one prep, or planning a semester version alongside the full year? Keep each as its own plan and switch here. The unit planner reads the days off from whichever plan is active.</p>
+      <p class="small">Keep a separate plan for each course. The Unit Planner uses the days off from the active plan.</p>
       <div class="ptoolbar">
-        <select id="plan-select" style="padding:6px;border:1px solid #d8cfb8;border-radius:4px;"></select>
+        <select aria-label="Saved year plan" id="plan-select" style="padding:6px;border:1px solid #d8cfb8;border-radius:4px;"></select>
         <button type="button" class="mini" id="plan-new">New plan</button>
         <button type="button" class="mini" id="plan-rename">Rename</button>
         <button type="button" class="mini" id="plan-del">Delete plan</button>
@@ -190,6 +190,8 @@
     </div>
   </div>
 </section>
+
+</main>
 
 <footer class="site">
   <div class="wrap">

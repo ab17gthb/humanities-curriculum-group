@@ -27,29 +27,29 @@
 </style>
 </head>
 <body class="planner-print">
+<a class="hcg-skip" href="#main-content">Skip to content</a>
 
 <header class="site">
   <div class="wrap">
     <a href="index.html"><img class="wordmark" src="assets/store-wordmark-cream.svg" alt="Humanities Curriculum Group"></a>
-    <nav class="main">
-      <a href="index.html">Home</a>
-      <a href="home.html">My Day</a>
-      <a href="us-history.html">US History</a>
-      <a href="progressive-era.html">Sample Unit</a>
+    <nav class="main hcg-main-nav" aria-label="Main navigation">
+      <a href="us-history.html">U.S. History</a>
+      <a href="reading-companions.html">Reading Companions</a>
       <a href="planner-year.html">Year Planner</a>
-      <a href="planner.html" class="here">Unit Planner</a>
-      <a href="about.html">About</a>
+      <a href="planner.html" class="here" aria-current="page">Unit Planner</a>
+      <a href="home.html">My Day</a>
+      <a href="subscribe.html">All-Access</a>
     </nav>
     <div class="hcg-account" id="hcg-account"></div>
   </div>
 </header>
 
-<section class="block">
+<main id="main-content" tabindex="-1"><section class="block">
   <div class="wrap">
     <h1 id="planner-heading">The Planner</h1>
-    <p class="sub" data-full-planner>Set the first day of the unit and your test date, and the planner proposes pacing from the test blueprint. Pick assignments from the plate and it lays them on your school days, lands the test at the end, and checks your picks against all fifteen blueprint entries. If a day gets eaten by an assembly or a field trip, mark it in the schedule and that day's work bumps forward on its own. Days off from your <a href="planner-year.html">year plan</a> are honored here automatically. Your picks and dates save as you go.</p>
+    <p class="sub" data-full-planner>Set your dates and choose activities. The planner schedules them around days off from your <a href="planner-year.html">year plan</a> and shows which test topics you’ll cover.</p>
     <div class="panel" id="sample-tools" hidden>
-      <p id="sample-description" style="margin:0 0 10px;">Four days on working conditions and muckraking lead to a fifth day on government reform. Change the start date or swap the last lesson to see what moves and which unit test objectives your picks cover.</p>
+      <p id="sample-description" style="margin:0 0 10px;">Change the start date or swap the last lesson to see how your calendar and topic coverage change.</p>
       <div id="sample-actions">
         <button type="button" class="mini" id="sample-copy">Save a copy on this device</button>
         <a href="planner.html" class="small">Open the regular unit planner</a>
@@ -68,14 +68,14 @@
       <h2 id="unit-name" style="margin:0 0 2px;">The Progressive Era</h2>
       <p class="small" id="unit-eq" style="margin:0;">Essential question: How did Americans respond to the problems created by industrialization, urbanization, and political corruption?</p>
       <p class="small" id="unit-rycal" style="margin:6px 0 0;"></p>
-      <p class="small" style="margin:6px 0 0;">Each unit keeps its own plan: picks, dates, sections, pins, and additions are saved separately per unit, and switching units never moves the other unit's plan.</p>
+      <p class="small" style="margin:6px 0 0;">Each unit keeps its own saved plan.</p>
     </div>
 
     <div class="planner-grid">
       <div>
         <div class="panel" data-full-planner>
           <h3>Your sections</h3>
-          <p class="small">Teach the unit to more than one class? Each section keeps its own calendar: start date, test date, marked days, pins, rotation, and period length. Your picks, order, and splits are shared across sections.</p>
+          <p class="small">Sections share lesson choices and order. Each section has its own dates, day types, and period length.</p>
           <div class="ptoolbar" id="sections"></div>
         </div>
 
@@ -104,7 +104,7 @@
             <option value="45">About 45 minutes (standard period)</option>
             <option value="90">About 90 minutes (block)</option>
           </select>
-          <p class="small" style="margin-top:6px;">Content is paced in lesson-days, one lesson-day per period of about 45 minutes. A block of about 90 minutes fits about two lessons per meeting, so entries pair up on one date and the unit takes about half as many meetings. Period length is set per section.</p>
+          <p class="small" style="margin-top:6px;">A 45-minute period fits one lesson-day. A 90-minute block fits two.</p>
           </div>
           <p class="small" id="daycount" style="margin-top:12px;" aria-live="polite"></p>
           <div data-full-planner>
@@ -164,7 +164,7 @@
 
         <div class="panel" id="schedule-panel">
           <h3 id="schedule-heading">3 · Your schedule</h3>
-          <p class="small" data-full-planner>Drag a lesson to set a date pin and reflow other work. A pin holds the requested date if it is available and has room; otherwise the planner uses the next date it fits. Use the pin button to unpin a lesson. Split in the picker divides a one-day lesson into two half days. Use the menu on any day to mark it assembly, substitute, field trip, testing, or no class; marked days hold no lessons and the work bumps forward. If you will be out but your class still meets, use Mark sub day on that day instead: the date and the test day hold, the day teaches nothing from the plan, its work moves later, and you can leave the substitute a note right on the day.</p>
+          <details class="hcg-planner-help" data-full-planner><summary>Move lessons or mark days off</summary><p class="small">Use the move controls or drag a lesson to a new date. Use the pin button to release a pinned date. Mark an assembly, field trip, or no-class day to move the work. For a substitute, choose Mark sub day and add a note.</p></details>
           <p class="small" id="sample-schedule-intro" hidden>Mark a date as no class to see the work move. The sample uses five weekdays and does not schedule the full unit test.</p>
           <div class="ptoolbar">
             <button type="button" class="mini viewbtn" data-view="list">List view</button>
@@ -211,6 +211,8 @@
     </div>
   </div>
 </section>
+
+</main>
 
 <footer class="site">
   <div class="wrap">

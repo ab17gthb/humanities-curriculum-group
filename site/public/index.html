@@ -13,304 +13,75 @@
 <meta property="og:url" content="https://humanitiescurriculumgroup.web.app/">
 <meta property="og:image" content="https://humanitiescurriculumgroup.web.app/assets/store-badge-navy.png">
 <link rel="stylesheet" href="styles.css">
-<script>if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) { document.documentElement.classList.add("rv-init"); }</script>
-<link rel="preload" as="image" href="assets/hero-cover-progressive-era.webp" fetchpriority="high">
-<style>
-/* Homepage: hero cover rotation */
-.hero-grid { display: grid; grid-template-columns: 1fr 290px; gap: 44px; align-items: center; }
-.hero-covers { margin: 0; width: 290px; }
-.hc-stack { position: relative; aspect-ratio: 1632 / 2112; background: #fff; border: 1px solid #c9bfa5; box-shadow: 0 10px 28px rgba(31,51,80,0.22); }
-.hc-slide { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; opacity: 0; transition: opacity 1.1s ease; }
-.hc-slide.is-active { opacity: 1; }
-.hero-covers figcaption { margin-top: 10px; font-size: 13.5px; color: var(--gray); text-align: center; }
-.hero-covers figcaption strong { color: var(--navy); font-family: Georgia, serif; font-weight: normal; }
-@media (max-width: 860px) {
-  .hero-grid { grid-template-columns: 1fr; gap: 26px; }
-  .hero-covers { width: 220px; margin: 0 auto; }
-}
-/* Homepage: what one unit gives you */
-.unitgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin: 22px 0 14px; }
-@media (max-width: 860px) { .unitgrid { grid-template-columns: 1fr; } }
-ul.unitplate { margin-top: 12px; }
-.courseline { font-size: 16px; color: var(--navy); margin: 6px 0 26px; }
-/* Homepage: scroll reveal */
-html.rv-init .rv { opacity: 0; transform: translateY(16px); transition: opacity 0.7s ease, transform 0.7s ease; transition-delay: var(--rvd, 0s); }
-html.rv-init .rv.in { opacity: 1; transform: none; }
-/* Homepage: pricing */
-.price-line { font-family: Georgia, serif; font-size: 24px; color: var(--navy); margin: 2px 0 8px; }
-.price-line small { font-family: Arial, sans-serif; font-size: 13.5px; color: var(--gray); }
-@media (prefers-reduced-motion: reduce) {
-  .hc-slide { transition: none; }
-  html.rv-init .rv { opacity: 1; transform: none; transition: none; }
-}
-.hero .hero-grid { padding-top: 34px; padding-bottom: 32px; grid-template-columns: 1fr 234px; }
-.hero-covers { width: 234px; }
-.hcg-quick { padding: 28px 0 10px; }
-.hcg-quick h2 { font-size: 1.7rem; margin: 0 0 13px; }
-.hcg-quick-grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 16px; }
-.hcg-quick-grid > li { display: flex; }
-.hcg-quick-grid a { display: block; width: 100%; padding: 17px 18px; background: white; color: var(--ink); text-decoration: none; border: 1px solid #ddd5c3; border-top: 3px solid var(--navy); border-radius: 3px; }
-.hcg-quick-grid h3 { font-size: 1.22rem; margin: 0 0 4px; text-decoration: underline; text-underline-offset: .18em; }
-.hcg-quick-grid p { margin: 0; font-size: .96rem; }
-.hcg-quick-grid a:hover { border-top-color: var(--rust); background: var(--cream); }
-.hcg-quick-grid a:focus-visible, .hcg-hero-actions a:focus-visible { outline: 3px solid var(--navy); outline-offset: 3px; }
-.hcg-hero-actions { display: flex; flex-wrap: wrap; gap: 10px; }
-.hcg-hero-actions .btn + .btn { margin-left: 0; }
-@media (max-width: 780px) { .hero .hero-grid { grid-template-columns: 1fr 175px; } .hero-covers { width: 175px; } }
-@media (max-width: 690px) { .hcg-quick-grid { grid-template-columns: 1fr; gap: 10px; } }
-@media (max-width: 560px) { .hero .hero-grid { grid-template-columns: 1fr; } .hero-covers { display: none; } }
-</style>
+<link rel="stylesheet" href="homepage.css">
 <link rel="icon" type="image/svg+xml" href="assets/store-wordmark-color.svg">
 <meta name="p:domain_verify" content="614ffbb856f10570ff98c83e7d06967a"/>
 </head>
 <body>
+<a class="hcg-skip" href="#main-content">Skip to content</a>
 
 <header class="site">
   <div class="wrap">
     <a href="index.html"><img class="wordmark" src="assets/store-wordmark-cream.svg" alt="Humanities Curriculum Group"></a>
-    <nav class="main" aria-label="Main navigation">
-      <a href="index.html" class="here" aria-current="page">Home</a>
-      <a href="home.html">My Day</a>
-      <a href="us-history.html">US History</a>
+    <nav class="main hcg-main-nav" aria-label="Main navigation">
+      <a href="us-history.html">U.S. History</a>
       <a href="reading-companions.html">Reading Companions</a>
-      <a href="progressive-era.html">Sample Unit</a>
       <a href="planner-year.html">Year Planner</a>
       <a href="planner.html">Unit Planner</a>
-      <a href="blog.html">Blog</a>
-      <a href="about.html">About</a>
+      <a href="home.html">My Day</a>
+      <a href="subscribe.html">All-Access</a>
     </nav>
     <div class="hcg-account" id="hcg-account"></div>
   </div>
 </header>
 
-<main>
-<div class="hero">
-  <div class="wrap hero-grid">
-    <div class="hero-text">
-      <h1>Curriculum for the humanities classroom</h1>
-      <p class="lede">Teach a full U.S. History course with readings, slides, activities, and tests. All-Access unlocks the paid units and course review materials. The planners are free, and Reading Companions are a separate collection.</p>
-      <div class="hcg-hero-actions">
-        <a class="btn" href="subscribe.html">See U.S. History All-Access</a>
-        <a class="btn secondary" href="planner.html?sample=progressive-era-week">Try a five-day sample plan</a>
+<main class="hcg-front" id="main-content" tabindex="-1">
+  <section class="hcg-front-hero">
+    <div class="wrap hcg-front-split">
+      <div>
+        <h1>Curriculum for the humanities classroom</h1>
+        <p class="hcg-front-lede">Teach U.S. History from Colonial America to Modern America. All-Access includes the paid units and course reviews. Use the planners free, or browse Reading Companions separately.</p>
+        <div class="hcg-front-actions">
+          <a class="btn" href="subscribe.html">See U.S. History All-Access</a>
+          <a class="btn ghost" href="planner.html?sample=progressive-era-week">Try the sample week</a>
+        </div>
       </div>
+      <figure class="hcg-front-preview">
+        <h2>The Progressive Era sample week</h2>
+        <img src="assets/progressive-era-sample-week.webp" width="510" height="239" alt="From the planner calendar. Monday covers industrial problems, Tuesday has a document stations activity, and Wednesday focuses on muckrakers." fetchpriority="high">
+        <figcaption>Change the dates or swap a lesson to see what moves.</figcaption>
+      </figure>
     </div>
-    <figure class="hero-covers rv" id="hero-covers">
-      <div class="hc-stack">
-        <img class="hc-slide is-active" src="assets/hero-cover-progressive-era.webp" data-name="The Progressive Era" data-note="the free sample unit" alt="The Progressive Era unit cover" width="640" height="828" fetchpriority="high">
-        <img class="hc-slide" data-src="assets/hero-cover-the-founding.webp" data-name="The Founding" data-note="unit 2 of 15" alt="The Founding unit cover" width="640" height="828" decoding="async">
-        <img class="hc-slide" data-src="assets/hero-cover-sectional-crisis.webp" data-name="Sectional Crisis and Civil War" data-note="unit 5 of 15" alt="Sectional Crisis and Civil War unit cover" width="640" height="828" decoding="async">
-        <img class="hc-slide" data-src="assets/hero-cover-reconstruction.webp" data-name="Reconstruction" data-note="unit 6 of 15" alt="Reconstruction unit cover" width="640" height="828" decoding="async">
-        <img class="hc-slide" data-src="assets/hero-cover-gilded-age.webp" data-name="The Gilded Age" data-note="unit 7 of 15" alt="The Gilded Age unit cover" width="640" height="828" decoding="async">
-      </div>
-      <figcaption><strong id="hc-cap-name">The Progressive Era</strong> · <span id="hc-cap-note">the free sample unit</span></figcaption>
-    </figure>
-  </div>
-</div>
-
-<nav class="hcg-quick wrap" aria-labelledby="hcg-quick-title">
-  <h2 id="hcg-quick-title">Explore the site</h2>
-  <ul class="hcg-quick-grid">
-    <li><a href="us-history.html"><h3>U.S. History</h3><p>Browse 15 units from Colonial America to Modern America.</p></a></li>
-    <li><a href="planner-year.html"><h3>Year Planner</h3><p>Build a course calendar around your term dates and days off. No account required.</p></a></li>
-    <li><a href="reading-companions.html"><h3>Reading Companions</h3><p>Find novel and memoir guides by grade. This collection is separate from U.S. History All-Access.</p></a></li>
-  </ul>
-</nav>
-
-<section class="block">
-  <div class="wrap">
-    <h2 class="rv">Plan a U.S. History unit</h2>
-    <p class="sub rv">The Unit Planner matches your lesson choices to the unit test blueprint.</p>
-    <div class="cards rv">
-      <div class="card">
-        <span class="tag">Step 1</span>
-        <h3>Browse the plate</h3>
-        <p>Each lesson offers the same set of options: a reading, guided notes, a hands-on activity, a notebook page, a quick check, and writing work. Nothing is mandatory. Teach the lesson your way, with materials that match.</p>
-      </div>
-      <div class="card">
-        <span class="tag">Step 2</span>
-        <h3>Plan on your calendar</h3>
-        <p>Enter your start date and test date. The planner proposes pacing from the unit blueprint, drops your picks onto school days, and lands the test at the end of the unit automatically.</p>
-      </div>
-      <div class="card">
-        <span class="tag">Step 3</span>
-        <h3>Check the coverage</h3>
-        <p>Every assignment and every test item is tagged to the unit blueprint. The coverage meter shows what your picks teach, names anything the test covers that your picks miss, and suggests the assignment that fills the gap.</p>
-      </div>
+  </section>
+  <section class="hcg-front-section wrap" aria-labelledby="start-title">
+    <h2 id="start-title">Find your next lesson</h2>
+    <div class="hcg-front-grid">
+      <article class="hcg-front-card"><h3><a href="progressive-era.html">Free Progressive Era unit</a></h3><p>Eight lessons, a review day, and a unit test. See the lesson materials before you subscribe.</p></article>
+      <article class="hcg-front-card"><h3><a href="planner-year.html">Year Planner</a></h3><p>Build a U.S. History calendar around your start date, days off, and class schedule.</p></article>
+      <article class="hcg-front-card"><h3><a href="reading-companions.html">Reading Companions</a></h3><p>Find teaching guides, student reading companions, and assessments by title or grade.</p></article>
     </div>
-  </div>
-</section>
-
-<section class="block">
-  <div class="wrap">
-    <h2 class="rv">What one unit gives you</h2>
-    <p class="sub rv">Every unit in the course is built on the same plate, so the free sample shows exactly what every unit delivers. This is the whole of it, for one unit.</p>
-    <div class="unitgrid rv">
-      <div class="card">
-        <span class="tag">Eight lessons, each with</span>
-        <ul class="plate unitplate">
-          <li><span class="kind">Reading</span> The lesson's reading</li>
-          <li><span class="kind">Guided notes</span> Guided notes for the lesson</li>
-          <li><span class="kind">Activity</span> A hands-on activity</li>
-          <li><span class="kind">Notebook</span> A notebook page</li>
-          <li><span class="kind">Quick check</span> A quick check</li>
-          <li><span class="kind">Writing</span> A writing task</li>
-        </ul>
-      </div>
-      <div class="card">
-        <span class="tag">For the unit as a whole</span>
-        <ul class="plate unitplate">
-          <li><span class="kind">Slides</span> A slide deck for every lesson, each with a printable teacher notes document</li>
-          <li><span class="kind">Review</span> A study guide and a crossword</li>
-          <li><span class="kind">Test</span> A 50-point unit test, every item tagged to the unit's published 15-entry blueprint</li>
-        </ul>
-      </div>
+  </section>
+  <section class="hcg-front-section wrap" aria-labelledby="access-title">
+    <div class="hcg-front-access">
+      <div><h2 id="access-title">What All-Access includes</h2><p>The Progressive Era unit is free. A subscription unlocks the other 14 units and paid U.S. History review materials.</p><a href="us-history.html">Browse all 15 U.S. History units</a></div>
+      <ul><li>Lesson readings, guided notes, slides, and activities</li><li>Teacher notes and assessment materials</li><li>Review days and tests matched to unit objectives</li></ul>
     </div>
-    <p class="courseline rv">Across the course: <strong>15 units, 750 documents, 120 decks</strong>, all built on this same plate.</p>
-  </div>
-</section>
-
-<section class="block">
-  <div class="wrap">
-    <h2 class="rv">The planner at work</h2>
-    <p class="sub rv">Screens from the planner, running on the free Progressive Era sample unit. Click a screen to see it full size.</p>
-    <div class="showcase rv">
-      <div class="sc-stage">
-        <figure class="sc-slide is-active">
-          <div class="sc-frame">
-            <div class="sc-bar"><i></i><i></i><i></i><span>humanitiescurriculumgroup.web.app</span></div>
-            <img src="assets/shot-year-calendar.webp" width="1908" height="1938" loading="lazy" alt="Year planner calendar for September, October, and November 2026, with unit bands for the Founding, Early Republic and Expansion, Jackson and Reform, and Sectional Crisis and Civil War laid across the school days">
-          </div>
-        </figure>
-        <figure class="sc-slide">
-          <div class="sc-frame">
-            <div class="sc-bar"><i></i><i></i><i></i><span>humanitiescurriculumgroup.web.app</span></div>
-            <img src="assets/shot-unit-plan.webp" width="2880" height="1800" loading="lazy" alt="Unit planner day list for the Progressive Era with lessons placed on school days, next to the coverage check panel showing 15 of 15 blueprint entries covered">
-          </div>
-        </figure>
-        <figure class="sc-slide">
-          <div class="sc-frame">
-            <div class="sc-bar"><i></i><i></i><i></i><span>humanitiescurriculumgroup.web.app</span></div>
-            <img src="assets/shot-addition.webp" width="1228" height="838" loading="lazy" alt="Unit planner day list with a TPSP source, The Jungle (excerpt), pinned to Friday, October 23 between regular lesson items">
-          </div>
-        </figure>
-        <figure class="sc-slide">
-          <div class="sc-frame">
-            <div class="sc-bar"><i></i><i></i><i></i><span>humanitiescurriculumgroup.web.app</span></div>
-            <img src="assets/shot-teacher-home.webp" width="1976" height="1434" loading="lazy" alt="Teacher home page for Wednesday, October 21, showing today's Progressive Era lesson, tomorrow's activity, and the week at a glance">
-          </div>
-        </figure>
-      </div>
-      <div class="sc-caps">
-        <p class="sc-cap is-active"><strong>The whole year, laid out</strong>The year planner lays the whole course across your school days. Unit bands flow around days off, and each band ends on its test day.</p>
-        <p class="sc-cap"><strong>Picks land on school days</strong>In the unit planner, your picks land on school days, and the coverage check keeps score against the test blueprint as you plan.</p>
-        <p class="sc-cap"><strong>Your additions join the same plan</strong>Resources you add join the same plan. This TPSP source, The Jungle (excerpt), sits pinned to Friday, October 23, between regular lessons.</p>
-        <p class="sc-cap"><strong>Open it and teach</strong>Teacher home opens on the day itself: today and tomorrow in full, and the week at a glance, drawn from your saved plans.</p>
-      </div>
-      <div class="sc-controls">
-        <button type="button" class="sc-btn is-active" data-go="0"><strong>Year planner</strong><span>All fifteen units on your calendar</span></button>
-        <button type="button" class="sc-btn" data-go="1"><strong>Unit planner</strong><span>Picks, days, and the coverage check</span></button>
-        <button type="button" class="sc-btn" data-go="2"><strong>Your additions</strong><span>TPSP sources and your own picks</span></button>
-        <button type="button" class="sc-btn" data-go="3"><strong>Teacher home</strong><span>Today, tomorrow, the week</span></button>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="block">
-  <div class="wrap">
-    <h2 class="rv">A plan, not a pile of downloads</h2>
-    <p class="sub rv">Downloaded files sit in a folder until you build the calendar yourself. Here the calendar is part of the product: the same plan drives your pacing, your coverage check, your sub plans, and your morning view.</p>
-    <div class="cards rv">
-      <div class="card">
-        <span class="tag">Calendar</span>
-        <h3>Picks become dates</h3>
-        <p>The unit planner lays your picks onto your school days, flowing around your days off, and lands the test at the end of the unit. The year planner does the same for all fifteen units across your school year.</p>
-      </div>
-      <div class="card">
-        <span class="tag">Coverage</span>
-        <h3>Gaps surface before the test</h3>
-        <p>Every pick and every test item carries a blueprint tag, so the coverage check can name what your plan misses and suggest the assignment that fills it, while there is still time to add it.</p>
-      </div>
-      <div class="card">
-        <span class="tag">Everyday use</span>
-        <h3>Sub plans and print, from the same plan</h3>
-        <p>The sub plan lists each day's materials with their file names. Teacher home opens on today, tomorrow, and the week at a glance, designed to print for the classroom wall or the sub folder.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="block">
-  <div class="wrap">
-    <h2 class="rv">Free tools and U.S. History All-Access</h2>
-    <p class="sub rv">Use the planners and My Day on this device without an account. Sign in with a free account to sync plans across devices. All-Access covers the paid U.S. History materials.</p>
-    <div class="cards rv">
-      <div class="card">
-        <span class="tag">Free</span>
-        <h3>The Progressive Era</h3>
-        <p class="price-line">$0</p>
-        <p>The complete sample unit includes eight lessons, a review day, and the unit test. If you’re signed out, the first download asks for an email address. You don’t need to create an account.</p>
-        <a class="more" href="progressive-era.html">Get the free unit</a>
-      </div>
-      <div class="card">
-        <span class="tag">All-Access</span>
-        <h3>The other fourteen units</h3>
-        <p class="price-line">$9.99 <small>per month, cancel anytime</small></p>
-        <p class="price-line">$59 <small>per year, cancel anytime</small></p>
-        <p>All-Access unlocks the remaining fourteen U.S. History units and the paid course review materials. Monthly and annual plans unlock the same files.</p>
-        <a class="more" href="subscribe.html">See All-Access</a>
-      </div>
-    </div>
-    <p class="small" style="max-width:680px;">Checkout runs through Stripe. Choose monthly or annual billing. You can cancel anytime.</p>
-  </div>
-</section>
-
-<section class="block">
-  <div class="wrap">
-    <h2 class="rv">Start with the sample unit</h2>
-    <p class="sub rv">The Progressive Era unit is complete and free: eight lessons, a review day, and a 50-point unit test with a full answer key. Download it, teach from it, and run it through the planner.</p>
-    <div class="cards rv">
-      <div class="card">
-        <span class="tag">US History · Unit</span>
-        <a href="progressive-era.html"><img src="assets/progressive-era-cover.png" alt="The Progressive Era unit cover" style="width:100%; display:block; margin-bottom:12px; border:1px solid #c9bfa5;"></a>
-        <h3>The Progressive Era</h3>
-        <p>Industrial problems, muckrakers, reforming government, Roosevelt and the Square Deal, the split of 1912, Wilson's New Freedom, the suffrage fight, and the limits of the movement. Thirty-six documents in all, every one print-ready.</p>
-        <a class="more" href="progressive-era.html">See the full unit</a>
-      </div>
-      <div class="card">
-        <span class="tag">The Planner</span>
-        <h3>Plan the unit in minutes</h3>
-        <p>Try five days in the Unit Planner. Change the dates or swap a lesson and see what moves. The sample stays separate from your saved plans.</p>
-        <a class="more" href="planner.html?sample=progressive-era-week">Try the sample plan</a> · <a class="more" href="planner-year.html">Plan the whole year</a>
-      </div>
-      <div class="card">
-        <span class="tag">The Course</span>
-        <h3>Complete U.S. History course</h3>
-        <p>All fifteen units are published, from Colonial America to Modern America, every one built on the same template as the free sample. Choose a unit to see its lessons and assessment outline.</p>
-        <a class="more" href="us-history.html">See the course map</a>
-      </div>
-    </div>
-  </div>
-</section>
-
+  </section>
 </main>
 
 <footer class="site">
   <div class="wrap">
     <img src="assets/store-wordmark-cream.svg" alt="Humanities Curriculum Group">
     <div>
-      <p>Humanities Curriculum Group is a Knoweth product, built by a working social studies teacher. Sister projects: <a href="https://rycal.web.app">Rycal</a>, spaced-repetition study tools for AP courses, and <a href="https://tpsp.web.app">The Primary Source Project</a>, a primary source library and DBQ builder.</p>
-      <p>Questions about All-Access, billing, or a download that won't open? <a href="contact.html">Contact us</a>.</p>
-      <p>Materials print on standard US Letter paper with ordinary school copiers in mind.</p>
+      <p>Built by a working social studies teacher.</p>
+      <p><a href="contact.html">Contact</a> · <a href="about.html">About HCG</a> · <a href="blog.html">Blog</a></p>
       <p class="small"><a href="privacy.html">Privacy Policy</a> · <a href="terms.html">Terms of Use</a></p>
     </div>
   </div>
 </footer>
 
-<div class="sc-lightbox" id="scLightbox" hidden><button class="sc-close" type="button" aria-label="Close full-size view">&times;</button><img alt=""></div>
 <script src="firebase-config.js"></script>
 <script src="auth.js"></script>
 <script src="stats.js"></script>
-<script src="home.js"></script>
 </body>
 </html>
