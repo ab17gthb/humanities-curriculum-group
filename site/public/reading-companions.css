@@ -6,11 +6,14 @@
 .rc-hero .lede { margin-bottom: 12px; }
 .rc-availability { color: var(--navy); margin: 0; font-size: .95rem; }
 .rc-collection { margin-top: 32px; }
-.rc-filter { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; padding: 12px 16px; border: 1px solid #d8cdb7; background: #fff; border-radius: 4px; }
+.rc-filter { display: flex; gap: 12px; flex-wrap: wrap; align-items: flex-end; padding: 12px 16px; border: 1px solid #d8cdb7; background: #fff; border-radius: 4px; }
+.rc-filter-field { display: grid; gap: 3px; min-width: 0; }
+.rc-search-field { flex: 1 1 230px; max-width: 430px; }
 .rc-filter label { font-weight: 700; color: var(--navy); }
-.rc-filter select { font: inherit; min-height: 42px; padding: 6px 24px 6px 10px; border: 1px solid #777166; border-radius: 3px; background: #fff; color: var(--navy); }
-.rc-filter p { margin: 0 0 0 auto; color: var(--gray); }
-.rc-filter select:focus-visible, .reading-companions a:focus-visible { outline: 3px solid #17627e; outline-offset: 3px; }
+.rc-filter select, .rc-filter input { font: inherit; min-height: 42px; padding: 6px 24px 6px 10px; border: 1px solid #777166; border-radius: 3px; background: #fff; color: var(--navy); }
+.rc-filter input { padding-inline: 10px; width: 100%; box-sizing: border-box; }
+.rc-filter p { margin: 0 0 9px auto; color: var(--gray); }
+.rc-filter input:focus-visible, .rc-filter select:focus-visible, .reading-companions a:focus-visible { outline: 3px solid #17627e; outline-offset: 3px; }
 .reading-companions header a:focus-visible { outline-color: #d6eef8; }
 .rc-section { margin-top: 28px; }
 .rc-section h2 { font-size: 1.65rem; margin: 0 0 10px; }
@@ -24,4 +27,4 @@
 .rc-card p.rc-author { color: var(--gray); font-size: .9rem; margin-bottom: 7px; }
 .rc-grade { display: inline-block; font-size: .78rem; font-weight: bold; color: var(--navy); background: #e9edf3; padding: 2px 8px; border-radius: 20px; }
 @media(max-width:720px) { .rc-grid { grid-template-columns: repeat(2,minmax(0,1fr)); } }
-@media(max-width:460px) { .rc-grid { grid-template-columns: 1fr; } .rc-filter p { flex-basis: 100%; margin-left: 0; } }
+@media(max-width:460px) { .rc-grid { grid-template-columns: 1fr; } .rc-search-field { flex-basis: 100%; } .rc-filter p { margin-left: 0; margin-bottom: 9px; } }

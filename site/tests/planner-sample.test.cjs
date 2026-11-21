@@ -49,6 +49,7 @@ function setup(search, { storage={...seed}, hash='', failWrites=false, failReads
     atob, escape, history:{replaceState(){throw Error('did not expect a share to load');}}
   });
   vm.runInContext(data,context);
+  vm.runInContext(fs.readFileSync(require("node:path").join(__dirname, "../public/unit-scheduler.js"), "utf8"), context);
   vm.runInContext(code,context);
   vm.runInContext(bootstrap,context);
   return {node,log,requests,storage,href:()=>href, event(id,type,value){

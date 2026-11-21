@@ -126,7 +126,9 @@ async function run() {
 
   for (const f of ["planner.js","year-planner.js"]) {
     const src = fs.readFileSync(root+f,"utf8");
-    assert.match(src,/localStorage.setItem[\s\S]{0,300}deviceSaved = true;[\s\S]{0,40}catch/);
+    const saving=src.slice(src.indexOf("  function save()"),src.indexOf("\n  }",src.indexOf("  function save()")));
+    assert.match(saving,/localStorage\.setItem[\s\S]*?deviceSaved = true/);
+    assert.match(saving,/catch[^;]+deviceSaved = false/);
     assert(!src.includes("Saved and synced to your account ·"));
     assert(src.includes('window.addEventListener("hcgplansync", paintSaveNote)'));
     new vm.Script(src);

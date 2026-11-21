@@ -164,12 +164,13 @@
 
         <div class="panel" id="schedule-panel">
           <h3 id="schedule-heading">3 · Your schedule</h3>
-          <p class="small" data-full-planner>Drag any item to another day and everything after it reflows. Pin an item (📍) to lock it to its date; pinned items hold their date while the rest of the plan moves around them. Split in the picker divides a one-day lesson into two half days. Use the menu on any day to mark it assembly, substitute, field trip, testing, or no class; marked days hold no lessons and the work bumps forward. If you will be out but your class still meets, use Mark sub day on that day instead: the date and the test day hold, the day teaches nothing from the plan, its work moves later, and you can leave the substitute a note right on the day.</p>
+          <p class="small" data-full-planner>Drag a lesson to set a date pin and reflow other work. A pin holds the requested date if it is available and has room; otherwise the planner uses the next date it fits. Use the pin button to unpin a lesson. Split in the picker divides a one-day lesson into two half days. Use the menu on any day to mark it assembly, substitute, field trip, testing, or no class; marked days hold no lessons and the work bumps forward. If you will be out but your class still meets, use Mark sub day on that day instead: the date and the test day hold, the day teaches nothing from the plan, its work moves later, and you can leave the substitute a note right on the day.</p>
           <p class="small" id="sample-schedule-intro" hidden>Mark a date as no class to see the work move. The sample uses five weekdays and does not schedule the full unit test.</p>
           <div class="ptoolbar">
             <button type="button" class="mini viewbtn" data-view="list">List view</button>
             <button type="button" class="mini viewbtn" data-view="week">Week view</button>
             <span class="tsep"></span>
+            <button type="button" class="mini" id="reset-pins" data-full-planner>Clear section pins</button>
             <button type="button" class="mini" id="print-week">Print plan</button>
             <button type="button" class="mini" id="print-sub" data-full-planner>Sub plan</button>
             <span class="tsep"></span>
@@ -225,6 +226,7 @@
 
 <div id="printArea"></div>
 <script src="planner-data.js"></script>
+<script src="unit-scheduler.js"></script>
 <script src="planner.js"></script>
 <script>
   // Do not even initialize storage/cloud integrations on either sample route.

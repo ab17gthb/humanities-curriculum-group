@@ -77,17 +77,19 @@
 
   var yearOff = {};   // iso -> label, from the year plan's days off
   var yearByDate = {}; // iso -> { id, name }
-  var yearRangeLast = {}; // unit id -> last iso of its band
+  var yearTestByUnit = {}; // unit id -> last iso only if the whole unit fits
   var yearReserved = {};  // iso -> true (exam review)
-  if (yearPlan && yearPlan.start && yearPlan.end) {
-    (yearPlan.daysOff || []).forEach(function (o) {
-      var d = P(o.from), end = P(o.to);
-      while (d <= end) { yearOff[ISO(d)] = o.label; d.setDate(d.getDate() + 1); }
-    });
+  if (yearPlan && typeof yearPlan.start === "string" && typeof yearPlan.end === "string") {
+    var off = Array.isArray(yearPlan.daysOff) ? yearPlan.daysOff.slice(0, 300) : [];
     var days = [], d0 = P(yearPlan.start), dEnd = P(yearPlan.end);
-    while (d0 <= dEnd) {
+    // Walk the saved year, not the full extent of each off-date range.
+    // Check ranges in the same order as the year planner when they overlap.
+    var nDates = 0;
+    while (d0 <= dEnd && nDates++ < 732) {
       var dow = d0.getDay(), iso = ISO(d0);
-      if (dow >= 1 && dow <= 5 && !yearOff[iso]) days.push(iso);
+      var entry = off.find(function (o) { return o && iso >= o.from && iso <= o.to; });
+      if (entry) yearOff[iso] = entry.label || "day off";
+      else if (dow >= 1 && dow <= 5) days.push(iso);
       d0.setDate(d0.getDate() + 1);
     }
     if (yearPlan.exam) {
@@ -95,7 +97,10 @@
       var take = Math.min(yearPlan.reviewDays || 0, before.length);
       for (var i = 0; i < take; i++) yearReserved[before[before.length - 1 - i]] = true;
     }
-    var ids = COURSES[yearPlan.course] || COURSES.full;
+    var ids = Object.prototype.hasOwnProperty.call(COURSES, yearPlan.course) ? COURSES[yearPlan.course] : COURSES.full;
+    if (yearPlan.course === "modern" && ["u1", "u2", "u3", "u4", "u5", "u6"].indexOf(yearPlan.openingUnit) !== -1) {
+      ids = [yearPlan.openingUnit].concat(ids);
+    }
     var overrides = yearPlan.unitDays || {}, pins = yearPlan.pinnedStarts || {}, idx = 0;
     // Class schedule, normalized the way year-planner.js normSchedule does.
     var schedY = yearPlan.schedule;
@@ -156,7 +161,7 @@
         yearByDate[dd] = u;
         need--;
       }
-      if (got.length) yearRangeLast[u.id] = got[got.length - 1];
+      if (!need && got.length) yearTestByUnit[u.id] = got[got.length - 1];
     });
   }
 
@@ -164,7 +169,7 @@
   // Unit plans: which lesson items land on a date, for each plannable
   // unit (the Progressive Era, the Gilded Age, and Imperialism and
   // World War I).
-  // Compact copy of the layout in planner.js, for each plan's ACTIVE
+  // Uses the shared unit scheduler for each plan's ACTIVE
   // section: candidate days are weekdays from the section start to the
   // day before its test, minus year-plan days off; each meeting date has
   // a capacity in lesson-days set by the section's period (1 for a
@@ -190,7 +195,10 @@
     });
     var sections = (plan.sections && plan.sections.length) ? plan.sections : [plan];
     var sec = sections[Math.min(plan.active || 0, sections.length - 1)];
-    if (!sec || !sec.start || !sec.test) return null;
+    if (!sec || typeof sec.start !== "string" || typeof sec.test !== "string") return null;
+    var dc = P(sec.start), testD = P(sec.test), maxEnd = P(sec.start);
+    maxEnd.setDate(maxEnd.getDate() + 366);
+    if (ISO(dc) !== sec.start || ISO(testD) !== sec.test || testD <= dc || testD > maxEnd) return null;
     var storagePrefix = "";
     def.items.forEach(function (it) {
       if (!storagePrefix && it.storage) storagePrefix = it.storage.slice(0, it.storage.lastIndexOf("/") + 1);
@@ -231,7 +239,8 @@
       return { key: key, item: it, days: it.days, name: it.name };
     }
 
-    var cand = [], dc = P(sec.start), testD = P(sec.test);
+    var cand = [];
+    function isSubDay(iso) { return Object.prototype.hasOwnProperty.call(sec.subDays || {}, iso); }
     while (dc < testD) {
       var dowC = dc.getDay(), isoC = ISO(dc);
       if (dowC >= 1 && dowC <= 5 && !yearOff[isoC]) cand.push({ date: new Date(dc), iso: isoC, meet: true });
@@ -243,52 +252,19 @@
       else if (!c.meet) out.noMeet[c.iso] = true;
     });
     Object.keys(dayTypes).forEach(function (isoK) { out.dayKind[isoK] = dayTypes[isoK]; });
+    Object.keys(sec.subDays || {}).forEach(function (isoK) { out.dayKind[isoK] = "Sub day"; });
+    if (testD.getDay() === 0 || testD.getDay() === 6 || yearOff[sec.test] || dayTypes[sec.test] || isSubDay(sec.test) ||
+        (sec.rotation === "ab" && cand.length % 2)) out.testIso = "";
 
-    var capU = sec.period === 90 ? 2 : 1; // lessons per meeting, as in planner.js
-    var usable = cand.filter(function (c) { return c.meet && !dayTypes[c.iso]; });
-    var buckets = usable.map(function (c) { return { iso: c.iso, entries: [], load: 0 }; });
-    var bIdx = {};
-    buckets.forEach(function (b, i3) { bIdx[b.iso] = i3; });
-    var entries = order.map(entryFor).filter(Boolean);
-
-    entries.forEach(function (e) {
-      var pin = pinsU[e.key];
-      if (!pin) return;
-      var bi = bIdx[pin];
-      if (bi == null) {
-        bi = buckets.findIndex(function (b) { return b.iso > pin; });
-        if (bi === -1) return;
-      }
-      buckets[bi].entries.push(e);
-      buckets[bi].load += e.days;
+    var cap = sec.period === 90 ? 2 : 1;
+    var usable = cand.filter(function (c) { return c.meet && !dayTypes[c.iso] && !isSubDay(c.iso); });
+    var allocation = window.HCGUnitSchedule.allocate(usable, order.map(entryFor).filter(Boolean), pinsU, cap);
+    allocation.buckets.forEach(function (b) {
+      if (!b.entries.length && !b.continuations.length) return;
+      out.byDate[b.iso] = b.continuations.map(function (e) {
+        return Object.assign({}, e, { name: e.name + " (continued)" });
+      }).concat(b.entries);
     });
-    var p = 0;
-    entries.forEach(function (e) {
-      if (pinsU[e.key]) return;
-      if (e.days === 0) {
-        var b0 = buckets[Math.min(p, Math.max(buckets.length - 1, 0))];
-        if (!b0) return;
-        b0.entries.push(e);
-        return;
-      }
-      while (p < buckets.length && buckets[p].load + e.days > capU + 0.001 &&
-             !(e.days > capU && buckets[p].load === 0)) p++;
-      if (p >= buckets.length) return;
-      buckets[p].entries.push(e);
-      var first = Math.min(e.days, capU);
-      buckets[p].load += first;
-      // An entry longer than one meeting (a 2-day addition in a
-      // 45-minute section) continues into the meetings after its
-      // start date, so later entries do not land on those dates.
-      var rem = e.days - first;
-      while (rem > 0.001 && p + 1 < buckets.length) {
-        p++;
-        var take = Math.min(rem, capU);
-        buckets[p].load += take;
-        rem -= take;
-      }
-    });
-    buckets.forEach(function (b) { if (b.entries.length) out.byDate[b.iso] = b.entries; });
     return out;
   }
 
@@ -377,7 +353,7 @@
     }
     if (yearReserved[iso]) return { kind: "other", unit: "Held for exam review" };
     var u = yearByDate[iso];
-    if (u) return { kind: "other", unit: u.name, test: yearRangeLast[u.id] === iso };
+    if (u) return { kind: "other", unit: u.name, test: yearTestByUnit[u.id] === iso };
     if (yearPlan && yearPlan.start && iso >= yearPlan.start && iso <= yearPlan.end) {
       return { kind: "open", text: "Open day: nothing scheduled in your year plan" };
     }
@@ -407,11 +383,20 @@
     return esc(L.testName);
   }
 
+  function safeResourceLink(value) {
+    if (typeof value !== "string" || !/^https?:\/\//i.test(value.trim())) return "";
+    try {
+      var url = new URL(value.trim());
+      return url.protocol === "http:" || url.protocol === "https:" ? url.href : "";
+    } catch (e) { return ""; }
+  }
+
   function materialsList(entries) {
     var lis = entries.map(function (e) {
       if (e.item.custom) {
         var label = e.item.ck === "tpsp" ? "TPSP" : "Your resource";
-        var nm = e.item.link ? "<a href='" + esc(e.item.link) + "'>" + esc(e.name) + "</a>" : esc(e.name);
+        var url = safeResourceLink(e.item.link);
+        var nm = url ? "<a href='" + esc(url) + "'>" + esc(e.name) + "</a>" : esc(e.name);
         return "<li>" + label + ": " + nm + "</li>";
       }
       var f = e.item.file || "";
