@@ -1,0 +1,50 @@
+.resource-skip { position: absolute; inset: 4px auto auto 4px; z-index: 5; transform: translateY(-150%); background: #fff; padding: 8px 12px; }
+.resource-skip:focus { transform: translateY(0); }
+.resource-page a:focus-visible, .resource-page summary:focus-visible, .resource-page main:focus-visible { outline: 3px solid #17627e; outline-offset: 3px; }
+.resource-page header a:focus-visible, .resource-page footer a:focus-visible { outline-color: #d6eef8; }
+.resource-page .resource-hero .wrap { padding-block: clamp(26px, 5.5vw, 54px); }
+.resource-hero h1 { font-size: clamp(2rem, 6vw, 3rem); margin: 0 0 10px; }
+.resource-hero .lede { margin-bottom: 16px; max-width: 590px; }
+.resource-eyebrow { color: var(--navy); font-size: .95rem; font-weight: 700; margin: 0 0 8px; }
+.resource-access { color: var(--gray); font-size: .95rem; max-width: 590px; margin: 14px 0 0; }
+.resource-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 10px 14px; }
+.resource-page .resource-actions .btn { margin-left: 0; }
+.resource-hero-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(120px, 27%); gap: clamp(18px, 6vw, 56px); align-items: center; }
+.resource-cover { width: 100%; height: auto; display: block; justify-self: end; max-width: 230px; border: 1px solid #cbbfa9; border-radius: 3px; }
+.resource-hero-grid .resource-cover--unit { max-width: 185px; }
+.resource-body { padding-block: 34px 50px; }
+.resource-body > section + section { margin-top: clamp(34px, 5vw, 52px); }
+.resource-body h2 { margin: 0 0 8px; font-size: 1.7rem; line-height: 1.22; }
+.resource-body h3 { margin: 0 0 5px; font-size: 1.22rem; line-height: 1.25; }
+.resource-body section > p { margin: 0 0 13px; max-width: 70ch; }
+.resource-includes, .resource-previews { display: grid; gap: 16px; grid-template-columns: repeat(2, minmax(0,1fr)); margin-top: 15px; }
+.resource-includes > div, .resource-previews figure { background: #fff; border: 1px solid #ddd5c3; border-radius: 4px; }
+.resource-includes > div { padding: 15px 16px; }
+.resource-includes p { margin: 0; }
+.resource-previews figure { margin: 0; padding: 12px; }
+.resource-previews a { display: block; }
+.resource-previews img { width: 100%; height: auto; display: block; border: 1px solid #e3dccf; }
+.resource-previews figcaption { padding: 9px 3px 1px; line-height: 1.4; color: var(--gray); }
+.resource-previews figcaption strong { display: block; color: var(--navy); }
+.resource-page .lesson { padding: 0; }
+.resource-page .lesson summary, .resource-blueprint summary { cursor: pointer; padding: 12px 16px; color: var(--navy); font-weight: 700; }
+.resource-page .lesson summary:hover, .resource-blueprint summary:hover { background: #f7f4ed; }
+.resource-page .lesson[open] summary { border-bottom: 1px solid #e3dccf; }
+.resource-lesson-content { padding: 12px 16px 16px; }
+.resource-page .lesson li { display: grid; grid-template-columns: minmax(108px, auto) minmax(0,1fr) auto; gap: 6px 10px; align-items: baseline; }
+.resource-page .lesson li .kind { justify-self: start; }
+.resource-page .lesson li a:last-child { margin-left: 0; text-underline-offset: 2px; }
+.resource-blueprint { border: 1px solid #ddd5c3; border-radius: 4px; background: #fff; }
+.resource-blueprint .resource-lesson-content > p { margin: 0; }
+.resource-table td, .resource-table th { overflow-wrap: anywhere; }
+.resource-links { display: flex; flex-wrap: wrap; gap: 6px 18px; margin-bottom: 16px; }
+.resource-links a, .resource-page .rc-link { text-underline-offset: 2px; }
+.resource-page #resource-previews, .resource-page #lesson-downloads, .resource-page #test-blueprint { scroll-margin-top: 24px; }
+@media (max-width: 600px) {
+  .resource-hero-grid { grid-template-columns: minmax(0, 1fr); }
+  .resource-cover { display: none; }
+  .resource-includes, .resource-previews { grid-template-columns: minmax(0,1fr); }
+  .resource-page .lesson li { grid-template-columns: minmax(0,1fr) auto; }
+  .resource-page .lesson li .kind { grid-column: 1/-1; }
+  .resource-table th, .resource-table td { padding: 7px 8px; }
+}

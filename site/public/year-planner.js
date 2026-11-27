@@ -93,48 +93,113 @@
     return days.filter(function (d, i) { return i % 2 === 0; });
   }
 
-  var S;
-  try { S = JSON.parse(localStorage.getItem(KEY)) || defaults(); }
-  catch (e) { S = defaults(); }
-  if (!S.unitDays) S.unitDays = {};
-  if (!S.pinnedStarts) S.pinnedStarts = {};
-  normSchedule(S);
-  normOpeningUnit(S);
+  var DAY_MS = 24 * 60 * 60 * 1000;
+  var MAX_YEAR_DAYS = 732;
+  var MAX_PLAN_BYTES = 256 * 1024;
+  function isRecord(value) {
+    return value && Object.prototype.toString.call(value) === "[object Object]";
+  }
+  function dateStamp(iso) {
+    if (typeof iso !== "string") return NaN;
+    var parts = /^([1-9][0-9]{3})-([0-9]{2})-([0-9]{2})$/.exec(iso);
+    if (!parts) return NaN;
+    var day = Date.UTC(+parts[1], +parts[2] - 1, +parts[3]);
+    return new Date(day).toISOString().slice(0, 10) === iso ? day : NaN;
+  }
+  function yearDateError(start, end) {
+    var a = dateStamp(start), b = dateStamp(end);
+    if (!Number.isFinite(a) || !Number.isFinite(b)) return "Enter valid first and last days of school.";
+    if (b < a) return "The last day of school can't be before the first day.";
+    if ((b - a) / DAY_MS + 1 > MAX_YEAR_DAYS) return "A year plan can span no more than 732 calendar days.";
+    return "";
+  }
+  function planError(plan) {
+    if (!isRecord(plan)) return "This isn't a year plan.";
+    var error = yearDateError(plan.start, plan.end);
+    if (error) return error;
+    if (plan.exam && !Number.isFinite(dateStamp(plan.exam))) return "The exam date is invalid.";
+    if (plan.periods != null && (!Array.isArray(plan.periods) || plan.periods.length > 100 ||
+        plan.periods.some(function (p) {
+          return !isRecord(p) || typeof p.name !== "string" || !Number.isFinite(dateStamp(p.end));
+        }))) return "The grading periods aren't in the expected format.";
+    if (plan.daysOff != null && (!Array.isArray(plan.daysOff) || plan.daysOff.length > 300 ||
+        plan.daysOff.some(function (o) {
+          return !isRecord(o) || typeof o.label !== "string" || typeof o.kind !== "string" ||
+            !Number.isFinite(dateStamp(o.from)) || !Number.isFinite(dateStamp(o.to)) || o.to < o.from;
+        }))) return "The days off aren't in the expected format.";
+    if (plan.unitDays != null && (!isRecord(plan.unitDays) || Object.keys(plan.unitDays).some(function (id) {
+      var n = plan.unitDays[id]; return typeof n !== "number" || !Number.isFinite(n) || n < 1 || n > MAX_YEAR_DAYS;
+    }))) return "The plan contains invalid unit day counts.";
+    if (plan.pinnedStarts != null && (!isRecord(plan.pinnedStarts) || Object.keys(plan.pinnedStarts).some(function (id) {
+      return !Number.isFinite(dateStamp(plan.pinnedStarts[id]));
+    }))) return "The plan contains an invalid pinned date.";
+    if (plan.reviewDays != null && (!Number.isInteger(plan.reviewDays) || plan.reviewDays < 0 || plan.reviewDays > MAX_YEAR_DAYS)) {
+      return "The exam review day count is invalid.";
+    }
+    return "";
+  }
+  function normalizePlan(plan) {
+    return {
+      course: Object.prototype.hasOwnProperty.call(COURSES, plan.course) ? plan.course : "full",
+      openingUnit: OPENING_UNIT_IDS.indexOf(plan.openingUnit) !== -1 ? plan.openingUnit : "",
+      starter: plan.starter === true,
+      schedule: plan.schedule && (plan.schedule.period === 45 || plan.schedule.period === 90) &&
+        (plan.schedule.pattern === "daily" || plan.schedule.pattern === "ab")
+        ? { period: plan.schedule.period, pattern: plan.schedule.pattern } : { period: 45, pattern: "daily" },
+      start: plan.start, end: plan.end, exam: plan.exam || "", reviewDays: plan.reviewDays == null ? 5 : plan.reviewDays,
+      periods: (plan.periods || []).map(function (p) { return { name: p.name, end: p.end }; }),
+      daysOff: (plan.daysOff || []).map(function (o) { return { from: o.from, to: o.to, label: o.label, kind: o.kind }; }),
+      unitDays: copyUnitValues(plan.unitDays),
+      pinnedStarts: copyUnitValues(plan.pinnedStarts)
+    };
+  }
+  function copyUnitValues(values) {
+    var out = {};
+    if (values) UNITS.forEach(function (u) {
+      if (Object.prototype.hasOwnProperty.call(values, u.id)) out[u.id] = values[u.id];
+    });
+    return out;
+  }
+  function readSaved(key) {
+    try { return JSON.parse(localStorage.getItem(key)); } catch (e) { return null; }
+  }
+  var restored = readSaved(KEY);
+  var savedPlanError = restored && planError(restored);
+  var S = restored && !savedPlanError ? normalizePlan(restored) : defaults();
 
-  // ---------- v4: a library of named plans (preps); hcg_year_v1 stays the active plan ----------
-  var LIBKEY = "hcg_year_plans_v1";
-  var lib = null, planName = "My year plan";
-  try { lib = JSON.parse(localStorage.getItem(LIBKEY)); } catch (e) {}
-  if (!lib || !lib.plans || !Object.keys(lib.plans).length) {
-    lib = { active: planName, plans: {} };
-    lib.plans[planName] = S;
-  } else {
-    planName = lib.active && lib.plans[lib.active] ? lib.active : Object.keys(lib.plans)[0];
+  // A null-prototype registry accepts any ordinary name without colliding with
+  // inherited names. Keep valid siblings if one saved plan is damaged.
+  var LIBKEY = "hcg_year_plans_v1", savedLib = readSaved(LIBKEY);
+  var lib = { active: "", plans: Object.create(null) }, planName = "My year plan";
+  if (isRecord(savedLib) && isRecord(savedLib.plans)) {
+    Object.keys(savedLib.plans).forEach(function (name) {
+      if (!planError(savedLib.plans[name])) lib.plans[name] = normalizePlan(savedLib.plans[name]);
+    });
+  }
+  if (!Object.keys(lib.plans).length) lib.plans[planName] = S;
+  else {
+    planName = lib.plans[savedLib.active] ? savedLib.active : Object.keys(lib.plans)[0];
     S = lib.plans[planName];
-    if (!S.unitDays) S.unitDays = {};
-    if (!S.pinnedStarts) S.pinnedStarts = {};
-    normSchedule(S);
-    normOpeningUnit(S);
   }
 
-  // A shared plan link loads as its own plan; the teacher's other plans are untouched.
-  var sharedYear = false;
-  try {
-    if (location.hash.indexOf("#plan=") === 0) {
+  // Opening a shared link creates a new named plan without replacing an older share.
+  var sharedYear = false, sharedPlanError = "";
+  if (location.hash.indexOf("#plan=") === 0) {
+    try {
+      if (location.hash.length > MAX_PLAN_BYTES * 2) throw new Error("oversize");
       var payload = JSON.parse(decodeURIComponent(escape(atob(location.hash.slice(6).replace(/-/g, "+").replace(/_/g, "/")))));
-      if (payload && payload.start && payload.end) {
-        if (!payload.unitDays) payload.unitDays = {};
-        if (!payload.pinnedStarts) payload.pinnedStarts = {};
-        normSchedule(payload);
-        normOpeningUnit(payload);
+      sharedPlanError = planError(payload);
+      if (!sharedPlanError) {
+        var seq = 2;
         planName = "Shared plan";
-        lib.plans[planName] = payload;
-        S = payload;
+        while (lib.plans[planName]) planName = "Shared plan " + seq++;
+        S = normalizePlan(payload);
+        lib.plans[planName] = S;
         sharedYear = true;
-        history.replaceState(null, "", location.pathname + location.search);
       }
-    }
-  } catch (e) {}
+    } catch (e) { sharedPlanError = "The link doesn't contain a readable year plan."; }
+    try { history.replaceState(null, "", location.pathname + location.search); } catch (e) {}
+  }
 
   // ---------- date helpers ----------
   function P(iso) { var p = iso.split("-"); return new Date(+p[0], +p[1] - 1, +p[2]); }
@@ -165,7 +230,7 @@
   function daysFromUnitPlan(key) {
     try {
       var u = JSON.parse(localStorage.getItem(key));
-      if (u && u.totalDays) return u.totalDays;
+      if (u && typeof u.totalDays === "number" && Number.isFinite(u.totalDays) && u.totalDays > 0 && u.totalDays <= MAX_YEAR_DAYS) return u.totalDays;
     } catch (e) {}
     return null;
   }
@@ -186,7 +251,8 @@
     return v != null ? v : null;
   }
 
-  function unitDays(u) {
+  function unitDays(u, trial) {
+    if (trial && trial[u.id] != null) return { days: trial[u.id], src: "your number" };
     if (S.unitDays[u.id] != null) return { days: S.unitDays[u.id], src: "your number" };
     if (u.planKey) {
       var fromPlan = daysFromUnitPlan(u.planKey);
@@ -203,24 +269,25 @@
   // unit occupies, as before. A pin sets the unit's first meeting: the
   // first meeting day on or after the pinned date.
   var REVIEW_IDS = { u15: true, u16: true, u17: true };
-  function assign(days) {
-    var reserved = {};
+  function assign(days, trial) {
+    var reserved = {}, units = activeUnits(), lengths = {};
+    units.forEach(function (u) { lengths[u.id] = unitDays(u, trial).days; });
     var lpm0 = lessonsPerMeeting();
     if (S.exam) {
       var before = days.filter(function (d) { return d < S.exam; });
       var take = Math.min(S.reviewDays || 0, before.length);
       // A review unit in the course occupies the run before the exam
       // itself; do not also hold blank review days on top of it.
-      activeUnits().forEach(function (u) {
-        if (REVIEW_IDS[u.id]) take = Math.max(0, take - Math.ceil(unitDays(u).days / lpm0));
+      units.forEach(function (u) {
+        if (REVIEW_IDS[u.id]) take = Math.max(0, take - Math.ceil(lengths[u.id] / lpm0));
       });
       for (var i = 0; i < take; i++) reserved[before[before.length - 1 - i]] = true;
     }
     var lpm = lessonsPerMeeting();
     var meets = meetingDays(days);
     var byDate = {}, ranges = {}, pinStale = {}, idx = 0;
-    activeUnits().forEach(function (u) {
-      var need = Math.ceil(unitDays(u).days / lpm), got = [];
+    units.forEach(function (u) {
+      var need = Math.ceil(lengths[u.id] / lpm), got = [];
       var pin = S.pinnedStarts[u.id];
       if (pin) {
         if (idx < meets.length && meets[idx] > pin) {
@@ -240,36 +307,48 @@
     });
     var unassigned = meets.filter(function (d) { return !byDate[d] && !reserved[d]; });
     var overflowDays = 0;
-    activeUnits().forEach(function (u) {
-      overflowDays += Math.max(0, unitDays(u).days - (ranges[u.id] ? ranges[u.id].length : 0) * lpm);
+    units.forEach(function (u) {
+      overflowDays += Math.max(0, lengths[u.id] - (ranges[u.id] ? ranges[u.id].length : 0) * lpm);
     });
     return { byDate: byDate, ranges: ranges, reserved: reserved, unassigned: unassigned, overflowDays: overflowDays, pinStale: pinStale };
   }
 
-  // ---------- save ----------
-  // One save line that tells the truth about sign-in state: signed out,
-  // the plan lives in this browser; signed in, it syncs to the account.
-  function signedIn() {
-    try { return !!(window.HCGAuth && window.HCGAuth.currentUser()); } catch (e) { return false; }
-  }
-  function saveNoteText() {
-    var t = new Date().toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
-    return signedIn() ? "Saved and synced to your account · " + t
-                      : "Saved in this browser · " + t + ". Sign in to sync it across devices.";
+  function unitComplete(u, A, trial) {
+    return (A.ranges[u.id] || []).length >= Math.ceil(unitDays(u, trial).days / lessonsPerMeeting());
   }
 
+  // ---------- save ----------
+  var deviceSaved = false;
+  function paintSaveNote() {
+    var note = document.getElementById("saved-note");
+    if (!note) return;
+    note.textContent = deviceSaved
+      ? (window.HCGAuth && window.HCGAuth.plannerSaveStatus ? window.HCGAuth.plannerSaveStatus() : "Saved in this browser. Sign in to sync across devices.")
+      : "This browser couldn't save your latest changes. Export the plan before leaving.";
+  }
+  window.addEventListener("hcgplansync", paintSaveNote);
+
   function save() {
-    localStorage.setItem(KEY, JSON.stringify(S));
     lib.plans[planName] = S;
     lib.active = planName;
-    try { localStorage.setItem(LIBKEY, JSON.stringify(lib)); } catch (e) {}
-    document.getElementById("saved-note").textContent = saveNoteText();
+    try {
+      localStorage.setItem(KEY, JSON.stringify(S));
+      localStorage.setItem(LIBKEY, JSON.stringify(lib));
+      deviceSaved = true;
+    } catch (e) { deviceSaved = false; }
+    paintSaveNote();
+  }
+
+  function escapePlanLabel(value) {
+    return String(value == null ? "" : value).replace(/[&<>"']/g, function (ch) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[ch];
+    });
   }
 
   function renderSwitcher() {
     var sel = document.getElementById("plan-select");
     sel.innerHTML = Object.keys(lib.plans).map(function (n) {
-      return "<option" + (n === planName ? " selected" : "") + ">" + n + "</option>";
+      return "<option" + (n === planName ? " selected" : "") + ">" + escapePlanLabel(n) + "</option>";
     }).join("");
     document.getElementById("plan-del").disabled = Object.keys(lib.plans).length <= 1;
   }
@@ -288,7 +367,7 @@
     var pe = document.getElementById("periods");
     pe.innerHTML = S.periods.slice().sort(function (a, b) { return a.end < b.end ? -1 : 1; }).map(function (p) {
       var i = S.periods.indexOf(p);
-      return "<div class='editrow'><span><strong>" + p.name + "</strong></span><span class='small'>ends " + fmtLong(p.end) +
+      return "<div class='editrow'><span><strong>" + escapePlanLabel(p.name) + "</strong></span><span class='small'>ends " + fmtLong(p.end) +
         "</span><button type='button' class='mini' data-del-period='" + i + "'>Remove</button></div>";
     }).join("") || "<p class='small'>No grading periods yet.</p>";
 
@@ -296,7 +375,7 @@
     oe.innerHTML = S.daysOff.slice().sort(function (a, b) { return a.from < b.from ? -1 : 1; }).map(function (o) {
       var i = S.daysOff.indexOf(o);
       var when = o.from === o.to ? fmtLong(o.from) : fmt(o.from) + " – " + fmtLong(o.to);
-      return "<div class='editrow'><span><strong>" + o.label + "</strong> <span class='kindchip'>" + o.kind + "</span></span><span class='small'>" +
+      return "<div class='editrow'><span><strong>" + escapePlanLabel(o.label) + "</strong> <span class='kindchip'>" + escapePlanLabel(o.kind) + "</span></span><span class='small'>" +
         when + "</span><button type='button' class='mini' data-del-off='" + i + "'>Remove</button></div>";
     }).join("") || "<p class='small'>No days off yet.</p>";
 
@@ -317,7 +396,7 @@
     if (S.exam) {
       activeUnits().forEach(function (u) {
         var r = A.ranges[u.id] || [];
-        if (r.length && r[r.length - 1] > S.exam) {
+        if (unitComplete(u, A) && r[r.length - 1] > S.exam) {
           lateUnits[u.id] = r[r.length - 1];
           postExam.push({ name: u.name, testIso: r[r.length - 1] });
         }
@@ -326,6 +405,7 @@
     el.innerHTML = activeUnits().map(function (u) {
       var info = unitDays(u), r = A.ranges[u.id] || [];
       var when = r.length ? fmt(r[0]) + " – " + fmt(r[r.length - 1]) : "<span class='warn'>does not fit</span>";
+      if (r.length && !unitComplete(u, A)) when += " <span class='warn'>(partial; test not scheduled)</span>";
       if (lateUnits[u.id]) {
         when += " <span class='warn'>(test day " + fmt(lateUnits[u.id]) +
           " is after your exam " + fmt(S.exam) + ")</span>";
@@ -348,7 +428,7 @@
     el.querySelectorAll(".daysin").forEach(function (inp) {
       inp.addEventListener("change", function () {
         var v = parseInt(inp.value, 10);
-        if (v > 0) { S.unitDays[inp.getAttribute("data-unit")] = v; render(); }
+        if (v > 0 && v <= 60) { S.unitDays[inp.getAttribute("data-unit")] = v; render(); }
       });
     });
     el.querySelectorAll("[data-unpin]").forEach(function (b) {
@@ -410,14 +490,14 @@
       var inP = days.filter(function (d) { return d <= p.end && (prev === null || d > prev); });
       var tests = activeUnits().filter(function (u) {
         var r = A.ranges[u.id] || [];
-        return r.length && r[r.length - 1] <= p.end && (prev === null || r[r.length - 1] > prev);
+        return unitComplete(u, A) && r[r.length - 1] <= p.end && (prev === null || r[r.length - 1] > prev);
       }).map(function (u) { return u.name.replace("The ", ""); });
-      prows.push("<tr><td>" + p.name + "<br><span class='small'>ends " + fmt(p.end) + (tests.length ? " · tests: " + tests.join(", ") : "") +
+      prows.push("<tr><td>" + escapePlanLabel(p.name) + "<br><span class='small'>ends " + fmt(p.end) + (tests.length ? " · tests: " + tests.join(", ") : "") +
         "</span></td><td style='text-align:right;'>" + inP.length + " days</td></tr>");
       prev = p.end;
     });
     var rest = days.filter(function (d) { return prev === null || d > prev; });
-    if (sorted.length && rest.length) prows.push("<tr><td>After " + sorted[sorted.length - 1].name + "</td><td style='text-align:right;'>" + rest.length + " days</td></tr>");
+    if (sorted.length && rest.length) prows.push("<tr><td>After " + escapePlanLabel(sorted[sorted.length - 1].name) + "</td><td style='text-align:right;'>" + rest.length + " days</td></tr>");
     ps.innerHTML = prows.join("") || "<tr><td class='small'>Add a grading period to see the year broken down by period.</td></tr>";
   }
 
@@ -446,7 +526,7 @@
         var bar = "";
         if (u && daysSet[iso]) {
           var r = A.ranges[u.id];
-          var isFirst = r[0] === iso, isTest = r[r.length - 1] === iso;
+          var isFirst = r[0] === iso, isTest = unitComplete(u, A) && r[r.length - 1] === iso;
           bar = "<div class='ubar' style='background:" + u.color + "'></div>";
           if (isFirst) label = "<div class='ulab'>" + u.name.replace("The ", "") + "</div>";
           if (isTest) label += "<div class='ulab test'>test</div>";
@@ -456,7 +536,7 @@
         if (periodEnds[iso]) { cls += " pend"; title = (title ? title + " · " : "") + periodEnds[iso] + " ends"; }
         if (S.exam && iso === S.exam) { cls += " exam"; title = "Exam"; }
         var dragAttrs = (u && daysSet[iso]) ? " data-unit='" + u.id + "' draggable='true'" : "";
-        cells += "<div class='" + cls + "' data-iso='" + iso + "'" + dragAttrs + " title='" + title + "'><div class='dnum'>" + dnum + "</div>" + label + bar + "</div>";
+        cells += "<div class='" + cls + "' data-iso='" + iso + "'" + dragAttrs + " title='" + escapePlanLabel(title) + "'><div class='dnum'>" + dnum + "</div>" + label + bar + "</div>";
       }
       return "<div class='month'><h4>" + m.toLocaleDateString("en-US", { month: "long", year: "numeric" }) + "</h4><div class='mgrid'>" + cells + "</div></div>";
     }).join("");
@@ -476,18 +556,21 @@
         cell.classList.remove("dropok");
         var uid = ev.dataTransfer.getData("text/plain");
         var iso = cell.getAttribute("data-iso");
-        if (uid && iso >= S.start && iso <= S.end) { S.pinnedStarts[uid] = iso; render(); }
+        if (activeUnits().some(function (u) { return u.id === uid; }) && iso >= S.start && iso <= S.end) { S.pinnedStarts[uid] = iso; render(); }
       });
     });
 
     document.getElementById("legend").innerHTML = activeUnits().map(function (u) {
       var r = A.ranges[u.id] || [];
-      var when = r.length ? fmt(r[0]) + " – " + fmt(r[r.length - 1]) : "does not fit";
+      var when = r.length ? fmt(r[0]) + " – " + fmt(r[r.length - 1]) + (unitComplete(u, A) ? "" : " (partial)") : "does not fit";
       return "<span class='legitem'><span class='swatch' style='background:" + u.color + "'></span>" + u.name + " <span class='small'>" + when + "</span></span>";
     }).join("");
   }
 
   function render() {
+    var fit = document.getElementById("fit-preview");
+    fit.style.display = "none";
+    fit.innerHTML = "";
     if (!S.course || !COURSES[S.course]) S.course = "full";
     if (!S.unitDays) S.unitDays = {};
     if (!S.pinnedStarts) S.pinnedStarts = {};
@@ -522,28 +605,39 @@
   });
   ["y-start", "y-end", "y-exam"].forEach(function (id) {
     document.getElementById(id).addEventListener("change", function () {
-      S.start = document.getElementById("y-start").value || S.start;
-      S.end = document.getElementById("y-end").value || S.end;
-      S.exam = document.getElementById("y-exam").value || "";
-      // Real dates make the year the teacher's own, not the starter.
+      var start = document.getElementById("y-start"), end = document.getElementById("y-end");
+      var exam = document.getElementById("y-exam");
+      var error = yearDateError(start.value, end.value);
+      var invalid = !Number.isFinite(dateStamp(start.value)) ? start : end;
+      if (!error && exam.value && !Number.isFinite(dateStamp(exam.value))) {
+        invalid = exam;
+        error = "Enter a valid exam date.";
+      }
+      [start, end, exam].forEach(function (input) { input.setCustomValidity(""); });
+      if (error) {
+        invalid.setCustomValidity(error);
+        invalid.reportValidity();
+        return;
+      }
+      S.start = start.value; S.end = end.value; S.exam = exam.value;
       S.starter = false;
       render();
     });
   });
   document.getElementById("y-review").addEventListener("change", function () {
-    S.reviewDays = Math.max(0, parseInt(this.value, 10) || 0);
+    S.reviewDays = Math.min(20, Math.max(0, parseInt(this.value, 10) || 0));
     render();
   });
   document.getElementById("p-add").addEventListener("click", function () {
     var name = document.getElementById("p-name").value.trim();
     var end = document.getElementById("p-end").value;
-    if (name && end) { S.periods.push({ name: name, end: end }); document.getElementById("p-name").value = ""; render(); }
+    if (name && Number.isFinite(dateStamp(end)) && S.periods.length < 100) { S.periods.push({ name: name, end: end }); document.getElementById("p-name").value = ""; render(); }
   });
   document.getElementById("o-add").addEventListener("click", function () {
     var from = document.getElementById("o-from").value, to = document.getElementById("o-to").value || from;
     var label = document.getElementById("o-label").value.trim();
     var kind = document.getElementById("o-kind").value;
-    if (from && label) {
+    if (Number.isFinite(dateStamp(from)) && Number.isFinite(dateStamp(to)) && label && S.daysOff.length < 300) {
       if (to < from) { var t = from; from = to; to = t; }
       S.daysOff.push({ from: from, to: to, label: label, kind: kind });
       document.getElementById("o-label").value = "";
@@ -556,34 +650,29 @@
     a.href = URL.createObjectURL(blob);
     a.download = "hcg-year-plan.json";
     a.click();
-    URL.revokeObjectURL(a.href);
+    setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);
   });
   document.getElementById("import").addEventListener("change", function () {
     var f = this.files[0];
     if (!f) return;
     var note = document.getElementById("import-note");
+    function reject(message) { note.textContent = message + " Your current plan was not changed."; }
+    if (f.size > MAX_PLAN_BYTES) {
+      reject("The file is too large to be a year plan.");
+      this.value = "";
+      return;
+    }
     var r = new FileReader();
+    r.onerror = function () { reject("That file couldn't be read."); };
     r.onload = function () {
-      var obj = null;
-      try { obj = JSON.parse(r.result); } catch (e) {}
-      if (!obj || typeof obj !== "object") {
-        note.innerHTML = "<span class='warn'>That file could not be read as a year plan. " +
-          "It is not in the format the Export button saves. Your current plan was not changed.</span>";
-        return;
-      }
-      if (!obj.start || !obj.end) {
-        note.innerHTML = "<span class='warn'>That file does not look like a year plan: " +
-          "it has no school year start and end dates. If it is a single unit's plan file, " +
-          "import it from that unit's planner page instead. Your current plan was not changed.</span>";
-        return;
-      }
-      S = obj;
-      if (!S.unitDays) S.unitDays = {};
-      if (!S.pinnedStarts) S.pinnedStarts = {};
-      normSchedule(S);
-      normOpeningUnit(S);
+      var obj;
+      try { obj = JSON.parse(r.result); }
+      catch (e) { reject("That file isn't readable as a year plan."); return; }
+      var error = planError(obj);
+      if (error) { reject(error); return; }
+      S = normalizePlan(obj);
       render();
-      var shortCourse = { full: "full survey", early: "early course (to 1877)", modern: "modern course (from 1877)" }[S.course] || "full survey";
+      var shortCourse = { full: "full survey", early: "early course (to 1877)", modern: "modern course (from 1877)" }[S.course];
       note.textContent = "Imported: " + shortCourse + ", " + fmtLong(S.start) + " – " + fmtLong(S.end) +
         ", " + activeUnits().length + " units.";
     };
@@ -640,58 +729,55 @@
     render();
   });
 
-  // Fit to year: trim unit day counts toward the room the year has,
-  // proportionally across the headroom above each unit's core minimum,
-  // never below that minimum. The result shows before anything changes.
+  // Trial the same assignment as the calendar. Aggregate lesson-days
+  // alone miss per-unit block rounding, pin gaps and changing reserves.
   function computeFit() {
-    var days = instructionalDays();
-    var A = assign(days);
-    var lpm = lessonsPerMeeting();
-    var meetSet = {};
-    meetingDays(days).forEach(function (d) { meetSet[d] = true; });
-    var reservedMeetings = Object.keys(A.reserved).filter(function (d) { return meetSet[d]; }).length;
-    var capacity = (meetingDays(days).length - reservedMeetings) * lpm;
+    var days = instructionalDays(), A = assign(days);
+    var lpm = lessonsPerMeeting(), trial = {};
+    var meets = meetingDays(days);
     var rows = activeUnits().map(function (u) {
-      var floor = coreMin(u);
-      var cur = unitDays(u).days;
+      var floor = coreMin(u), cur = unitDays(u).days;
+      trial[u.id] = cur;
       return { u: u, cur: cur, floor: floor == null ? cur : floor, next: cur };
     });
     var demand = rows.reduce(function (n, r) { return n + r.cur; }, 0);
-    var out = { rows: rows, demand: demand, capacity: capacity, fits: demand <= capacity, stillOver: 0, newDemand: demand };
-    if (out.fits) return out;
-    var excess = demand - capacity;
-    var head = rows.map(function (r) { return Math.max(0, r.cur - r.floor); });
-    var H = head.reduce(function (n, h) { return n + h; }, 0);
-    var cuts = rows.map(function () { return 0; });
-    var assigned = 0;
-    if (H > 0) {
-      var raw = head.map(function (h) { return excess * h / H; });
-      raw.forEach(function (r, i) { cuts[i] = Math.min(head[i], Math.floor(r)); assigned += cuts[i]; });
-      var order = raw.map(function (r, i) { return { i: i, frac: r - Math.floor(r) }; })
-        .sort(function (a, b) { return b.frac - a.frac; });
-      var guard = 0;
-      while (assigned < excess && guard < 10000) {
-        var progressed = false;
-        for (var k = 0; k < order.length && assigned < excess; k++) {
-          var oi = order[k].i;
-          if (cuts[oi] < head[oi]) { cuts[oi]++; assigned++; progressed = true; }
+    var fits = !A.overflowDays;
+    var remaining = A.overflowDays;
+    // Try one meeting's reduction at a time, preferring the smallest
+    // share of removable content cut so far. Skip cuts that do not free
+    // useful room, for example when an earlier gap is fixed by a pin.
+    for (var i = 0; remaining > 0 && i < MAX_YEAR_DAYS; i++) {
+      var options = rows.map(function (r, j) {
+        var next = (Math.ceil(r.next / lpm) - 1) * lpm;
+        return { row: r, idx: j, next: next, ratio: (r.cur - next) / (r.cur - r.floor) };
+      }).filter(function (o) { return o.next >= o.row.floor && o.next < o.row.next; })
+        .sort(function (a, b) { return a.ratio - b.ratio || b.idx - a.idx; });
+      var accepted = false;
+      for (var j = 0; j < options.length; j++) {
+        var o = options[j], id = o.row.u.id;
+        trial[id] = o.next;
+        var nextAssignment = assign(days, trial);
+        if (nextAssignment.overflowDays < remaining) {
+          o.row.next = o.next;
+          remaining = nextAssignment.overflowDays;
+          A = nextAssignment;
+          accepted = true;
+          break;
         }
-        if (!progressed) break;
-        guard++;
+        trial[id] = o.row.next;
       }
+      if (!accepted) break;
     }
-    rows.forEach(function (r, i) { r.next = r.cur - cuts[i]; });
-    out.stillOver = Math.max(0, excess - assigned);
-    out.newDemand = rows.reduce(function (n, r) { return n + r.next; }, 0);
-    return out;
+    var cap = (meets.length - meets.filter(function (d) { return A.reserved[d]; }).length) * lpm;
+    return { rows: rows, demand: demand, capacity: cap, fits: fits, stillOver: remaining,
+      newDemand: rows.reduce(function (n, r) { return n + r.next; }, 0) };
   }
   document.getElementById("fit-year").addEventListener("click", function () {
     var box = document.getElementById("fit-preview");
     var F = computeFit();
     function dismiss() { box.style.display = "none"; box.innerHTML = ""; }
     if (F.fits) {
-      box.innerHTML = "<p style='margin:0 0 6px;'><strong>Everything fits.</strong> Your units ask for " + F.demand +
-        " lesson-days and your year has " + F.capacity + ". Nothing to trim.</p>" +
+      box.innerHTML = "<p style='margin:0 0 6px;'><strong>Everything fits.</strong> All units have room on your current calendar. Nothing to trim.</p>" +
         "<button type='button' class='mini' id='fit-dismiss'>Dismiss</button>";
       box.style.display = "";
       document.getElementById("fit-dismiss").addEventListener("click", dismiss);
@@ -699,8 +785,8 @@
     }
     var changed = F.rows.filter(function (r) { return r.next !== r.cur; });
     if (!changed.length) {
-      box.innerHTML = "<p style='margin:0 0 6px;'><strong>Nothing to trim.</strong> Every unit is already at its core minimum, and the year is still " +
-        F.stillOver + " days short. A longer year or a shorter course is the fix.</p>" +
+      box.innerHTML = "<p style='margin:0 0 6px;'><strong>No useful trim available.</strong> Your current calendar leaves " +
+        F.stillOver + " lesson-days unscheduled. Move a pinned start, extend the year, or choose a shorter course.</p>" +
         "<button type='button' class='mini' id='fit-dismiss'>Dismiss</button>";
       box.style.display = "";
       document.getElementById("fit-dismiss").addEventListener("click", dismiss);
@@ -710,8 +796,8 @@
       "<ul style='margin:0 0 6px;padding-left:18px;'>" + changed.map(function (r) {
         return "<li>" + r.u.name + ": " + r.cur + " → " + r.next + " days (core minimum " + r.floor + ")</li>";
       }).join("") + "</ul>" +
-      "<p style='margin:0 0 6px;'>Units would ask for " + F.newDemand + " lesson-days; your year has " + F.capacity + "." +
-      (F.stillOver ? " Even at every unit's core minimum the year is still " + F.stillOver + " days short, so a longer year or a shorter course is also needed." : "") + "</p>" +
+      "<p style='margin:0 0 6px;'>Units would ask for " + F.newDemand + " lesson-days." +
+      (F.stillOver ? " The calendar would still leave " + F.stillOver + " lesson-days unscheduled. Move a pinned start, extend the year, or choose a shorter course." : " All units would fit on the current calendar.") + "</p>" +
       "<button type='button' class='mini' id='fit-apply'>Apply these day counts</button> " +
       "<button type='button' class='mini' id='fit-cancel'>Cancel</button>";
     box.style.display = "";
@@ -726,20 +812,17 @@
   document.getElementById("ics-year").addEventListener("click", function () {
     var days = instructionalDays();
     var A = assign(days);
-    // Units that do not fit are named before they are left out, never
-    // dropped silently. The exam day itself is an event; the days held
-    // for exam review in front of it are not separate events.
+    // Keep starts for partial units, but never export a test for the
+    // last available date of an unfinished unit.
     var unfitted = activeUnits().filter(function (u) { return !(A.ranges[u.id] || []).length; });
+    var partial = activeUnits().filter(function (u) { return (A.ranges[u.id] || []).length && !unitComplete(u, A); });
     var note = document.getElementById("ics-note");
-    if (unfitted.length) {
-      var names = unfitted.map(function (u) { return u.name; }).join(", ");
-      if (!window.confirm("These units do not fit in the year and will not be in the calendar file: " + names +
-        ". The exam day itself is included; days held for exam review are not separate events. Export anyway?")) return;
-      note.textContent = "Left out of this file because they do not fit: " + names + ".";
-    } else {
-      note.textContent = "Every unit is in this file." +
-        (S.exam ? " Days held for exam review are not separate events; the exam day itself is." : "");
-    }
+    var warnings = [];
+    if (unfitted.length) warnings.push("No dates scheduled for: " + unfitted.map(function (u) { return u.name; }).join(", ") + ".");
+    if (partial.length) warnings.push("Only the start is exported for: " + partial.map(function (u) { return u.name; }).join(", ") + ".");
+    if (warnings.length && !window.confirm(warnings.join("\n\n") + "\n\nExport anyway?")) return;
+    note.textContent = warnings.length ? warnings.join(" ") : "Every unit is in this file.";
+    if (S.exam) note.textContent += " The exam day is included. Review days aren't separate events.";
     function esc(s) { return String(s).replace(/\\/g, "\\\\").replace(/;/g, "\\;").replace(/,/g, "\\,"); }
     function dnum(iso) { return iso.replace(/-/g, ""); }
     function next(iso) { var d = P(iso); d.setDate(d.getDate() + 1); return ISO(d); }
@@ -751,6 +834,7 @@
       lines.push("BEGIN:VEVENT", "UID:hcg-year-" + u.id + "-start@humanitiescurriculumgroup.web.app", "DTSTAMP:" + stamp,
         "DTSTART;VALUE=DATE:" + dnum(r[0]), "DTEND;VALUE=DATE:" + dnum(next(r[0])),
         "SUMMARY:" + esc("US History: " + u.name + " begins"), "END:VEVENT");
+      if (!unitComplete(u, A)) return;
       lines.push("BEGIN:VEVENT", "UID:hcg-year-" + u.id + "-test@humanitiescurriculumgroup.web.app", "DTSTAMP:" + stamp,
         "DTSTART;VALUE=DATE:" + dnum(r[r.length - 1]), "DTEND;VALUE=DATE:" + dnum(next(r[r.length - 1])),
         "SUMMARY:" + esc("US History: " + u.name + " · unit test"), "END:VEVENT");
@@ -766,7 +850,7 @@
     a.href = URL.createObjectURL(blob);
     a.download = "us-history-year-milestones.ics";
     a.click();
-    URL.revokeObjectURL(a.href);
+    setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);
   });
 
   document.getElementById("copyfwd").addEventListener("click", function () {
@@ -777,7 +861,14 @@
       if (m === "02" && d === "29") d = "28";
       return y + "-" + m + "-" + d;
     }
-    S.start = shift(S.start); S.end = shift(S.end); S.exam = shift(S.exam);
+    var start = shift(S.start), end = shift(S.end), exam = shift(S.exam);
+    if (yearDateError(start, end) || (exam && !Number.isFinite(dateStamp(exam))) ||
+        S.periods.some(function (p) { return !Number.isFinite(dateStamp(shift(p.end))); }) ||
+        S.daysOff.some(function (o) { return !Number.isFinite(dateStamp(shift(o.from))) || !Number.isFinite(dateStamp(shift(o.to))); })) {
+      document.getElementById("import-note").textContent = "Copying these dates forward would produce an invalid year plan.";
+      return;
+    }
+    S.start = start; S.end = end; S.exam = exam;
     S.periods.forEach(function (p) { p.end = shift(p.end); });
     S.daysOff.forEach(function (o) { o.from = shift(o.from); o.to = shift(o.to); });
     S.pinnedStarts = {};
@@ -790,8 +881,12 @@
     if (sn) sn.style.display = "";
   }
 
-  // Auth state changes refresh the save line through save().
-  window.HCGYearRefresh = function () { save(); };
+  window.HCGYearRefresh = paintSaveNote;
 
   render();
+  if (sharedPlanError) {
+    document.getElementById("import-note").textContent = sharedPlanError + " Your saved plans were not changed by the link.";
+  } else if (savedPlanError && !savedLib) {
+    document.getElementById("import-note").textContent = "The stored year plan couldn't be opened. A starter plan is shown.";
+  }
 })();

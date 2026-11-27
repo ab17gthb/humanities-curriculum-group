@@ -3,21 +3,24 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>My Day | Today, Tomorrow, and This Week | Humanities Curriculum Group</title>
-<meta name="description" content="Your teaching day at a glance: today's plan, tomorrow's plan, and the week ahead, drawn from your saved year and unit plans and ready to print.">
+<title>My Day | Upcoming Lessons and Materials | Humanities Curriculum Group</title>
+<meta name="description" content="See upcoming lessons, materials, and assessments from your saved teaching plans.">
 <link rel="canonical" href="https://humanitiescurriculumgroup.web.app/home">
-<meta property="og:title" content="My Day | Today, Tomorrow, and This Week | Humanities Curriculum Group">
-<meta property="og:description" content="Your teaching day at a glance: today's plan, tomorrow's plan, and the week ahead, drawn from your saved year and unit plans and ready to print.">
+<meta property="og:title" content="My Day | Upcoming Lessons and Materials | Humanities Curriculum Group">
+<meta property="og:description" content="See upcoming lessons, materials, and assessments from your saved teaching plans.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://humanitiescurriculumgroup.web.app/home">
 <meta property="og:image" content="https://humanitiescurriculumgroup.web.app/assets/store-badge-navy.png">
 <link rel="stylesheet" href="styles.css">
 <link rel="icon" type="image/svg+xml" href="assets/store-wordmark-color.svg">
 <style>
-  .daygrid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin: 18px 0 6px; }
+  main.block { padding: 44px 0 8px; }
+  main.block > .wrap > h1 { font-size: 27px; margin: 0 0 8px; }
+  main.block > .wrap > .sub { color: var(--gray); max-width: 680px; margin-top: 0; }
+  .daygrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; margin: 18px 0 6px; }
   @media (max-width: 760px) { .daygrid { grid-template-columns: 1fr; } }
   .dayblock { background: #fff; border: 1px solid #ddd3ba; border-top: 4px solid var(--navy); border-radius: 6px; padding: 16px 18px; }
-  .dayblock h3 { margin: 0 0 2px; font-size: 19px; }
+  .dayblock h2, .dayblock h3 { margin: 0 0 2px; font-size: 19px; }
   .dayblock .when { color: var(--gray); font-size: 13.5px; margin: 0 0 10px; }
   .dayblock .unitname { font-weight: bold; color: var(--navy); margin: 0 0 6px; }
   .dayblock .hwline { margin: 4px 0 0; color: #44403a; }
@@ -26,72 +29,100 @@
   .dayblock .noschool { color: var(--gray); font-style: italic; }
   .dayblock .testday { color: var(--rust); font-weight: bold; }
   .weekblock { background: #fff; border: 1px solid #ddd3ba; border-top: 4px solid var(--rust); border-radius: 6px; padding: 16px 18px; margin: 6px 0 18px; }
-  .weekblock h3 { margin: 0 0 10px; font-size: 19px; }
+  .weekblock h2 { margin: 0 0 10px; font-size: 19px; }
   table.week { width: 100%; border-collapse: collapse; font-size: 14.5px; }
-  table.week td { padding: 7px 8px; border-bottom: 1px solid #eee5cf; vertical-align: top; }
-  table.week td.d { white-space: nowrap; font-weight: bold; color: var(--navy); width: 148px; }
-  table.week tr:last-child td { border-bottom: none; }
-  .printrow { margin: 14px 0 4px; }
+  table.week :is(th, td) { padding: 7px 8px; border-bottom: 1px solid #eee5cf; vertical-align: top; }
+  table.week th.d { white-space: nowrap; font-weight: bold; color: var(--navy); width: 148px; }
+  table.week tr:last-child :is(th, td) { border-bottom: none; }
+  table.week th.d { text-align: left; }
+  .weekblock, .dayblock { overflow-wrap: anywhere; }
+  .my-day-badge, .my-day-section { margin-left: 3px; font: 700 12px/1.3 Arial, sans-serif; }
+  .my-day-badge { display: inline-block; color: var(--navy); background: #f2ead5; border-radius: 4px; padding: 2px 5px; }
+  .my-day-section { color: #514636; }
+  .my-day-download { border: 0; color: var(--navy); text-decoration: underline; background: transparent; padding: 3px 2px; text-align: left; font: inherit; cursor: pointer; overflow-wrap: anywhere; max-width: 100%; }
+  .my-day-download:disabled { cursor: wait; }
+  .my-day-download:focus-visible { outline: 2px solid var(--navy); outline-offset: 2px; border-radius: 2px; }
+  .my-day-entry + .my-day-entry { border-top: 1px solid #eee5cf; margin-top: 12px; padding-top: 10px; }
+  .my-day-entry > p:last-child, .dayblock > p:last-child { margin-bottom: 0; }
+  .weekblock-heading { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px; }
+  #home-download-status:empty { display: none; }
+  @media (max-width: 440px) { table.week th.d { width: auto; white-space: normal; } }
 
   @media print {
     header.site, footer.site, .no-print { display: none !important; }
     body { background: #fff !important; color: #000 !important; }
-    section.block { padding: 0; }
-    .dayblock, .weekblock { border: 1px solid #000; border-radius: 0; break-inside: avoid; }
+    main.block { padding: 0; }
+    .dayblock, .weekblock { border: 1px solid #000; border-radius: 0; }
+    .my-day-entry, table.week tr { break-inside: avoid; }
     .dayblock .when, .dayblock .noschool { color: #000; }
-    .dayblock .unitname, table.week td.d, .dayblock .testday { color: #000; }
-    a { color: #000 !important; text-decoration: none !important; }
+    .dayblock .unitname, table.week th.d, .dayblock .testday { color: #000; }
+    a, .my-day-download { color: #000 !important; text-decoration: none !important; }
   }
 </style>
 <meta name="p:domain_verify" content="614ffbb856f10570ff98c83e7d06967a"/>
 </head>
 <body>
+<a class="hcg-skip" href="#main-content">Skip to content</a>
 
 <header class="site">
   <div class="wrap">
     <a href="index.html"><img class="wordmark" src="assets/store-wordmark-cream.svg" alt="Humanities Curriculum Group"></a>
-    <nav class="main">
-      <a href="index.html">Home</a>
-      <a href="home.html" class="here">My Day</a>
-      <a href="us-history.html">US History</a>
-      <a href="progressive-era.html">Sample Unit</a>
+    <nav class="main hcg-main-nav" aria-label="Main navigation">
+      <a href="us-history.html">U.S. History</a>
+      <a href="reading-companions.html">Reading Companions</a>
       <a href="planner-year.html">Year Planner</a>
       <a href="planner.html">Unit Planner</a>
-      <a href="about.html">About</a>
+      <a href="home.html" class="here" aria-current="page">My Day</a>
+      <a href="subscribe.html">All-Access</a>
     </nav>
     <div class="hcg-account" id="hcg-account"></div>
   </div>
 </header>
 
-<section class="block">
+<main class="block" id="main-content" tabindex="-1">
   <div class="wrap">
     <h1>My Day</h1>
-    <p class="sub">Today, tomorrow, and the week, drawn from your own plans. Sign in and your plans follow you to any device; on this device they are read from the planners exactly as you left them.</p>
+    <p class="sub">Lessons, materials, and assessment dates from your saved plans.</p>
 
-    <!-- Pitch: shown when there is no plan data to draw from. -->
     <div id="home-pitch" hidden>
       <div class="note">
-        <p style="margin-top:0;"><strong>No plan here yet.</strong> Build a year in the <a href="planner-year.html">Year Planner</a> and lay out the free sample unit in the <a href="planner.html">Unit Planner</a>, and this page becomes your day at a glance: what you are teaching, which materials to print, and when the tests land.</p>
-        <p>Sign in to save your plans to your account so they are waiting on any computer. The full <a href="progressive-era.html">Progressive Era sample unit</a> is free, planning included.</p>
-        <p style="margin-bottom:0;"><button type="button" class="btn" id="pitch-signin">Sign in or create an account</button>
-        <a class="btn" href="progressive-era.html" style="background:var(--navy);">Open the free sample unit</a></p>
+        <h2>No plans saved on this device</h2>
+        <p>Try the free Progressive Era sample week without signing in, or open a planner to start your own plan.</p>
+        <p><a class="btn" href="planner.html?sample=progressive-era-week">Try the sample week</a></p>
+        <p style="margin-bottom:0;"><a href="planner.html">Unit Planner</a> · <a href="planner-year.html">Year Planner</a><span id="pitch-account-action"> · <button type="button" class="my-day-download" id="pitch-signin">Sign in to find account plans</button></span></p>
       </div>
     </div>
 
-    <!-- The three blocks: Today, Tomorrow, This Week. -->
     <div id="home-blocks" hidden>
-      <div class="printrow no-print">
-        <button type="button" class="btn" id="home-print">Print today, tomorrow, and this week</button>
-      </div>
+      <section id="my-day-upcoming" aria-labelledby="my-day-upcoming-heading">
+        <h2 id="my-day-upcoming-heading">Coming up</h2>
+        <div class="daygrid">
+          <section class="dayblock" aria-labelledby="my-day-lesson-heading">
+            <h3 id="my-day-lesson-heading">Next lesson &amp; materials</h3>
+            <div id="block-next-lesson"></div>
+          </section>
+          <section class="dayblock" aria-labelledby="my-day-assessment-heading">
+            <h3 id="my-day-assessment-heading">Next assessment</h3>
+            <div id="block-next-assessment"></div>
+          </section>
+        </div>
+      </section>
+      <p class="small no-print" id="home-download-status" role="status"></p>
       <div class="daygrid">
-        <div class="dayblock" id="block-today"></div>
-        <div class="dayblock" id="block-tomorrow"></div>
+        <section class="dayblock" id="block-today"></section>
+        <section class="dayblock" id="block-tomorrow"></section>
       </div>
-      <div class="weekblock" id="block-week"></div>
+      <section class="weekblock" aria-labelledby="my-day-week-heading">
+        <div class="weekblock-heading">
+          <h2 id="my-day-week-heading">This week</h2>
+          <button type="button" class="mini no-print" id="home-print">Print My Day</button>
+        </div>
+        <div id="block-week"></div>
+      </section>
       <p class="small no-print" id="home-source-note"></p>
     </div>
   </div>
-</section>
+</main>
 
 <footer class="site">
   <div class="wrap">
@@ -109,19 +140,22 @@
 <script src="firebase-config.js"></script>
 <script src="auth.js"></script>
 <script src="stats.js"></script>
+<script src="unit-scheduler.js"></script>
 <script src="teacher-home.js"></script>
 <script>
 (function () {
   "use strict";
-  var TH = window.HCGTeacherHome;
-
   // ---------- render ----------
   function renderAll() {
+    var TH = window.HCGTeacherHome;
     var pitch = document.getElementById("home-pitch");
     var blocks = document.getElementById("home-blocks");
     if (!TH || !TH.hasData) {
       pitch.hidden = false;
       blocks.hidden = true;
+      var signIn = document.getElementById("pitch-account-action");
+      var auth = window.HCGAuth;
+      if (signIn) signIn.hidden = !auth || !!(auth.currentUser && auth.currentUser());
       var btn = document.getElementById("pitch-signin");
       if (btn && !btn.dataset.bound) {
         btn.dataset.bound = "1";
@@ -135,19 +169,22 @@
     blocks.hidden = false;
 
     var todayIso = TH.todayIso();
+    var upcoming = TH.upcomingHTML(todayIso);
+    document.getElementById("block-next-lesson").innerHTML = upcoming.lesson;
+    document.getElementById("block-next-assessment").innerHTML = upcoming.assessment;
     var tomorrowIso = TH.addDays(todayIso, 1);
     document.getElementById("block-today").innerHTML = TH.dayHTML(todayIso, "Today");
     document.getElementById("block-tomorrow").innerHTML = TH.dayHTML(tomorrowIso, "Tomorrow");
 
-    var dowT = new Date().getDay();
+    var dowT = TH.weekday(todayIso);
     var mondayIso = TH.addDays(todayIso, -((dowT + 6) % 7));
     var rows = "";
     for (var i = 0; i < 5; i++) {
       var isoW = TH.addDays(mondayIso, i);
-      rows += "<tr><td class='d'>" + TH.fmtShort(isoW) + "</td><td>" + TH.weekCell(isoW) + "</td></tr>";
+      rows += "<tr><th class='d' scope='row'><time datetime='" + isoW + "'>" + TH.fmtShort(isoW) + "</time></th><td>" + TH.weekCell(isoW) + "</td></tr>";
     }
     document.getElementById("block-week").innerHTML =
-      "<h3>This week</h3><table class='week'>" + rows + "</table>";
+      "<table class='week' aria-labelledby='my-day-week-heading'>" + rows + "</table>";
 
     document.getElementById("home-source-note").textContent = TH.sourceNote();
 
